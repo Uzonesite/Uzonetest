@@ -423,6 +423,20 @@
           </p>
         </div>
       </article>
+
+      <article class="card">
+        <div>
+          <h3>Directory</h3>
+          <p>Browse verified students and find people by program, year, and interests.</p>
+        </div>
+        <div class="actions">
+          <a class="linkBtn primary" href="#" id="openDirectoryBtn">Open Directory</a>
+          <p id="directoryLockText" style="display:none; color:rgba(255,255,255,.75); margin-top:8px; font-size:14px;">
+            You must verify your profile before accessing the Directory.
+          </p>
+        </div>
+      </article>
+
       
     </section>
   </main>
@@ -459,6 +473,9 @@
     const referBtn = document.getElementById("referBtn");
     const openMatchBtn = document.getElementById("openMatchBtn");
     const matchLockText = document.getElementById("matchLockText");
+
+    const openDirectoryBtn = document.getElementById("openDirectoryBtn");
+    const directoryLockText = document.getElementById("directoryLockText");
 
     let currentVerifiedStatus = false;
     const toastEl = document.getElementById("toast");
@@ -533,6 +550,19 @@ referBtn.onclick = async () => {
           } else {
             if (matchLockText) matchLockText.style.display = "block";
             toast("Verification required to access Match.");
+          }
+        });
+      }
+
+      // Gate Directory (directory.html) behind verification
+      if (openDirectoryBtn) {
+        openDirectoryBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (currentVerifiedStatus) {
+            window.location.href = "directory.html";
+          } else {
+            if (directoryLockText) directoryLockText.style.display = "block";
+            toast("Verification required to access Directory.");
           }
         });
       }
