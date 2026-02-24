@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Uzone • Udirectory</title>
+  <title>Uzone • Directory</title>
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="color-scheme" content="dark light" />
 
@@ -305,13 +305,12 @@
     <div class="left">
       <img src="logo.png" alt="Uzone" />
       <div class="title">
-        <h1>Udirectory</h1>
+        <h1>Directory</h1>
         <div class="sub" id="subline">Find people by name, school, degree, or U#</div>
       </div>
     </div>
     <div class="right">
-      <a class="btn" href="hub.html">Uhub</a>
-      <a class="btn" href="profile.html">Uprofile</a>
+      <a class="btn" href="hub.html">Hub</a>
     </div>
   </header>
 
@@ -327,13 +326,6 @@
             <option value="">All genders</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-          <select id="ageMin" aria-label="Minimum age">
-            <option value="">Min age</option>
-          </select>
-          <select id="ageMax" aria-label="Maximum age">
-            <option value="">Max age</option>
           </select>
         </div>
 
@@ -388,8 +380,6 @@
       q: document.getElementById("q"),
       school: document.getElementById("schoolFilter"),
       gender: document.getElementById("genderFilter"),
-      ageMin: document.getElementById("ageMin"),
-      ageMax: document.getElementById("ageMax"),
       clear: document.getElementById("clearBtn"),
       refresh: document.getElementById("refreshBtn"),
       results: document.getElementById("results"),
@@ -398,21 +388,6 @@
       msg: document.getElementById("msgBox"),
       subline: document.getElementById("subline"),
     };
-
-    const AGE_MIN = 16;
-    const AGE_MAX = 99;
-
-    for (let a = AGE_MIN; a <= AGE_MAX; a++){
-      const o1 = document.createElement("option");
-      o1.value = String(a);
-      o1.textContent = String(a);
-      els.ageMin.appendChild(o1);
-
-      const o2 = document.createElement("option");
-      o2.value = String(a);
-      o2.textContent = String(a);
-      els.ageMax.appendChild(o2);
-    }
 
     function showMsg(text, kind="ok"){
       els.msg.className = "msg " + (kind === "error" ? "error" : "ok");
@@ -532,14 +507,6 @@
       const q = norm(els.q.value);
       const school = (els.school.value || "").trim();
       const gender = (els.gender.value || "").trim();
-      const minA = els.ageMin.value ? parseInt(els.ageMin.value, 10) : null;
-      const maxA = els.ageMax.value ? parseInt(els.ageMax.value, 10) : null;
-
-      let minAge = minA, maxAge = maxA;
-      if (minAge !== null && maxAge !== null && minAge > maxAge){
-        const t = minAge; minAge = maxAge; maxAge = t;
-      }
-
       const filtered = allUsers.filter(u => {
         const uid = (u.__uid || "").toString(); // internal doc id, not displayed
         const name = (u.name || u.displayName || "").toString();
@@ -558,13 +525,6 @@
 
         if (school && uni.trim() !== school) return false;
         if (gender && g.trim() !== gender) return false;
-
-        if (minAge !== null){
-          if (age === null || Number.isNaN(age) || age < minAge) return false;
-        }
-        if (maxAge !== null){
-          if (age === null || Number.isNaN(age) || age > maxAge) return false;
-        }
 
         return true;
       });
@@ -627,15 +587,11 @@
     els.q.addEventListener("input", applyFilters);
     els.school.addEventListener("change", applyFilters);
     els.gender.addEventListener("change", applyFilters);
-    els.ageMin.addEventListener("change", applyFilters);
-    els.ageMax.addEventListener("change", applyFilters);
 
     els.clear.addEventListener("click", () => {
       els.q.value = "";
       els.school.value = "";
       els.gender.value = "";
-      els.ageMin.value = "";
-      els.ageMax.value = "";
       applyFilters();
       hideMsg();
     });
