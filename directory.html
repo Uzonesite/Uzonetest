@@ -230,6 +230,8 @@
       box-shadow: 0 18px 50px rgba(0,0,0,.45);
       background: rgba(0,0,0,.20);
     }
+
+    /* Avatar (image) */
     .avatar{
       width:54px;height:54px;
       border-radius:999px;
@@ -237,6 +239,19 @@
       background: rgba(255,255,255,.06);
       object-fit:cover;
       box-shadow: 0 14px 40px rgba(0,0,0,.35);
+    }
+
+    /* Avatar (fallback initial) */
+    .avatar.avatar-fallback{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(135deg, rgba(176,11,85,.85), rgba(176,11,85,.55));
+      color:white;
+      font-weight:900;
+      font-size:20px;
+      letter-spacing:.5px;
+      user-select:none;
     }
 
     .rowMain{min-width:0; display:grid; gap:4px;}
@@ -297,19 +312,7 @@
       .rowActions{ grid-column: 1 / -1; display:flex; justify-content:flex-end; }
     }
     .rowActions{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; }
-  
-    .avatar-initial{
-      width:40px;
-      height:40px;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:#ccc;
-      font-weight:600;
-    }
-
-</style>
+  </style>
 </head>
 
 <body>
@@ -474,10 +477,16 @@
       if (gender) metaBits.push(`<span class="pill">🧍 ${escapeHtml(gender)}</span>`);
       if (age !== "" && age !== null && age !== undefined) metaBits.push(`<span class="pill">🎂 ${escapeHtml(String(age))}</span>`);
 
+      // Fallback avatar = first letter of the display name
+      const initial = (name && name.length) ? name.trim().charAt(0).toUpperCase() : "?";
+      const avatarHtml = avatar
+        ? `<img class="avatar" alt="Avatar" src="${escapeAttr(avatar)}" />`
+        : `<div class="avatar avatar-fallback" aria-label="Avatar">${escapeHtml(initial)}</div>`;
+
       const wrapper = document.createElement("div");
       wrapper.className = "rowCard";
       wrapper.innerHTML = `
-        <img class="avatar" alt="Avatar" src="${avatar ? escapeAttr(avatar) : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' rx='60' fill='rgba(255,255,255,.08)'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' fill='rgba(255,255,255,.55)' font-family='system-ui' font-size='34'%3F%3E%3F%3C/text%3E%3C/svg%3E"}" />
+        ${avatarHtml}
         <div class="rowMain">
           <div class="nameLine">
             <div class="name">${escapeHtml(name)}</div>
@@ -526,8 +535,6 @@
         const uni = (u.university || "").toString();
         const prog = (u.program || "").toString();
         const g = (u.gender || "").toString();
-        const age = (u.age !== undefined && u.age !== null && u.age !== "") ? parseInt(u.age, 10) : null;
-
         const publicId = getPublicId(u);
 
         // Search: name / uni / program / publicId (and keep uid in search for admin/debug)
