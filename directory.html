@@ -297,7 +297,19 @@
       .rowActions{ grid-column: 1 / -1; display:flex; justify-content:flex-end; }
     }
     .rowActions{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; }
-  </style>
+  
+    .avatar-initial{
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#ccc;
+      font-weight:600;
+    }
+
+</style>
 </head>
 
 <body>
@@ -326,6 +338,7 @@
             <option value="">All genders</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
