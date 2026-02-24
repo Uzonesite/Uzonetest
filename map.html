@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Uzone • Motive Map</title>
+
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="color-scheme" content="dark light" />
+
+  <style>
+    :root{
+      --accent:#b00b55;
+      --bg:#0b0b10;
+      --panel: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100dvh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(176,11,85,.30), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(176,11,85,.18), transparent 55%),
+        radial-gradient(700px 500px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+    }
+
+    header{
+      width:min(1120px, 92vw);
+      margin:18px auto 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+    .left{display:flex; align-items:center; gap:12px; min-width:0;}
+    .left img{
+      width:38px;height:38px;object-fit:contain;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));
+    }
+    .title{display:grid; gap:2px; min-width:0;}
+    .title h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .title .sub{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .right{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+
+    .btn{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.92);
+      font-weight:900;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 16px var(--accent), 0 16px 40px rgba(176,11,85,.30);
+      filter: brightness(1.06);
+    }
+    .btn:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 10px var(--accent), 0 10px 28px rgba(176,11,85,.20);
+      filter: brightness(1.0);
+    }
+    .btn.primary{
+      border:1px solid rgba(176,11,85,.55);
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.58));
+      color:white;
+      box-shadow: 0 18px 40px rgba(176,11,85,.22);
+    }
+    .btn.primary:hover{
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent), 0 22px 55px rgba(176,11,85,.35);
+      filter: brightness(1.08);
+    }
+
+    main{
+      width:min(1120px, 92vw);
+      margin:16px auto 30px auto;
+      display:grid;
+      gap:14px;
+    }
+
+    .panel{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+      backdrop-filter: blur(10px);
+    }
+
+    .bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .searchWrap{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      width:min(900px,100%);
+      flex:1;
+    }
+    .chip{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      padding:10px 12px;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 220px;
+    }
+    .chip label{font-size:12px; color:rgba(255,255,255,.78)}
+    .chip input[type="range"]{ width: 140px; }
+    .hint{font-size:13px; color:rgba(255,255,255,.75);}
+
+    /* Map */
+    #mapWrap{
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 18px;
+      overflow:hidden;
+      background: rgba(0,0,0,.20);
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+    #map{ height: 74dvh; width: 100%; }
+    @media (max-width: 920px){ #map{ height: 72dvh; } }
+
+    /* AdvancedMarker HTML pin */
+    .pinWrap{ position:relative; width:1px; height:1px; overflow: visible; }
+    .glow-pin{
+      position:absolute;
+      left:0; top:0;
+      width:16px; height:16px;
+      border-radius:999px;
+      background: var(--accent);
+      box-shadow:
+        0 0 10px var(--accent),
+        0 0 22px rgba(176,11,85,.75),
+        0 0 46px rgba(176,11,85,.45);
+      transform: translate(-50%, -50%);
+    }
+    .glow-pulse{
+      position:absolute;
+      left:0; top:0;
+      width:46px; height:46px;
+      border-radius:999px;
+      border:2px solid rgba(176,11,85,.35);
+      transform: translate(-50%, -50%);
+      animation: pulse 1.6s ease-out infinite;
+      pointer-events:none;
+    }
+    @keyframes pulse{
+      0%{opacity:.85; transform: translate(-50%,-50%) scale(.35);}
+      100%{opacity:0; transform: translate(-50%,-50%) scale(1.15);}
+    }
+
+    /* ✅ Make InfoWindow fit mobile (no sideways scroll) */
+    .gm-style-iw{ padding:0 !important; }
+    .gm-style-iw-d{ overflow:hidden !important; }
+    .gm-style-iw-c{
+      max-width: 86vw !important;
+      border-radius: 16px !important;
+    }
+    /* Hide default Google close button (white-on-white) */
+    .gm-ui-hover-effect{ display:none !important; }
+
+    /* Popup card */
+    .card{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      width: min(270px, 82vw);
+      max-width: 82vw;
+      padding: 12px;
+      color: rgba(20,20,24,.92);
+      position: relative;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(0,0,0,.06);
+      border:1px solid rgba(0,0,0,.08);
+      font-size:12px;
+      color: rgba(20,20,24,.80);
+      white-space:nowrap;
+      max-width: calc(100% - 44px);
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .dot{
+      width:7px;height:7px;border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(176,11,85,.16);
+      flex:0 0 auto;
+    }
+    .card h3{
+      margin:10px 0 6px 0;
+      font-size:15px;
+      line-height:1.2;
+      font-weight:900;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      padding-right: 40px;
+    }
+    .meta{
+      font-size:12px;
+      color: rgba(20,20,24,.74);
+      line-height:1.35;
+      word-break: break-word;
+    }
+    .actions{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .aBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:9px 10px;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.88);
+      color: rgba(20,20,24,.92);
+      font-weight:900;
+      text-decoration:none;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease;
+      flex: 1 1 auto;
+      min-width: 110px;
+    }
+    .aBtn:hover{ transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,.12); }
+    .aBtn.primary{
+      border-color: rgba(176,11,85,.35);
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.65));
+      color: #fff;
+    }
+
+    .closeBtn{
+      position:absolute;
+      top:10px;
+      right:10px;
+      width:30px;
+      height:30px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.92);
+      color: rgba(20,20,24,.92);
+      font-weight:900;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      line-height:1;
+      box-shadow: 0 10px 24px rgba(0,0,0,.12);
+      touch-action: manipulation;
+    }
+    .closeBtn:active{ transform: scale(.98); }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <img src="logo.png" alt="Uzone logo" />
+      <div class="title">
+        <h1>Motive Map</h1>
+        <div class="sub" id="subline">Loading your area…</div>
+      </div>
+    </div>
+    <div class="right">
+      <a class="btn" href="hub.html">Hub</a>
+      <a class="btn" href="events.html">Umotives</a>
+      <a class="btn primary" href="my_events.html">My Motives</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="bar">
+        <div class="searchWrap">
+          <div class="chip">
+            <label for="radius">Radius</label>
+            <input id="radius" type="range" min="1" max="50" step="1" value="15" />
+            <div class="hint"><span id="radiusVal">15</span> km</div>
+          </div>
+
+          <button class="btn" id="nearMeBtn" type="button">Near me</button>
+          <button class="btn" id="refreshBtn" type="button">Refresh</button>
+        </div>
+
+        <div class="hint" id="count">Loading…</div>
+      </div>
+
+      <div class="hint" style="margin-top:10px;">
+        Invite-only motives only show on the map after you’ve been accepted.
+      </div>
+    </section>
+
+    <section id="mapWrap" class="panel" style="padding:12px;">
+      <div style="padding:0; border:none; background:transparent; box-shadow:none;">
+        <div id="map"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ONE Google Maps script tag only -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCt8UPeNwhR4mPoQgWUoYxUE2UrlKYL6UE&libraries=marker&v=weekly" async defer></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+      authDomain: "uzone-6148d.firebaseapp.com",
+      projectId: "uzone-6148d",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const $ = (id) => document.getElementById(id);
+
+    const nearMeBtn = $("nearMeBtn");
+    const refreshBtn = $("refreshBtn");
+    const count = $("count");
+    const subline = $("subline");
+    const radius = $("radius");
+    const radiusVal = $("radiusVal");
+
+    // focus support: map.html?focus=<eventId>
+    const params = new URLSearchParams(window.location.search);
+    const focusId = (params.get("focus") || "").trim();
+    let focusDone = false;
+
+    let gmap, info;
+    let currentUser = null;
+
+    let allEvents = [];
+    let markers = [];
+    let markerById = new Map();
+    let userCenter = null;
+
+    // invite-only visibility: only show pins if accepted (or host)
+    let acceptedInviteIds = new Set();
+
+    function esc(s){
+      return String(s||"").replace(/[&<>"']/g, m => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[m]));
+    }
+
+    function fmtDate(yyyyMmDd){
+      if (!yyyyMmDd) return "";
+      const parts = yyyyMmDd.split("-").map(Number);
+      if (parts.length !== 3) return yyyyMmDd;
+      const [y,m,d] = parts;
+      if (!y || !m || !d) return yyyyMmDd;
+      const dt = new Date(y, m-1, d);
+      return dt.toLocaleDateString(undefined, { month:"short", day:"numeric" });
+    }
+
+    function fmtWhen(ev){
+      const sd = ev.startDate || "";
+      const st = ev.startTime || "";
+      const ed = ev.endDate || "";
+      const et = ev.endTime || "";
+      const start = [fmtDate(sd), st].filter(Boolean).join(" • ");
+      const end = [fmtDate(ed), et].filter(Boolean).join(" • ");
+      if (!start && !end) return "Time TBD";
+      if (start && !end) return start;
+      if (!start && end) return end;
+      return `${start} → ${end}`;
+    }
+
+    function buildPinEl(){
+      const wrap = document.createElement("div");
+      wrap.className = "pinWrap";
+      const pulse = document.createElement("div");
+      pulse.className = "glow-pulse";
+      const dot = document.createElement("div");
+      dot.className = "glow-pin";
+      wrap.appendChild(pulse);
+      wrap.appendChild(dot);
+      return wrap;
+    }
+
+    function canSeeOnMap(ev){
+      const inviteOnly = !!ev.inviteOnly;
+      if (!inviteOnly) return true;
+
+      const hostUid = ev.hostUid || ev.ownerUid || "";
+      if (currentUser && hostUid && currentUser.uid === hostUid) return true;
+
+      return currentUser ? acceptedInviteIds.has(ev.id) : false;
+    }
+
+    function exactLatLng(ev){
+      const lat = Number(ev.lat);
+      const lng = Number(ev.lng);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+      return { lat, lng };
+    }
+
+    function clearMarkers(){
+      markers.forEach(m => m.map = null);
+      markers = [];
+      markerById = new Map();
+    }
+
+    function openInfo(marker, ev){
+      const when = esc(fmtWhen(ev));
+      const where = esc((ev.location || "—"));
+      const badgeText = ev.inviteOnly ? "Invite-only" : "Open";
+
+      const html = `
+        <div class="card">
+          <button class="closeBtn" type="button" id="iwCloseBtn" aria-label="Close">✕</button>
+          <div class="badge"><span class="dot"></span>${badgeText}</div>
+          <h3 title="${esc(ev.name || "Motive")}">${esc(ev.name || "Motive")}</h3>
+          <div class="meta"><b>When:</b> ${when}<br><b>Where:</b> ${where}</div>
+          <div class="actions">
+            <a class="aBtn primary" href="event.html?id=${encodeURIComponent(ev.id)}">Open</a>
+            <a class="aBtn" href="events.html">List view</a>
+          </div>
+        </div>
+      `;
+
+      info.setContent(html);
+      info.open({ map: gmap, anchor: marker });
+
+      google.maps.event.addListenerOnce(info, "domready", () => {
+        const btn = document.getElementById("iwCloseBtn");
+        if (btn) btn.onclick = () => info.close();
+      });
+    }
+
+    // Haversine distance (km)
+    function distKm(a, b){
+      const R = 6371;
+      const dLat = (b.lat - a.lat) * Math.PI / 180;
+      const dLng = (b.lng - a.lng) * Math.PI / 180;
+      const lat1 = a.lat * Math.PI / 180;
+      const lat2 = b.lat * Math.PI / 180;
+
+      const s =
+        Math.sin(dLat/2) ** 2 +
+        Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng/2) ** 2;
+
+      return 2 * R * Math.asin(Math.sqrt(s));
+    }
+
+    function renderMarkers(list){
+      clearMarkers();
+
+      const bounds = new google.maps.LatLngBounds();
+      let added = 0;
+
+      list.forEach(ev => {
+        if (!canSeeOnMap(ev)) return;
+
+        const pos = exactLatLng(ev);
+        if (!pos) return;
+
+        const marker = new google.maps.marker.AdvancedMarkerElement({
+          map: gmap,
+          position: pos,
+          content: buildPinEl(),
+        });
+
+        marker.addListener("gmp-click", () => openInfo(marker, ev));
+        markers.push(marker);
+        markerById.set(ev.id, marker);
+
+        bounds.extend(pos);
+        added++;
+      });
+
+      if (added > 0){
+        gmap.fitBounds(bounds, 80);
+      } else if (userCenter){
+        gmap.panTo(userCenter);
+        gmap.setZoom(13);
+      }
+
+      // try auto-open focus after markers exist
+      setTimeout(tryFocusOpen, 0);
+    }
+
+    function applyNearFilter(){
+      if (!userCenter){
+        renderMarkers(allEvents);
+        count.textContent = `${markers.length} motive${markers.length === 1 ? "" : "s"}`;
+        subline.textContent = `Showing all visible motives`;
+        return;
+      }
+
+      const km = Number(radius.value || 15);
+      const filtered = allEvents.filter(ev => {
+        if (!canSeeOnMap(ev)) return false;
+        const pos = exactLatLng(ev);
+        if (!pos) return false;
+        return distKm(userCenter, pos) <= km;
+      });
+
+      renderMarkers(filtered);
+
+      count.textContent = `${markers.length} motive${markers.length === 1 ? "" : "s"} within ${km} km`;
+      subline.textContent = `Near you • ${km} km radius`;
+    }
+
+    async function hydrateAcceptedInvites(){
+      acceptedInviteIds = new Set();
+      if (!currentUser) return;
+
+      // check membership only for invite-only events
+      const inviteOnlyEvents = allEvents.filter(e => !!e.inviteOnly);
+
+      // run in parallel (small apps = fine)
+      await Promise.all(inviteOnlyEvents.map(async (ev) => {
+        try{
+          const hostUid = ev.hostUid || ev.ownerUid || "";
+          if (hostUid && currentUser.uid === hostUid){
+            acceptedInviteIds.add(ev.id);
+            return;
+          }
+
+          const memRef = doc(db, "events", ev.id, "members", currentUser.uid);
+          const memSnap = await getDoc(memRef);
+          if (memSnap.exists() && memSnap.data()?.status === "accepted"){
+            acceptedInviteIds.add(ev.id);
+          }
+        }catch(_){}
+      }));
+    }
+
+    async function loadEvents(){
+      count.textContent = "Loading…";
+      const snap = await getDocs(collection(db, "events"));
+      allEvents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      await hydrateAcceptedInvites();
+      applyNearFilter();
+    }
+
+    function tryFocusOpen(){
+      if (focusDone) return;
+      if (!focusId) return;
+
+      const ev = allEvents.find(x => x.id === focusId);
+      if (!ev) return;
+
+      // must be visible on map (invite-only requires acceptance)
+      if (!canSeeOnMap(ev)) return;
+
+      const pos = exactLatLng(ev);
+      if (!pos) return;
+
+      let m = markerById.get(focusId);
+
+      // if radius filter excluded it, add a one-off marker just for focus
+      if (!m){
+        m = new google.maps.marker.AdvancedMarkerElement({
+          map: gmap,
+          position: pos,
+          content: buildPinEl(),
+        });
+        m.addListener("gmp-click", () => openInfo(m, ev));
+        markers.push(m);
+        markerById.set(focusId, m);
+      }
+
+      gmap.panTo(pos);
+      gmap.setZoom(16);
+      openInfo(m, ev);
+      focusDone = true;
+    }
+
+    function whenGoogleReady(timeoutMs = 12000){
+      return new Promise((resolve, reject) => {
+        const start = Date.now();
+        const tick = () => {
+          if (window.google?.maps?.Map && window.google?.maps?.marker?.AdvancedMarkerElement) return resolve();
+          if (Date.now() - start > timeoutMs) return reject(new Error("Google Maps failed to load."));
+          setTimeout(tick, 50);
+        };
+        tick();
+      });
+    }
+
+    function getUserLocation(){
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) return resolve(null);
+        navigator.geolocation.getCurrentPosition(
+          (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+          () => resolve(null),
+          { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+        );
+      });
+    }
+
+    async function initMap(){
+      await whenGoogleReady();
+
+      const fallback = { lat: 45.4215, lng: -75.6972 };
+      userCenter = await getUserLocation();
+      const center = userCenter || fallback;
+
+      gmap = new google.maps.Map($("map"), {
+        center,
+        zoom: userCenter ? 13 : 12,
+        mapId: "f4ab270f6c4fc6deeed4fa00",
+        clickableIcons: false,
+        gestureHandling: "greedy"
+      });
+
+      info = new google.maps.InfoWindow({});
+
+      subline.textContent = userCenter
+        ? "Near you • loading motives…"
+        : "Location blocked • showing visible motives";
+
+      await loadEvents();
+    }
+
+    // UI
+    radius.addEventListener("input", () => {
+      radiusVal.textContent = radius.value;
+      applyNearFilter();
+    });
+
+    nearMeBtn.addEventListener("click", async () => {
+      userCenter = await getUserLocation();
+      if (!userCenter){
+        alert("Couldn’t get your location. Check browser permissions.");
+        return;
+      }
+      gmap.panTo(userCenter);
+      gmap.setZoom(13);
+      applyNearFilter();
+    });
+
+    refreshBtn.addEventListener("click", async () => {
+      focusDone = false;
+      await loadEvents();
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { window.location.href = "index.html"; return; }
+      currentUser = user;
+
+      radiusVal.textContent = radius.value;
+
+      try{
+        await initMap();
+      } catch (e){
+        console.error(e);
+        alert("Map failed to load. Check console + API key restrictions.");
+      }
+    });
+  </script>
+</body>
+</html>

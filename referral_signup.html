@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Uzone • Referral Signup</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="color-scheme" content="dark light" />
+
+  <style>
+    :root{
+      --accent:#b00b55;
+      --bg:#0b0b10;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --border: rgba(255,255,255,.14);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100dvh;
+      display:grid;
+      place-items:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(176,11,85,.30), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(176,11,85,.18), transparent 55%),
+        radial-gradient(700px 500px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+      padding: 22px 0;
+    }
+
+    .wrap{
+      width:min(980px, 92vw);
+      display:grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap:18px;
+      align-items:stretch;
+    }
+    @media (max-width: 860px){
+      .wrap{grid-template-columns:1fr}
+    }
+
+    .brand, .card{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .brand{ padding:26px; position:relative; }
+    .logoRow{ display:flex; align-items:center; gap:12px; }
+    .logoRow img{
+      width:44px;height:44px;
+      object-fit:contain;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));
+    }
+    .brand h1{ margin:0; font-size:28px; letter-spacing:.2px; }
+    .brand p{
+      margin:14px 0 0 0;
+      color:var(--muted);
+      line-height:1.45;
+      max-width: 75ch;
+    }
+
+    .pillRow{ margin-top:18px; display:flex; flex-wrap:wrap; gap:10px; }
+    .pill{
+      font-size:13px;
+      color:rgba(255,255,255,.85);
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(176,11,85,.10);
+    }
+
+    .inviteCard{
+      margin-top:16px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+      display:grid;
+      gap:6px;
+    }
+    .inviteTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .inviteTitle{ font-weight:850; letter-spacing:.2px; }
+    .inviteMeta{
+      color:rgba(255,255,255,.72);
+      font-size:13px;
+      line-height:1.35;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      color: rgba(255,255,255,.88);
+      white-space:nowrap;
+    }
+    .badge .dot{ width:8px;height:8px;border-radius:999px;background: rgba(255,255,255,.45); }
+    .badge.ok .dot{ background: rgba(80,255,160,.78); }
+    .badge.bad .dot{ background: rgba(255,80,120,.70); }
+
+    .card{ padding:22px; }
+
+    .headerRow{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .card h2{ margin:0; font-size:20px; letter-spacing:.2px; }
+    .sub{ margin-top:6px; color:var(--muted); line-height:1.45; font-size:13px; }
+
+    form{ margin-top:16px; display:grid; gap:12px; }
+
+    label{ display:grid; gap:6px; font-size:13px; color:rgba(255,255,255,.78); }
+    input{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      outline:none;
+    }
+    input:focus{
+      border-color: rgba(176,11,85,.60);
+      box-shadow: 0 0 0 4px rgba(176,11,85,.20);
+    }
+
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    @media (max-width: 520px){ .row{grid-template-columns:1fr} }
+
+    .btn{
+      margin-top:6px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(176,11,85,.55);
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.58));
+      color:white;
+      font-weight:850;
+      letter-spacing:.2px;
+      cursor:pointer;
+      box-shadow: 0 18px 40px rgba(176,11,85,.22);
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease, border-color .12s ease;
+      user-select:none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+      box-shadow: 0 0 18px #b00b55, 0 22px 55px rgba(176,11,85,.35);
+      border-color: #b00b55;
+    }
+    .btn:active{
+      transform: translateY(0px) scale(.99);
+      filter: brightness(1.0);
+      box-shadow: 0 14px 34px rgba(176,11,85,.20);
+    }
+    .btn:disabled{ opacity:.65; cursor:not-allowed; }
+
+    .msg{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      color:rgba(255,255,255,.85);
+      display:none;
+      white-space:pre-line;
+      line-height:1.35;
+    }
+    .msg.error{ border-color: rgba(255,80,120,.35); background: rgba(255,80,120,.10); }
+    .msg.ok{ border-color: rgba(80,255,160,.25); background: rgba(80,255,160,.10); }
+
+    .tiny{ margin-top:10px; color:rgba(255,255,255,.65); font-size:13px; line-height:1.4; }
+    a{color: rgba(255,255,255,.90)}
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="brand">
+      <div class="logoRow">
+        <img src="logo.png" alt="Uzone logo" />
+        <h1>Uzone</h1>
+      </div>
+
+      <p>
+        You’ve been invited to Uzone.
+        <br /><br />
+        Sign up using this invite. Once <b>both</b> accounts are <b>verified</b>, you’ll each receive <b>+1 credit</b>.
+      </p>
+
+      <div class="pillRow">
+        <span class="pill">+1 credit after verification</span>
+        <span class="pill">Students only</span>
+        <span class="pill">Fast signup</span>
+      </div>
+
+      <div class="inviteCard" aria-label="Invite status">
+        <div class="inviteTop">
+          <div class="inviteTitle">Invite status</div>
+          <span class="badge bad" id="inviteBadge">
+            <span class="dot"></span><span id="inviteBadgeText">Checking…</span>
+          </span>
+        </div>
+        <div class="inviteMeta" id="inviteMeta">Loading invite details…</div>
+      </div>
+    </section>
+
+    <section class="card" aria-label="Referral signup card">
+      <div class="headerRow">
+        <h2>Create your account</h2>
+      </div>
+      <div class="sub">
+        Credits are awarded when both accounts are verified.
+      </div>
+
+      <form id="signupForm" novalidate>
+        <div class="row">
+          <label>
+            First name
+            <input id="firstName" autocomplete="given-name" placeholder="Billy" required />
+          </label>
+          <label>
+            Last name (optional)
+            <input id="lastName" autocomplete="family-name" placeholder="Smith" />
+          </label>
+        </div>
+
+        <label>
+          Email
+          <input id="email" type="email" autocomplete="email" placeholder="you@uottawa.ca" required />
+        </label>
+
+        <label>
+          Password
+          <input id="password" type="password" autocomplete="new-password" placeholder="••••••••" required />
+        </label>
+
+        <label>
+          Confirm password
+          <input id="confirmPassword" type="password" autocomplete="new-password" placeholder="••••••••" required />
+        </label>
+
+        <button class="btn" id="submitBtn" type="submit" disabled>Create account</button>
+
+        <div class="msg" id="msgBox" aria-live="polite"></div>
+
+        <div class="tiny">
+          Already have an account? <a href="index.html">Login here</a>.
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAnalytics, isSupported as analyticsSupported } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      runTransaction,
+      serverTimestamp,
+      collection,
+      query,
+      where,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+      authDomain: "uzone-6148d.firebaseapp.com",
+      databaseURL: "https://uzone-6148d-default-rtdb.firebaseio.com",
+      projectId: "uzone-6148d",
+      storageBucket: "uzone-6148d.firebasestorage.app",
+      messagingSenderId: "88783701381",
+      appId: "1:88783701381:web:4f6c4b1ad8b26d6fa6f0ec",
+      measurementId: "G-HKL5246YMC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    try { if (await analyticsSupported()) getAnalytics(app); } catch(_) {}
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // UI
+    const inviteBadge = document.getElementById("inviteBadge");
+    const inviteBadgeText = document.getElementById("inviteBadgeText");
+    const inviteMeta = document.getElementById("inviteMeta");
+
+    const form = document.getElementById("signupForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const msgBox = document.getElementById("msgBox");
+
+    const firstNameEl = document.getElementById("firstName");
+    const lastNameEl = document.getElementById("lastName");
+    const emailEl = document.getElementById("email");
+    const pwEl = document.getElementById("password");
+    const cpwEl = document.getElementById("confirmPassword");
+
+    function setMsg(text, kind="") {
+      msgBox.style.display = text ? "block" : "none";
+      msgBox.textContent = text || "";
+      msgBox.className = "msg" + (kind ? " " + kind : "");
+    }
+
+    function setInviteStatus(ok, badgeText, metaText){
+      inviteBadge.classList.toggle("ok", !!ok);
+      inviteBadge.classList.toggle("bad", !ok);
+      inviteBadgeText.textContent = badgeText;
+      inviteMeta.textContent = metaText;
+    }
+
+    function getRefParam(){
+      const p = new URLSearchParams(window.location.search);
+      return (p.get("ref") || "").trim();
+    }
+
+    function friendlyAuthError(err){
+      const code = (err?.code || "").toString();
+      if (code.includes("auth/email-already-in-use")) return "That email is already in use. Try logging in instead.";
+      if (code.includes("auth/weak-password")) return "Password is too weak. Use at least 6 characters.";
+      if (code.includes("auth/invalid-email")) return "That email address doesn’t look valid.";
+      if (code.includes("auth/network-request-failed")) return "Network error. Check your connection and try again.";
+      return err?.message || "Something went wrong. Please try again.";
+    }
+
+    // Referral resolution
+    let refRaw = getRefParam();
+    let refUid = null;
+    let refDisplay = null;
+
+    async function resolveRef(raw){
+      if (!raw) return { ok:false, reason:"Missing referral code." };
+
+      // If it looks like publicId (U123), resolve
+      if (/^U\d+$/i.test(raw)) {
+        const qy = query(collection(db, "users"), where("publicId", "==", raw.toUpperCase()));
+        const snap = await getDocs(qy);
+        if (snap.empty) return { ok:false, reason:"Invite not found (bad referral code)." };
+        const docSnap = snap.docs[0];
+        const data = docSnap.data() || {};
+        return { ok:true, uid: docSnap.id, label: (data.name || "").trim() || data.publicId || "a friend" };
+      }
+
+      // Otherwise treat as UID
+      const refDoc = await getDoc(doc(db, "users", raw));
+      if (!refDoc.exists()) return { ok:false, reason:"Invite not found (bad referral link)." };
+      const data = refDoc.data() || {};
+      return { ok:true, uid: raw, label: (data.name || "").trim() || data.publicId || "a friend" };
+    }
+
+    async function initInvite(){
+      try{
+        setInviteStatus(false, "Checking…", "Loading invite details…");
+        const res = await resolveRef(refRaw);
+
+        if (!res.ok){
+          refUid = null;
+          refDisplay = null;
+          submitBtn.disabled = true;
+          setInviteStatus(false, "Invalid", res.reason + " Ask your friend for a new link.");
+          return;
+        }
+
+        refUid = res.uid;
+        refDisplay = res.label;
+
+        submitBtn.disabled = false;
+        setInviteStatus(true, "Valid", `Invited by ${refDisplay}. Credits are awarded after both accounts are verified.`);
+      } catch (_){
+        refUid = null;
+        refDisplay = null;
+        submitBtn.disabled = true;
+        setInviteStatus(false, "Error", "Couldn’t verify the invite right now. Try again in a moment.");
+      }
+    }
+
+    await initInvite();
+
+    async function createUserWithPendingReferral({ user, displayName, refUid }){
+      await runTransaction(db, async (tx) => {
+        const counterRef = doc(db, "meta", "counters");
+        const counterSnap = await tx.get(counterRef);
+        const current = counterSnap.exists() ? Number(counterSnap.data()?.userCounter || 0) : 0;
+        const next = current + 1;
+        const publicId = "U" + next;
+
+        tx.set(counterRef, { userCounter: next }, { merge: true });
+
+        const userRef = doc(db, "users", user.uid);
+
+        // ✅ Updated: same fields as your older accounts (merge-safe)
+        tx.set(userRef, {
+          publicId,
+          name: displayName || "",
+          email: user.email || "",
+
+          age: "",
+          bio: "",
+          program: "",
+          university: "",
+          gender: "",
+
+          verified: false,
+          verification: { status: "none", updatedAt: serverTimestamp() },
+
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+
+          credits: 0,
+          creditsUpdatedAt: serverTimestamp(),
+
+          // referral recorded (pending)
+          referredBy: refUid,
+          referralStatus: "pending",
+          referralAwarded: false
+        }, { merge: true });
+      });
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setMsg("");
+
+      if (!refUid){
+        setMsg("This invite link is invalid. Ask your friend for a new referral link.", "error");
+        return;
+      }
+
+      if (!form.checkValidity()){
+        form.reportValidity();
+        return;
+      }
+
+      const fn = firstNameEl.value.trim();
+      if (!fn){
+        setMsg("First name is required.", "error");
+        return;
+      }
+
+      const email = emailEl.value.trim();
+      const password = pwEl.value;
+      const confirm = cpwEl.value;
+
+      if (password !== confirm){
+        setMsg("Passwords do not match.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+
+      try{
+        const ln = lastNameEl.value.trim();
+        const displayName = [fn, ln].filter(Boolean).join(" ");
+
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const user = cred.user;
+
+        await updateProfile(user, { displayName });
+        await createUserWithPendingReferral({ user, displayName, refUid });
+
+        setMsg("Account created! Referral is pending until both accounts are verified. Redirecting…", "ok");
+        window.location.href = "hub.html";
+      } catch (err){
+        setMsg(friendlyAuthError(err), "error");
+      } finally{
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

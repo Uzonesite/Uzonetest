@@ -1,0 +1,1071 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Uzone • Event</title>
+<style>
+  :root{
+    --accent:#b00b55;
+    --bg:#0b0b10;
+    --panel: rgba(255,255,255,.06);
+    --border: rgba(255,255,255,.14);
+    --text: rgba(255,255,255,.92);
+    --muted: rgba(255,255,255,.70);
+    --shadow: 0 20px 60px rgba(0,0,0,.45);
+    --radius: 18px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100dvh;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    color:var(--text);
+    background:
+      radial-gradient(1200px 600px at 20% 10%, rgba(176,11,85,.30), transparent 60%),
+      radial-gradient(900px 600px at 80% 30%, rgba(176,11,85,.18), transparent 55%),
+      radial-gradient(700px 500px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
+      var(--bg);
+  }
+
+  header{
+    width:min(1120px, 92vw);
+    margin:18px auto 0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:14px 16px;
+    border:1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position:sticky; top:10px; z-index:10;
+    backdrop-filter: blur(8px);
+  }
+  .left{display:flex; align-items:center; gap:12px; min-width:0;}
+  .left img{width:38px;height:38px;object-fit:contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));}
+  .title{display:grid; gap:2px; min-width:0;}
+  .title h1{margin:0;font-size:18px;letter-spacing:.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .title .sub{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .right{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+
+  .btn{
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.18);
+    color:rgba(255,255,255,.92);
+    font-weight:800;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+    user-select:none;
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+  }
+
+  .btn:hover{
+    transform: translateY(-1px);
+    border-color: var(--accent);
+    box-shadow: 0 0 16px var(--accent), 0 16px 40px rgba(176,11,85,.30);
+    filter: brightness(1.06);
+  }
+
+  .btn:active{
+    transform: translateY(0px) scale(.99);
+    box-shadow: 0 0 10px var(--accent), 0 10px 28px rgba(176,11,85,.20);
+  }
+
+  .btn.primary{
+      border:1px solid rgba(176,11,85,.55);
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.58));
+      color:white;
+      box-shadow: 0 18px 40px rgba(176,11,85,.22);
+    }
+
+  .btn.secondary{
+    background: rgba(0,0,0,.18);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow:none;
+  }
+
+  .btn.secondary:hover{
+    border-color: var(--accent);
+    box-shadow: 0 0 16px var(--accent), 0 16px 40px rgba(176,11,85,.30);
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+  }
+
+  .btn:disabled{opacity:.6; cursor:not-allowed}
+
+  main{width:min(1120px, 92vw); margin:16px auto 30px auto; display:grid; gap:14px;}
+  .card{
+    border:1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow:hidden;
+  }
+
+  .hero{
+    display:grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap:0;
+  }
+  @media (max-width: 900px){ .hero{grid-template-columns: 1fr;} }
+
+  .heroImg{background: rgba(0,0,0,.20); position:relative;}
+  .heroImg img{width:100%; height:100%; max-height: 380px; object-fit:cover; display:block;}
+  .heroShade{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.78) 100%),
+      radial-gradient(1000px 380px at 30% 10%, rgba(176,11,85,.18), transparent 55%);
+    pointer-events:none;
+  }
+
+  .heroBody{padding:14px;}
+  .name{font-size:22px; font-weight:900; letter-spacing:.2px; margin:0 0 6px 0;}
+  .mini{color:var(--muted); font-size:13px; line-height:1.4;}
+
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .tag{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12px; padding:6px 10px; border-radius:999px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.18);
+    color: rgba(255,255,255,.86);
+    max-width: 100%;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .tag .dot{width:8px;height:8px;border-radius:999px;background: rgba(255,255,255,.45);}
+  .tag.invite .dot{background: rgba(255,210,80,.85);}
+  .tag.open .dot{background: rgba(80,255,160,.75);}
+
+  .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:14px;}
+  @media (max-width: 900px){ .grid2{grid-template-columns:1fr;} }
+
+  .section{padding:14px;}
+  .h{margin:0 0 10px 0; font-size:15px; letter-spacing:.2px;}
+
+  .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px;}
+  @media (max-width: 520px){ .row{grid-template-columns:1fr;} }
+
+  .box{
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.16);
+    border-radius:14px;
+    padding:10px 12px;
+    font-size:13px;
+    color: rgba(255,255,255,.86);
+    line-height:1.35;
+  }
+
+
+
+/* Action buttons (match events.html theme) */
+.attendBtn,
+.applyBtn,
+.abandonBtn {
+  padding:9px 11px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.92);
+  font-weight:950;
+  font-size:12px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+  user-select:none;
+  white-space:nowrap;
+}
+
+.attendBtn:hover,
+.applyBtn:hover,
+.abandonBtn:hover{
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  box-shadow: 0 0 14px rgba(176,11,85,.45);
+  filter: brightness(1.06);
+}
+
+/* Active / Going state */
+.attendBtn.on{
+  border-color: rgba(176,11,85,.65);
+  background: linear-gradient(135deg, rgba(176,11,85,.92), rgba(176,11,85,.42));
+  box-shadow: 0 0 18px rgba(176,11,85,.45);
+}
+
+/* Applied (private event pending) */
+.applyBtn.on{
+  border-color: rgba(255,210,80,.55);
+  background: linear-gradient(135deg, rgba(255,210,80,.36), rgba(0,0,0,.14));
+  box-shadow: 0 0 18px rgba(255,210,80,.22);
+}
+
+
+.attendBtn:disabled,
+.applyBtn:disabled,
+.abandonBtn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+
+  
+  
+
+  /* Clean rating UI (no pie) */
+  .ratingTop{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .avgBig{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    padding:10px 12px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.16);
+  }
+  .avgBig .num{
+    font-size:26px;
+    font-weight:950;
+    letter-spacing:.2px;
+  }
+  .avgBig .outof{
+    color: rgba(255,255,255,.70);
+    font-size:12px;
+    transform: translateY(-2px);
+  }
+  .avgBig .count{
+    color: rgba(255,255,255,.70);
+    font-size:12px;
+    margin-left:6px;
+  }
+
+  .barWrap{
+    flex:1;
+    min-width: 240px;
+    display:grid;
+    gap:8px;
+  }
+  .bar{
+    height:10px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.08);
+    overflow:hidden;
+  }
+  .bar > div{
+    height:100%;
+    width:0%;
+    border-radius:999px;
+    background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.58));
+  }
+  .barMeta{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    color: rgba(255,255,255,.70);
+    font-size:12px;
+  }
+
+  .stars{display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;}
+  .starBtn{
+    width:34px;height:34px;border-radius:12px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.18);
+    color: rgba(255,255,255,.9);
+    cursor:pointer;
+    font-weight:900;
+  }
+  .starBtn.active{
+    border-color: rgba(176,11,85,.60);
+    box-shadow: 0 0 0 3px rgba(176,11,85,.20);
+  }
+
+  textarea{
+    width:100%;
+    padding:12px 12px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color:var(--text);
+    outline:none;
+    font-size:14px;
+  }
+  textarea{min-height:90px; resize:vertical}
+  textarea:focus{
+    border-color: rgba(176,11,85,.60);
+    box-shadow: 0 0 0 4px rgba(176,11,85,.20);
+  }
+
+  .msg{
+    display:none;
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.16);
+    color:rgba(255,255,255,.85);
+    font-size:13px;
+    white-space:pre-line;
+    margin-top:12px;
+  }
+  .msg.ok{border-color: rgba(80,255,160,.25); background: rgba(80,255,160,.10);}
+  .msg.error{border-color: rgba(255,80,120,.30); background: rgba(255,80,120,.10);}
+
+  .comment{
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.16);
+    border-radius:14px;
+    padding:10px 12px;
+    display:grid;
+    gap:8px;
+  }
+  .commentTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .comment .meta{color:var(--muted); font-size:12px;}
+  .comment .text{font-size:13px; line-height:1.35;}
+  .commentRating{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.18);
+    font-size:12px;
+    color: rgba(255,255,255,.88);
+    white-space:nowrap;
+  }
+  .commentRating b{font-weight:900}
+  .crDot{
+    width:7px;height:7px;border-radius:999px;
+    background: rgba(176,11,85,.95);
+    box-shadow: 0 0 0 4px rgba(176,11,85,.18);
+  }
+
+  /* Attendance UI */
+  .attendee{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 12px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.16);
+  }
+  .avatar{
+    width:34px;height:34px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.10);
+    display:grid;
+    place-items:center;
+    font-weight:900;
+    color: rgba(255,255,255,.90);
+    flex: 0 0 auto;
+  }
+  .attendeeInfo{min-width:0; display:grid; gap:2px;}
+  .attendeeName{
+    font-size:13px;
+    font-weight:800;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .attendeeMeta{
+    font-size:12px;
+    color: rgba(255,255,255,.70);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="left">
+    <img src="logo.png" alt="Uzone logo" />
+    <div class="title">
+      <h1 id="title">Event</h1>
+      <div class="sub" id="sub">Loading…</div>
+    </div>
+  </div>
+
+    <div class="right">
+      <a class="btn" href="hub.html">Hub</a>
+      <a class="btn" href="map.html">Map</a>
+      <a class="btn" href="events.html">Umotives</a>
+      <a class="btn primary" href="my_events.html">My Motives</a>
+    </div>
+</header>
+
+<main>
+  <section class="card hero">
+    <div class="heroImg">
+      <img id="img" alt="Event image">
+      <div class="heroShade"></div>
+    </div>
+
+    <div class="heroBody">
+      <div class="name" id="name">—</div>
+      <div class="mini" id="subline">—</div>
+
+      <div class="chips" id="tags"></div>
+
+      <div style="margin-top:12px;" class="row">
+        <div class="box"><b>Spots</b><br><span id="spots">—</span></div>
+        <div class="box"><b>Venue</b><br><span id="venue">—</span></div>
+      </div>
+
+      <div style="margin-top:10px;" class="row">
+        <div class="box"><b>Size</b><br><span id="size">—</span></div>
+        <div class="box" id="ratioBox"><b>Ratio</b><br><span id="ratio">—</span></div>
+      </div>
+
+      <div style="margin-top:10px;" class="box"><b>Description</b><br><span id="description">—</span></div>
+
+      <div id="lockedNote" class="box" style="margin-top:10px; display:none;">
+        This event is invite-only. Apply to see the exact location and schedule.
+      </div>
+
+      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="applyBtn" id="applyBtn" type="button">Apply</button>
+<button class="attendBtn" id="attendBtn" type="button">Attend</button>
+<button class="attendBtn" id="abandonBtn" type="button">Going</button>
+        <a class="btn secondary" id="mapBtn" href="#" style="display:none;">View on Map</a>
+        <span class="tag" id="statusChip" style="display:none;"><span class="dot"></span><span id="statusText">—</span></span>
+      </div>
+
+      <div class="msg" id="msg"></div>
+    </div>
+  </section>
+
+  <section class="grid2">
+    <section class="card section">
+      <h2 class="h">Details</h2>
+      <div class="row">
+        <div class="box"><b>Location</b><br><span id="location">—</span></div>
+        <div class="box"><b>Schedule</b><br><span id="when">—</span></div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <div class="box"><b>Host</b><br><span id="host">—</span></div>
+        <div class="box"><b>Status</b><br><span id="visibility">—</span></div>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2 class="h">Rating</h2>
+
+      <div class="ratingTop">
+        <div class="avgBig">
+          <div class="num" id="avgNum">0.0</div>
+          <div class="outof">/10</div>
+          <div class="count" id="avgCount">(0 ratings)</div>
+        </div>
+
+        <div class="barWrap">
+          <div class="bar"><div id="avgBar"></div></div>
+          <div class="barMeta">
+            <span>Low</span>
+            <span>High</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini" style="margin-top:10px;">Your rating (1–10)</div>
+      <div class="stars" id="stars"></div>
+      <div class="mini" style="margin-top:8px;">Tip: when you post a comment, we attach your current rating.</div>
+    </section>
+  </section>
+
+  <!-- Attendance (added) -->
+  <section class="card section" id="attendanceCard">
+    <h2 class="h">Attendance</h2>
+    <div class="row">
+  <div class="box">
+    <b>Going</b><br>
+    <span id="goingCount" style="font-size:18px;font-weight:900;color:var(--accent);">0</span>
+  </div>
+</div>
+
+    <div id="attendees" style="margin-top:10px; display:grid; gap:10px;"></div>
+  </section>
+
+  <section class="card section">
+    <h2 class="h">Comments</h2>
+    <div id="commentLock" class="box" style="display:none;">Comments are available to accepted guests only.</div>
+
+    <div style="display:grid; gap:10px; margin-top:10px;">
+      <textarea id="commentInput" placeholder="Write a comment…"></textarea>
+      <div style="display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap;">
+        <button class="btn" id="postComment" type="button">Post Comment</button>
+      </div>
+    </div>
+
+    <div style="margin-top:12px; display:grid; gap:10px;" id="comments"></div>
+  </section>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs,
+  query, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+  authDomain: "uzone-6148d.firebaseapp.com",
+  projectId: "uzone-6148d",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const title = document.getElementById("title");
+const sub = document.getElementById("sub");
+
+const img = document.getElementById("img");
+const nameEl = document.getElementById("name");
+const subline = document.getElementById("subline");
+const tagsEl = document.getElementById("tags");
+
+const spotsEl = document.getElementById("spots");
+const venueEl = document.getElementById("venue");
+const sizeEl = document.getElementById("size");
+const ratioEl = document.getElementById("ratio");
+const ratioBox = document.getElementById("ratioBox");
+const descEl = document.getElementById("description");
+
+const locationEl = document.getElementById("location");
+const whenEl = document.getElementById("when");
+const hostEl = document.getElementById("host");
+const visibilityEl = document.getElementById("visibility");
+
+const lockedNote = document.getElementById("lockedNote");
+const applyBtn = document.getElementById("applyBtn");
+const statusChip = document.getElementById("statusChip");
+const statusText = document.getElementById("statusText");
+const msg = document.getElementById("msg");
+
+const avgNum = document.getElementById("avgNum");
+const avgCount = document.getElementById("avgCount");
+const avgBar = document.getElementById("avgBar");
+const stars = document.getElementById("stars");
+
+const commentLock = document.getElementById("commentLock");
+const commentInput = document.getElementById("commentInput");
+const postComment = document.getElementById("postComment");
+const comments = document.getElementById("comments");
+
+/* Attendance (added) */
+const goingCountEl = document.getElementById("goingCount");
+const attendeesEl = document.getElementById("attendees");
+
+const mapBtn = document.getElementById("mapBtn");
+const attendBtn = document.getElementById("attendBtn");
+const abandonBtn = document.getElementById("abandonBtn");
+
+function setMsg(text, kind=""){
+  msg.style.display = text ? "block" : "none";
+  msg.textContent = text || "";
+  msg.className = "msg" + (kind ? " " + kind : "");
+}
+function esc(s){ return String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+function fmtDate(yyyyMmDd){
+  if (!yyyyMmDd) return "";
+  const [y,m,d] = String(yyyyMmDd).split("-").map(Number);
+  if (!y || !m || !d) return String(yyyyMmDd);
+  const dt = new Date(y, m-1, d);
+  return dt.toLocaleDateString(undefined, { month:"short", day:"numeric" });
+}
+function fmtWhen(data){
+  const sd = data.startDate || "";
+  const st = data.startTime || "";
+  const ed = data.endDate || "";
+  const et = data.endTime || "";
+  const start = [fmtDate(sd), st].filter(Boolean).join(" • ");
+  const end = [fmtDate(ed), et].filter(Boolean).join(" • ");
+  if (!start && !end) return "Time TBD";
+  if (start && !end) return start;
+  if (!start && end) return end;
+  return `${start} → ${end}`;
+}
+
+function setAvgUI(avg, count){
+  const v = Math.max(0, Math.min(10, Number(avg||0)));
+  avgNum.textContent = v.toFixed(1);
+  avgCount.textContent = `(${count} rating${count===1?"":"s"})`;
+  avgBar.style.width = `${(v/10)*100}%`;
+}
+
+const params = new URLSearchParams(location.search);
+const eventId = params.get("id");
+
+let currentUser = null;
+let eventData = null;
+let isHost = false;
+let isAccepted = false;
+let isInviteOnly = false;
+let isAttending = false;
+
+let myRating = 0; // cached
+
+function renderStars(selected){
+  stars.innerHTML = "";
+  for (let i=1;i<=10;i++){
+    const b = document.createElement("button");
+    b.className = "starBtn" + (i === selected ? " active" : "");
+    b.textContent = String(i);
+    b.addEventListener("click", () => submitRating(i));
+    stars.appendChild(b);
+  }
+}
+
+function initialsFromName(name){
+  const s = String(name || "").trim();
+  if (!s) return "?";
+  const parts = s.split(/\s+/).filter(Boolean);
+  const a = (parts[0] || "?")[0] || "?";
+  const b = (parts.length > 1 ? (parts[parts.length-1] || "")[0] : "") || "";
+  return (a + b).toUpperCase();
+}
+
+async function loadAttendance(canSeeDetails){
+  try{
+    const snap = await getDocs(collection(db, "events", eventId, "members"));
+
+    // first pull what we have in members
+    const people = [];
+    snap.forEach(d=>{
+      const m = d.data() || {};
+      people.push({
+        uid: m.uid || d.id,
+        // keep member-stored fields as fallback
+        name: m.name || m.displayName || m.username || "",
+        photoURL: m.photoURL || ""
+      });
+    });
+
+    // hydrate from /users/{uid} so everyone sees name + pic for invite-only + open
+    await Promise.all(people.map(async (p) => {
+      try{
+        const uSnap = await getDoc(doc(db, "users", p.uid));
+        if (!uSnap.exists()) return;
+
+        const u = uSnap.data() || {};
+
+        const bestName =
+          u.name || u.displayName || u.username || u.fullName || "";
+
+        const bestPhoto =
+          u.photoURL || u.photoUrl || u.photo || u.pfp || u.profilePic || u.avatar || "";
+
+        // only overwrite if we actually found something
+        if (bestName) p.name = bestName;
+        if (bestPhoto) p.photoURL = bestPhoto;
+      } catch(_) {}
+    }));
+
+    const going = people.length;
+    goingCountEl.textContent = String(going);
+
+    people.sort((a,b)=>{
+      const an = (a.name || "").toLowerCase();
+      const bn = (b.name || "").toLowerCase();
+      if (an < bn) return -1;
+      if (an > bn) return 1;
+      return 0;
+    });
+
+    attendeesEl.innerHTML = "";
+    people.forEach(p=>{
+      const div = document.createElement("div");
+      div.className = "attendee";
+
+      const avatar = p.photoURL
+        ? `<img src="${esc(p.photoURL)}" alt="" style="width:34px;height:34px;border-radius:999px;object-fit:cover;border:1px solid rgba(255,255,255,.14);" />`
+        : `<div class="avatar">${esc(initialsFromName(p.name))}</div>`;
+
+      div.innerHTML = `
+        ${avatar}
+        <div class="attendeeInfo">
+          <div class="attendeeName">${esc(p.name || "User")}</div>
+        </div>
+        <div style="margin-left:auto;">
+          <a href="view_profile.html?uid=${esc(p.uid)}" class="btn secondary" style="padding:6px 10px;font-size:12px;">
+            View Profile
+          </a>
+        </div>
+      `;
+
+      attendeesEl.appendChild(div);
+    });
+
+  } catch(_){
+    goingCountEl.textContent = "0";
+    attendeesEl.innerHTML = "";
+  }
+}
+
+
+async function loadEvent(){
+  const snap = await getDoc(doc(db, "events", eventId));
+  if (!snap.exists()){
+    title.textContent = "Event not found";
+    sub.textContent = "";
+    return;
+  }
+  eventData = snap.data();
+
+  title.textContent = eventData.name || "Event";
+  sub.textContent = "Event details";
+
+  img.src = eventData.imageUrl || "https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=1200&q=60";
+  nameEl.textContent = eventData.name || "Event";
+
+  isInviteOnly = !!eventData.inviteOnly;
+
+  // Host / accepted checks
+  isHost = currentUser && eventData.hostUid === currentUser.uid;
+  isAccepted = false;
+  isAttending = false;
+  if (currentUser){
+    const memSnap = await getDoc(doc(db, "events", eventId, "members", currentUser.uid));
+    const memExists = memSnap.exists();
+    const memStatus = memSnap.data()?.status || "";
+    isAccepted = memExists && memStatus === "accepted";
+    // For open events, any membership means attending.
+    isAttending = isInviteOnly ? isAccepted : memExists;
+  }
+
+  const canSeeDetails = !isInviteOnly || isHost || isAccepted;
+
+  // Map button logic
+if (canSeeDetails) {
+  mapBtn.style.display = "inline-flex";
+  mapBtn.href = `map.html?focus=${encodeURIComponent(eventId)}`;
+} else {
+  mapBtn.style.display = "none";
+}
+
+  subline.textContent = canSeeDetails
+    ? `${fmtWhen(eventData)} • ${eventData.location || "Location"}`
+    : `Invite-only • Apply to see details`;
+
+  spotsEl.textContent = (eventData.spotsAvailable ?? "") === "" ? "—" : String(eventData.spotsAvailable);
+  venueEl.textContent = eventData.venueSize || "—";
+  sizeEl.textContent = eventData.sizeEstimate ?? "—";
+
+  // CHANGE: ratio is optional now (no toggle). Hide if empty.
+  const ratioVal = String(eventData.ratio ?? "").trim();
+  if (ratioVal){
+    ratioBox.style.display = "";
+    ratioEl.textContent = ratioVal;
+  } else {
+    ratioBox.style.display = "none";
+  }
+
+  descEl.textContent = eventData.description || eventData.bio || "—";
+
+  // Tags
+  tagsEl.innerHTML = "";
+  const t0 = document.createElement("span");
+  t0.className = "tag " + (isInviteOnly ? "invite" : "open");
+  t0.innerHTML = `<span class="dot"></span>${isInviteOnly ? "Invite-only" : "Open"}`;
+  tagsEl.appendChild(t0);
+
+  const tags = Array.isArray(eventData.tags) ? eventData.tags : [];
+  tags.slice(0,8).forEach(t=>{
+    const s = document.createElement("span");
+    s.className = "tag";
+    s.textContent = t;
+    tagsEl.appendChild(s);
+  });
+
+  lockedNote.style.display = (!canSeeDetails && isInviteOnly) ? "block" : "none";
+
+  locationEl.textContent = canSeeDetails ? (eventData.location || "—") : "Hidden";
+  whenEl.textContent = canSeeDetails ? fmtWhen(eventData) : "Hidden";
+  hostEl.textContent = eventData.hostName || eventData.hostUid || "—";
+  visibilityEl.textContent = isInviteOnly ? "Invite-only" : "Open";
+
+  // Apply button / status
+  if (isInviteOnly && !isHost && !isAccepted){
+  applyBtn.style.display = "inline-flex";
+  statusChip.style.display = "inline-flex";
+
+  const appSnap = await getDoc(doc(db, "events", eventId, "applications", currentUser.uid));
+
+  if (!appSnap.exists()){
+  statusText.textContent = "Not applied";
+  applyBtn.classList.remove("on");
+  applyBtn.textContent = "Apply";
+} else {
+  statusText.textContent = "Status: " + (appSnap.data()?.status || "pending");
+  applyBtn.classList.add("on");
+  applyBtn.textContent = "Applied";  // 🔥 matches events.html
+}
+}
+
+  
+  else {
+    applyBtn.style.display = "none";
+    statusChip.style.display = "none";
+  }
+
+  // Attend / Abandon / Map buttons
+  // - Invite-only: accepted guests see Map + Abandon; otherwise they see Apply.
+  // - Open: users see Attend, which becomes Abandon when attending.
+  attendBtn.style.display = "none";
+abandonBtn.style.display = "none";
+
+attendBtn.classList.remove("on");
+applyBtn.classList.remove("on");
+
+if (!isHost){
+  if (isInviteOnly){
+    if (isAccepted){
+      abandonBtn.style.display = "inline-flex";
+      abandonBtn.classList.add("on");   // 🔥 glow for accepted
+    }
+  } else {
+    if (isAttending){
+      abandonBtn.style.display = "inline-flex";
+      abandonBtn.classList.add("on");   // 🔥 glow when going
+    } else {
+      attendBtn.style.display = "inline-flex";
+    }
+  }
+}
+
+
+  // Ratings + comments lock
+  const canInteract = !isInviteOnly || isHost || isAccepted;
+  commentLock.style.display = canInteract ? "none" : "block";
+  commentInput.disabled = !canInteract;
+  postComment.disabled = !canInteract;
+
+  // Attendance (added)
+  await loadAttendance(canSeeDetails);
+
+  await loadRatings();
+  await loadMyRating();
+  await loadComments();
+}
+
+async function apply(){
+  setMsg("");
+  applyBtn.disabled = true;
+
+  const appRef = doc(db, "events", eventId, "applications", currentUser.uid);
+
+  try{
+    const snap = await getDoc(appRef);
+
+    if (!snap.exists()){
+      // APPLY
+      await setDoc(appRef, {
+        uid: currentUser.uid,
+        name: currentUser.displayName || "",
+        status: "pending",
+        createdAt: serverTimestamp()
+      }, { merge: true });
+
+      // 🔥 Yellow state like events.html
+      applyBtn.classList.add("on");
+      applyBtn.textContent = "Applied";
+      statusText.textContent = "Status: pending";
+      setMsg("Application sent.", "ok");
+
+    } else {
+      // CANCEL application
+      await deleteDoc(appRef);
+
+      applyBtn.classList.remove("on");
+      applyBtn.textContent = "Apply";
+      statusText.textContent = "Not applied";
+      setMsg("Application cancelled.", "ok");
+    }
+
+  } catch(e){
+    setMsg(e.message || "Failed.", "error");
+  } finally {
+    applyBtn.disabled = false;
+  }
+}
+
+
+async function attendOpen(){
+  if (!currentUser || !eventId) return;
+  if (isInviteOnly) return;
+
+  setMsg("");
+  attendBtn.disabled = true;
+  try{
+    await setDoc(doc(db, "events", eventId, "members", currentUser.uid), {
+      uid: currentUser.uid,
+      name: (currentUser.displayName || "").toString(),
+      photoURL: (currentUser.photoURL || "").toString(),
+      createdAt: serverTimestamp()
+    }, { merge: true });
+
+    setMsg("You're marked as attending.", "ok");
+    await loadEvent();
+  } catch(e){
+    setMsg(e.message || "Failed to attend.", "error");
+  } finally {
+    attendBtn.disabled = false;
+  }
+}
+
+async function abandon(){
+  if (!currentUser || !eventId) return;
+
+  setMsg("");
+  abandonBtn.disabled = true;
+
+  try{
+    // Remove membership (attendance)
+    await deleteDoc(doc(db, "events", eventId, "members", currentUser.uid));
+
+    // For invite-only, also remove the application so they can reapply.
+    if (isInviteOnly){
+      try{ await deleteDoc(doc(db, "events", eventId, "applications", currentUser.uid)); }catch(_){}
+    }
+
+    setMsg("You left the event.", "ok");
+    await loadEvent();
+  } catch(e){
+    setMsg(e.message || "Failed to leave.", "error");
+  } finally {
+    abandonBtn.disabled = false;
+  }
+}
+
+
+async function loadRatings(){
+  const snap = await getDocs(collection(db, "events", eventId, "ratings"));
+  let sum = 0, count = 0;
+  snap.forEach(d => {
+    const v = Number(d.data()?.value || 0);
+    if (v > 0){ sum += v; count++; }
+  });
+  const avg = count ? (sum / count) : 0;
+  setAvgUI(avg, count);
+
+  try{
+    await updateDoc(doc(db,"events",eventId), { ratingAvg: avg });
+  } catch(_) {}
+}
+
+async function loadMyRating(){
+  if (!currentUser) return;
+  const snap = await getDoc(doc(db, "events", eventId, "ratings", currentUser.uid));
+  myRating = snap.exists() ? Number(snap.data()?.value || 0) : 0;
+  renderStars(myRating || 0);
+}
+
+async function submitRating(v){
+  if (!currentUser) return;
+  const canInteract = !isInviteOnly || isHost || isAccepted;
+  if (!canInteract) return;
+
+  await setDoc(doc(db, "events", eventId, "ratings", currentUser.uid), {
+    uid: currentUser.uid,
+    value: v,
+    updatedAt: serverTimestamp()
+  }, { merge: true });
+
+  myRating = v;
+  renderStars(v);
+  await loadRatings();
+}
+
+async function loadComments(){
+  comments.innerHTML = "";
+  const snap = await getDocs(query(collection(db,"events",eventId,"comments"), orderBy("createdAt","desc")));
+  snap.forEach(d=>{
+    const c = d.data() || {};
+    const dt = c.createdAt?.toDate ? c.createdAt.toDate().toLocaleString() : "";
+    const r = Number(c.rating || 0);
+
+    const div = document.createElement("div");
+    div.className = "comment";
+    div.innerHTML = `
+      <div class="commentTop">
+        <div class="meta">${esc(c.authorName || "User")} • ${esc(dt)}</div>
+        <div class="commentRating" title="Commenter rating">
+          <span class="crDot"></span>
+          <span><b>${isFinite(r) && r > 0 ? r.toFixed(1) : "—"}</b>/10</span>
+        </div>
+      </div>
+      <div class="text">${esc(c.text || "")}</div>
+    `;
+    comments.appendChild(div);
+  });
+}
+
+async function postAComment(){
+  const canInteract = !isInviteOnly || isHost || isAccepted;
+  if (!canInteract) return;
+
+  const text = (commentInput.value || "").trim();
+  if (!text) return;
+
+  // Ensure we attach the rating that the commenter assigned.
+  // If they haven't rated yet, we store 0 and show "—/10".
+  if (myRating === 0) {
+    // quick refresh in case they rated from another tab
+    await loadMyRating();
+  }
+
+  postComment.disabled = true;
+  try{
+    await addDoc(collection(db,"events",eventId,"comments"), {
+      text,
+      authorUid: currentUser.uid,
+      authorName: currentUser.displayName || currentUser.email || "User",
+      rating: myRating || 0,
+      createdAt: serverTimestamp()
+    });
+    commentInput.value = "";
+    await loadComments();
+  } finally {
+    postComment.disabled = false;
+  }
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = "index.html"; return; }
+  currentUser = user;
+
+  if (!eventId) { title.textContent = "Event not found"; return; }
+
+  applyBtn.addEventListener("click", apply);
+  attendBtn.addEventListener("click", attendOpen);
+  abandonBtn.addEventListener("click", abandon);
+  postComment.addEventListener("click", postAComment);
+
+  await loadEvent();
+});
+</script>
+
+</body>
+</html>

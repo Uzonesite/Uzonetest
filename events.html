@@ -1,0 +1,1160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Uzone • Umotives</title>
+
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="color-scheme" content="dark light" />
+
+  <style>
+    :root{
+      --accent:#b00b55;
+      --bg:#0b0b10;
+      --border: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100dvh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(176,11,85,.30), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(176,11,85,.18), transparent 55%),
+        radial-gradient(700px 500px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+    }
+
+    header{
+      width:min(1120px, 92vw);
+      margin:18px auto 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+    .left{display:flex; align-items:center; gap:12px; min-width:0;}
+    .left img{width:38px;height:38px;object-fit:contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));}
+    .title{display:grid; gap:2px; min-width:0;}
+    .title h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .title .sub{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .right{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+
+    .btn{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.92);
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease, background .12s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 16px var(--accent), 0 16px 40px rgba(176,11,85,.30);
+      filter: brightness(1.06);
+    }
+    .btn:active{transform: translateY(0px) scale(.99);}
+    .btn.primary{
+      border:1px solid rgba(176,11,85,.55);
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.58));
+      color:white;
+      box-shadow: 0 18px 40px rgba(176,11,85,.22);
+    }
+
+    main{width:min(1120px, 92vw); margin:16px auto 30px auto; display:grid; gap:14px;}
+
+    .bar{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      backdrop-filter: blur(10px);
+    }
+    .searchWrap{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      width:min(760px,100%);
+      flex:1;
+    }
+    input{
+      flex:1;
+      min-width: 240px;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    input:focus{border-color: rgba(176,11,85,.60); box-shadow: 0 0 0 4px rgba(176,11,85,.20);}
+
+    .grid{display:grid; grid-template-columns: repeat(12, 1fr); gap:14px;}
+
+    .card{
+      grid-column: span 6;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:visible;
+      text-decoration:none;
+      color:inherit;
+      display:grid;
+      transition: transform .14s ease, border-color .14s ease, box-shadow .14s ease;
+      min-width:0;
+    }
+    .card:hover{transform: translateY(-2px); border-color: rgba(255,255,255,.20); box-shadow: 0 26px 70px rgba(0,0,0,.50);}
+    @media (max-width: 920px){ .card{grid-column: span 12;} }
+
+    .imgWrap{position:relative; width:100%; aspect-ratio: 16 / 9; background: rgba(0,0,0,.20); overflow:hidden; border-radius: var(--radius) var(--radius) 0 0;}
+    .imgWrap img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+    .overlay{
+      position:absolute; inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.82) 100%),
+        radial-gradient(1000px 380px at 30% 10%, rgba(176,11,85,.18), transparent 55%);
+      pointer-events:none;
+    }
+
+    .topBadge{
+      position:absolute; top:10px; left:10px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+      font-size:12px;
+      color: rgba(255,255,255,.88);
+      display:flex; gap:8px; align-items:center;
+    }
+    .dot{width:7px; height:7px; border-radius:999px; background: rgba(176,11,85,.95); box-shadow: 0 0 0 4px rgba(176,11,85,.22);}
+
+    .bottom{position:absolute; left:0; right:0; bottom:0; padding:12px; display:grid; gap:8px;}
+    .name{
+      font-size:16px;
+      font-weight:900;
+      letter-spacing:.2px;
+      line-height:1.15;
+      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+      overflow:hidden;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+    }
+    .meta{display:flex; flex-wrap:wrap; gap:8px; color: rgba(255,255,255,.80); font-size:12px; align-items:center;}
+    .pill{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.30);
+      padding:6px 10px;
+      border-radius:999px;
+      display:inline-flex; gap:6px; align-items:center;
+      backdrop-filter: blur(10px);
+      max-width: 100%;
+      min-width:0;
+    }
+    .pill b{font-weight:800; color: rgba(255,255,255,.92)}
+    .pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width: 320px;}
+
+    .body{padding:12px; display:grid; gap:10px; min-width:0;}
+
+    .line{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+      justify-content:space-between;
+      min-width:0;
+    }
+    .mini{color:var(--muted); font-size:13px; line-height:1.35; min-width:0;}
+    .miniTop{color: rgba(255,255,255,.88); font-weight:900}
+    .miniSub{margin-top:4px; color: rgba(255,255,255,.70); font-size:12px;}
+
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .tag{
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:12px; padding:6px 10px;
+      border-radius:999px; border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.86);
+      max-width:100%;
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+    .tag .tdot{width:8px;height:8px;border-radius:999px;background: rgba(255,255,255,.45);}
+    .tag.invite .tdot{background: rgba(255,210,80,.85);}
+    .tag.open .tdot{background: rgba(80,255,160,.75);}
+
+    .ratingBadge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.88);
+      white-space:nowrap;
+      backdrop-filter: blur(10px);
+      max-width:100%;
+      min-width:0;
+    }
+    .ratingBadge svg{width:14px;height:14px; flex:0 0 auto; fill: rgba(255,255,255,.86); filter: drop-shadow(0 6px 14px rgba(0,0,0,.35));}
+    .ratingBadge .val{font-weight:950; letter-spacing:.2px; color: rgba(255,255,255,.92); font-size:12px; line-height:1;}
+    .ratingBadge .sub{color: rgba(255,255,255,.66); font-size:12px; line-height:1;}
+    .ratingBar{
+      width:64px; height:6px; border-radius:999px;
+      background: rgba(255,255,255,.10);
+      overflow:hidden; border:1px solid rgba(255,255,255,.10);
+      flex:0 0 auto;
+    }
+    .ratingBar > span{
+      display:block; height:100%; width:0%;
+      background: linear-gradient(90deg, rgba(176,11,85,.95), rgba(176,11,85,.55));
+      border-radius:999px;
+    }
+
+    .mapBtn{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.90);
+      font-weight:900;
+      font-size:12px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+      flex:0 0 auto;
+    }
+    .mapBtn:hover{transform: translateY(-1px); border-color: var(--accent); box-shadow: 0 0 14px rgba(176,11,85,.45); filter: brightness(1.06);}
+
+    .actionRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.14);
+      border-radius: 14px;
+      padding:10px;
+    }
+    .actionBtns{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end;}
+    .attendBtn,.peopleBtn,.applyBtn{
+      padding:9px 11px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.92);
+      font-weight:950;
+      font-size:12px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .attendBtn:hover,.peopleBtn:hover,.applyBtn:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 14px rgba(176,11,85,.45);
+      filter: brightness(1.06);
+    }
+    .attendBtn.on{
+      border-color: rgba(176,11,85,.65);
+      background: linear-gradient(135deg, rgba(176,11,85,.92), rgba(176,11,85,.42));
+      box-shadow: 0 0 18px rgba(176,11,85,.45);
+    }
+    .applyBtn.on{
+      border-color: rgba(255,210,80,.55);
+      background: linear-gradient(135deg, rgba(255,210,80,.36), rgba(0,0,0,.14));
+      box-shadow: 0 0 18px rgba(255,210,80,.22);
+    }
+    .attendBtn:disabled,.peopleBtn:disabled,.applyBtn:disabled{opacity:.55; cursor:not-allowed}
+
+    .estRow{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-start; margin-top:6px;}
+    .estPill{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color: rgba(255,255,255,.82);
+      white-space:nowrap;
+    }
+    .estPill b{color: rgba(255,255,255,.92)}
+
+    .empty{
+      border:1px dashed rgba(255,255,255,.20);
+      background: rgba(0,0,0,.14);
+      border-radius: var(--radius);
+      padding:14px 16px;
+      color:rgba(255,255,255,.78);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    /* modal */
+    .modalOverlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.62);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:14px;
+      z-index: 1000;
+    }
+    .modalOverlay.show{display:flex;}
+    .modal{
+      width:min(720px, 96vw);
+      max-height: min(78vh, 720px);
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      box-shadow: 0 30px 90px rgba(0,0,0,.55);
+      overflow:hidden;
+      backdrop-filter: blur(12px);
+      display:flex;
+      flex-direction:column;
+    }
+    .modalHead{
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+    }
+    .modalHead .hwrap{min-width:0}
+    .modalHead h3{margin:0; font-size:14px; letter-spacing:.2px; font-weight:950; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .modalHead .sub{margin-top:3px; color: rgba(255,255,255,.70); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .modalBody{padding:14px 16px 16px; display:grid; gap:12px; overflow:auto;}
+    .modalSearch{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    .modalSearch input{min-width: 220px;}
+    .list{display:grid; gap:10px;}
+    .personRow{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.14);
+    }
+    .pLeft{display:flex; align-items:center; gap:10px; min-width:0;}
+    .avatar{
+      width:34px;height:34px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(176,11,85,.18);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:950; color: rgba(255,255,255,.92);
+      flex:0 0 auto;
+      box-shadow: 0 10px 22px rgba(0,0,0,.25);
+    }
+    .pName{font-weight:900; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 360px;}
+    .youBadge{
+      margin-left:8px;
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.78);
+      flex:0 0 auto;
+    }
+    .viewBtn{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.92);
+      font-weight:950;
+      font-size:12px;
+      cursor:pointer;
+      white-space:nowrap;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+    }
+    .viewBtn:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 14px rgba(176,11,85,.45);
+      filter: brightness(1.06);
+    }
+    .closeX{
+      width:34px;height:34px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.92);
+      font-weight:950;
+      cursor:pointer;
+    }
+    .whoEmpty{
+      display:none;
+      border:1px dashed rgba(255,255,255,.18);
+      background: rgba(0,0,0,.14);
+      border-radius: 14px;
+      padding:12px 12px;
+      color: rgba(255,255,255,.76);
+      font-size:13px;
+      line-height:1.35;
+    }
+    .whoMsg{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      color:rgba(255,255,255,.85);
+      white-space:pre-line;
+      font-size:13px;
+    }
+    .whoMsg.error{border-color: rgba(255,80,120,.30); background: rgba(255,80,120,.10);}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <img src="logo.png" alt="Uzone logo" />
+      <div class="title">
+        <h1>Umotives</h1>
+        <div class="sub" id="subline">Loading…</div>
+      </div>
+    </div>
+    <div class="right">
+      <a class="btn" href="hub.html">Hub</a>
+      <a class="btn" href="map.html">Map</a>
+      <a class="btn primary" href="my_events.html">My Motives</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="bar" aria-label="Search bar">
+      <div class="searchWrap">
+        <input id="search" placeholder="Search motives (name, tags, date, location…)" />
+        <button class="btn" id="refreshBtn" type="button">Refresh</button>
+      </div>
+      <div class="sub" id="count">—</div>
+    </section>
+
+    <section class="grid" id="grid" aria-label="Motive results"></section>
+
+    <div class="empty" id="empty" style="display:none;">
+      No motives found. Try refreshing or change your search.
+    </div>
+  </main>
+
+  <!-- Who’s going modal -->
+  <div class="modalOverlay" id="whoOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Who’s going">
+      <div class="modalHead">
+        <div class="hwrap">
+          <h3 id="whoTitle">Who’s going</h3>
+          <div class="sub" id="whoCount">—</div>
+        </div>
+        <button class="closeX" id="whoClose" type="button" aria-label="Close">✕</button>
+      </div>
+      <div class="modalBody">
+        <div class="modalSearch">
+          <input id="whoSearch" placeholder="Search members…" />
+        </div>
+        <div class="whoMsg" id="whoMsg" aria-live="polite"></div>
+        <div class="whoEmpty" id="whoEmpty">No one yet.</div>
+        <div class="list" id="whoList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      doc,
+      getDocs,
+      getDoc,
+      setDoc,
+      deleteDoc,
+      query,
+      orderBy,
+      serverTimestamp,
+      limit
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+      authDomain: "uzone-6148d.firebaseapp.com",
+      projectId: "uzone-6148d",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const $ = (id) => document.getElementById(id);
+
+    const grid = $("grid");
+    const empty = $("empty");
+    const search = $("search");
+    const refreshBtn = $("refreshBtn");
+    const count = $("count");
+    const subline = $("subline");
+
+    // Who’s going modal elements
+    const whoOverlay = $("whoOverlay");
+    const whoClose = $("whoClose");
+    const whoTitle = $("whoTitle");
+    const whoCount = $("whoCount");
+    const whoSearch = $("whoSearch");
+    const whoMsg = $("whoMsg");
+    const whoEmpty = $("whoEmpty");
+    const whoList = $("whoList");
+
+    let currentUser = null;
+    let allEvents = [];
+
+    // OPEN "going" uses members
+    const goingMap = new Map();    // eventId -> boolean (is current user in members)
+    // PRIVATE apply uses applications
+    const appliedMap = new Map();  // eventId -> boolean (has application)
+
+    // cache: eventId -> members array (with resolved names)
+    const membersCache = new Map();
+    // cache: eventId -> number (members count)
+    const attendingCountCache = new Map();
+    // cache: eventId -> string (girls:boys)
+    const attendeeRatioCache = new Map();
+    // users/{uid} name cache
+    const userNameCache = new Map();
+    // users/{uid} gender cache
+    const userGenderCache = new Map();
+
+    function esc(s){
+      return (s ?? "").toString()
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function isFiniteNum(v){
+      const n = Number(v);
+      return Number.isFinite(n);
+    }
+    function clamp10(v){
+      const n = Number(v);
+      if (!Number.isFinite(n)) return 0;
+      return Math.max(0, Math.min(10, n));
+    }
+    function fmtWhen(ev){
+      const sd = (ev.startDate || "").toString().trim();
+      const st = (ev.startTime || "").toString().trim();
+      const ed = (ev.endDate || "").toString().trim();
+      const et = (ev.endTime || "").toString().trim();
+
+      let out = "";
+      if (sd) out += sd;
+      if (st) out += (out ? " " : "") + st;
+      if (ed || et){
+        out += " →";
+        if (ed) out += " " + ed;
+        if (et) out += (ed ? " " : " ") + et;
+      }
+      return out || "—";
+    }
+
+    function pickNameFromUsersDoc(u){
+      const name = (u?.name || u?.displayName || u?.fullName || u?.username || u?.userName || "").toString().trim();
+      return name || "";
+    }
+
+    async function resolveName(uid, memberData){
+      const fromMember = (
+        memberData?.name ||
+        memberData?.displayName ||
+        memberData?.fullName ||
+        memberData?.username ||
+        memberData?.userName ||
+        ""
+      ).toString().trim();
+      if (fromMember) return fromMember;
+
+      if (userNameCache.has(uid)) return userNameCache.get(uid);
+
+      try{
+        const uSnap = await getDoc(doc(db, "users", uid));
+        if (uSnap.exists()){
+          const nm = pickNameFromUsersDoc(uSnap.data());
+          if (nm){
+            userNameCache.set(uid, nm);
+            return nm;
+          }
+        }
+      }catch{}
+
+      userNameCache.set(uid, "User");
+      return "User";
+    }
+
+    async function resolveGender(uid){
+      if (!uid) return "";
+      if (userGenderCache.has(uid)) return userGenderCache.get(uid) || "";
+      try{
+        const uSnap = await getDoc(doc(db, "users", uid));
+        if (uSnap.exists()){
+          const g = (uSnap.data()?.gender || "").toString().trim();
+          if (g === "Male" || g === "Female"){
+            userGenderCache.set(uid, g);
+            return g;
+          }
+        }
+      }catch{}
+      userGenderCache.set(uid, "");
+      return "";
+    }
+
+    function gcd(a,b){
+      a = Math.abs(Number(a)||0);
+      b = Math.abs(Number(b)||0);
+      while (b){ const t = a % b; a = b; b = t; }
+      return a || 1;
+    }
+
+    function fmtGirlsBoys(girls, boys){
+      const g = Number(girls)||0;
+      const b = Number(boys)||0;
+      if (!g && !b) return "—";
+      const d = gcd(g,b);
+      return `${Math.floor(g/d)}:${Math.floor(b/d)}`;
+    }
+
+    async function preloadMyStates(list){
+      if (!currentUser) return;
+
+      const tasks = list.map(async (ev) => {
+        const inviteOnly = !!ev.inviteOnly;
+
+        if (inviteOnly){
+          try{
+            const mRef = doc(db, "events", ev.id, "members", currentUser.uid);
+            const mSnap = await getDoc(mRef);
+
+            if (mSnap.exists() && mSnap.data()?.status === "accepted"){
+              goingMap.set(ev.id, true);
+              appliedMap.set(ev.id, false);
+            } else {
+              const aRef = doc(db, "events", ev.id, "applications", currentUser.uid);
+              const aSnap = await getDoc(aRef);
+              appliedMap.set(ev.id, aSnap.exists());
+              goingMap.set(ev.id, false);
+            }
+          } catch {
+            appliedMap.set(ev.id, false);
+            goingMap.set(ev.id, false);
+          }
+        } else {
+          try{
+            const mRef = doc(db, "events", ev.id, "members", currentUser.uid);
+            const mSnap = await getDoc(mRef);
+            goingMap.set(ev.id, mSnap.exists());
+          } catch {
+            goingMap.set(ev.id, false);
+          }
+          appliedMap.set(ev.id, false);
+        }
+      });
+
+      await Promise.all(tasks);
+    }
+
+    function render(list){
+      grid.innerHTML = "";
+      empty.style.display = list.length ? "none" : "block";
+
+      list.forEach(ev => {
+        const v10 = clamp10(ev.ratingAvg);
+        const pct = (v10 / 10) * 100;
+
+        const tags = Array.isArray(ev.tags) ? ev.tags : [];
+        const inviteOnly = !!ev.inviteOnly;
+
+        const isGoing = goingMap.get(ev.id) === true;
+        const isApplied = appliedMap.get(ev.id) === true;
+
+        // estimates (from post_event.html: sizeEstimate + ratio)
+        const estAtt = (ev.sizeEstimate ?? ev.estimatedAttendance ?? ev.estimated ?? ev.size ?? null);
+        const estRatio = (ev.ratio ?? ev.estimatedRatio ?? null);
+        const estimatesHtml = (estAtt || estRatio) ? `
+          <div class="estRow">
+            ${estAtt ? `<span class="estPill">Estimated Attendance: <b>${esc(estAtt)}</b></span>` : ``}
+            ${estRatio ? `<span class="estPill">Estimated ratio: <b>${esc(estRatio)}</b></span>` : ``}
+            ${estRatio ? `<span class="estPill">Attendee ratio: <b><span class="attRatio" data-ev="${esc(ev.id)}">—</span></b></span>` : ``}
+          </div>
+        ` : ``;
+
+        const whenText = inviteOnly ? "Invite-only" : fmtWhen(ev);
+        const whereText = (inviteOnly && !isGoing) ? "Location hidden" : (ev.location || "—");
+
+        // Map shows for open events OR invite-only when accepted
+        const canMap = isFiniteNum(ev.lat) && isFiniteNum(ev.lng) && (!inviteOnly || isGoing);
+
+        const actionText = inviteOnly
+          ? (isGoing
+              ? "You’re accepted. Tap Going to leave."
+              : (isApplied ? "Application sent. Tap Applied to cancel." : "Apply to join this private motive."))
+          : (isGoing ? "You’re marked as going." : "Tap attend to show up in the list.");
+
+        const card = document.createElement("a");
+        card.className = "card";
+        card.href = `event.html?id=${encodeURIComponent(ev.id)}`;
+
+        card.innerHTML = `
+          <div class="imgWrap">
+            ${
+              (ev.imageUrl || "").toString().trim()
+                ? `<img alt="Event image" src="${esc(ev.imageUrl)}" loading="lazy" referrerpolicy="no-referrer" />`
+                : ``
+            }
+            <div class="overlay"></div>
+            <div class="topBadge"><span class="dot"></span><span>${inviteOnly ? "Invite-only" : "Open"}</span></div>
+            <div class="bottom">
+              <div class="name">${esc(ev.name || "Event")}</div>
+              <div class="meta">
+                <span class="pill"><b>When</b> <span>${esc(whenText)}</span></span>
+                <span class="pill"><b>Where</b> <span>${esc(whereText)}</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="body">
+            <div class="line">
+              <div class="mini">
+                <div class="miniTop">
+                  Spots: <b><span>${esc((ev.spotsAvailable ?? "") === "" ? "—" : ev.spotsAvailable)}</span></b>
+                  • Venue: <b>${esc(ev.venueSize || "—")}</b>
+                </div>
+                <div class="miniSub">Attending: <b><span class="attCount" data-ev="${esc(ev.id)}">—</span></b></div>
+                ${estimatesHtml}
+              </div>
+
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; min-width:0;">
+                <div class="ratingBadge" title="Average rating">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                  </svg>
+                  <span class="val">${v10.toFixed(1)}</span>
+                  <span class="sub">/10</span>
+                  <span class="ratingBar" aria-hidden="true"><span style="width:${pct.toFixed(0)}%"></span></span>
+                </div>
+
+                ${canMap ? `
+                  <button class="mapBtn" type="button"
+                    data-id="${esc(ev.id)}"
+                    data-lat="${esc(ev.lat)}"
+                    data-lng="${esc(ev.lng)}"
+                    data-label="${esc(ev.location || ev.name || '')}">
+                    Map
+                  </button>
+                ` : ``}
+              </div>
+            </div>
+
+            <div class="actionRow">
+              <div class="mini">${esc(actionText)}</div>
+
+              <div class="actionBtns">
+                ${
+                  inviteOnly
+                    ? (isGoing
+                        ? `<button class="attendBtn on" type="button" data-id="${esc(ev.id)}">Going</button>`
+                        : `<button class="applyBtn ${isApplied ? "on" : ""}" type="button" data-id="${esc(ev.id)}">
+                             ${isApplied ? "Applied" : "Apply"}
+                           </button>`
+                      )
+                    : `<button class="attendBtn ${isGoing ? "on" : ""}" type="button" data-id="${esc(ev.id)}">
+                         ${isGoing ? "Going" : "Attend"}
+                       </button>`
+                }
+
+                <button class="peopleBtn" type="button" data-id="${esc(ev.id)}" data-name="${esc(ev.name || "Motive")}">
+                  Who’s going
+                </button>
+              </div>
+            </div>
+
+            <div class="chips">
+              <span class="tag ${inviteOnly ? "invite" : "open"}"><span class="tdot"></span>${inviteOnly ? "Invite-only" : "Open"}</span>
+              ${tags.slice(0,5).map(t => `<span class="tag">${esc(t)}</span>`).join("")}
+            </div>
+          </div>
+        `;
+
+        // attending count
+        const attEl = card.querySelector('.attCount');
+        if (attEl) ensureAttendingCount(ev.id, attEl);
+
+        // attendee ratio (only shown when estimated ratio exists)
+        const ratioEl = card.querySelector('.attRatio');
+        if (ratioEl) ensureAttendeeRatio(ev.id, ratioEl);
+
+        grid.appendChild(card);
+
+        const mapBtn = card.querySelector(".mapBtn");
+        if (mapBtn){
+          mapBtn.addEventListener("click", (e) => {
+            e.preventDefault(); e.stopPropagation();
+            const id = mapBtn.dataset.id || "";
+            const lat = mapBtn.dataset.lat || "";
+            const lng = mapBtn.dataset.lng || "";
+            const label = mapBtn.dataset.label || "";
+            window.location.href = `map.html?focus=${encodeURIComponent(id)}&lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&label=${encodeURIComponent(label)}`;
+          });
+        }
+
+        const attendBtn = card.querySelector(".attendBtn");
+        if (attendBtn){
+          attendBtn.addEventListener("click", async (e) => {
+            e.preventDefault(); e.stopPropagation();
+            await toggleGoing(ev.id, inviteOnly, attendBtn);
+          });
+        }
+
+        const applyBtn = card.querySelector(".applyBtn");
+        if (applyBtn){
+          applyBtn.addEventListener("click", async (e) => {
+            e.preventDefault(); e.stopPropagation();
+            await applyToPrivate(ev.id, applyBtn);
+          });
+        }
+
+        const peopleBtn = card.querySelector(".peopleBtn");
+        if (peopleBtn){
+          peopleBtn.addEventListener("click", async (e) => {
+            e.preventDefault(); e.stopPropagation();
+            await openWhosGoing(ev.id, peopleBtn.dataset.name || "Motive");
+          });
+        }
+      });
+    }
+
+    function applySearch(){
+      const q = (search.value || "").trim().toLowerCase();
+      if (!q) { render(allEvents); return; }
+
+      const filtered = allEvents.filter(ev => {
+        const hay = [
+          ev.name, ev.location, ev.description, ev.ratio, ev.venueSize, ev.sizeEstimate,
+          ev.startDate, ev.startTime, ev.endDate, ev.endTime,
+          ...(Array.isArray(ev.tags) ? ev.tags : [])
+        ].join(" ").toLowerCase();
+        return hay.includes(q);
+      });
+      render(filtered);
+    }
+
+    async function toggleGoing(eventId, inviteOnly, btnEl){
+      if (!currentUser || !eventId) return;
+      btnEl.disabled = true;
+
+      try{
+        const mRef = doc(db, "events", eventId, "members", currentUser.uid);
+        const already = goingMap.get(eventId) === true;
+
+        if (already){
+          await deleteDoc(mRef);
+          goingMap.set(eventId, false);
+
+          if (inviteOnly){
+            try{ await deleteDoc(doc(db, "events", eventId, "applications", currentUser.uid)); }catch{}
+            appliedMap.set(eventId, false);
+          }
+        } else {
+          await setDoc(mRef, {
+            uid: currentUser.uid,
+            name: (currentUser.displayName || "").toString(),
+            photoURL: (currentUser.photoURL || "").toString(),
+            createdAt: serverTimestamp()
+          }, { merge: true });
+          goingMap.set(eventId, true);
+        }
+
+        membersCache.delete(eventId);
+
+        // refresh counts quickly
+        attendingCountCache.delete(eventId);
+        attendeeRatioCache.delete(eventId);
+
+        const attEl = document.querySelector(`.attCount[data-ev="${eventId}"]`);
+        if (attEl) ensureAttendingCount(eventId, attEl);
+
+        const ratioEl = document.querySelector(`.attRatio[data-ev="${eventId}"]`);
+        if (ratioEl) ensureAttendeeRatio(eventId, ratioEl);
+
+        applySearch();
+      } catch(err){
+        console.error(err);
+      } finally {
+        btnEl.disabled = false;
+      }
+    }
+
+    async function applyToPrivate(eventId, btnEl){
+      if (!currentUser || !eventId) return;
+      btnEl.disabled = true;
+
+      try{
+        const aRef = doc(db, "events", eventId, "applications", currentUser.uid);
+        const already = appliedMap.get(eventId) === true;
+
+        if (already){
+          await deleteDoc(aRef);
+          appliedMap.set(eventId, false);
+        } else {
+          await setDoc(aRef, {
+            uid: currentUser.uid,
+            name: (currentUser.displayName || "").toString(),
+            photoURL: (currentUser.photoURL || "").toString(),
+            status: "pending",
+            createdAt: serverTimestamp()
+          }, { merge: true });
+          appliedMap.set(eventId, true);
+        }
+
+        applySearch();
+      } catch(err){
+        console.error(err);
+      } finally {
+        btnEl.disabled = false;
+      }
+    }
+
+    function setWhoMsg(txt="", type=""){
+      whoMsg.style.display = txt ? "block" : "none";
+      whoMsg.textContent = txt || "";
+      whoMsg.className = "whoMsg" + (type ? " " + type : "");
+    }
+
+    function openModal(){
+      whoOverlay.classList.add("show");
+      whoOverlay.setAttribute("aria-hidden","false");
+      whoSearch.value = "";
+      whoSearch.focus();
+    }
+    function closeModal(){
+      whoOverlay.classList.remove("show");
+      whoOverlay.setAttribute("aria-hidden","true");
+    }
+
+    whoClose.addEventListener("click", closeModal);
+    whoOverlay.addEventListener("click", (e) => { if (e.target === whoOverlay) closeModal(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && whoOverlay.classList.contains("show")) closeModal(); });
+
+    async function ensureAttendingCount(eventId, el){
+      if (!eventId || !el) return;
+
+      if (attendingCountCache.has(eventId)){
+        el.textContent = String(Number(attendingCountCache.get(eventId) || 0));
+        return;
+      }
+
+      el.textContent = "…";
+      try{
+        const snap = await getDocs(query(collection(db, "events", eventId, "members"), limit(500)));
+        const n = snap.size || 0;
+        attendingCountCache.set(eventId, n);
+        el.textContent = String(n);
+      }catch(_){
+        el.textContent = "—";
+      }
+    }
+
+    async function ensureAttendeeRatio(eventId, el){
+      if (!eventId || !el) return;
+
+      if (attendeeRatioCache.has(eventId)){
+        el.textContent = attendeeRatioCache.get(eventId) || "—";
+        return;
+      }
+
+      el.textContent = "…";
+      try{
+        const snap = await getDocs(query(collection(db, "events", eventId, "members"), limit(500)));
+        let girls = 0, boys = 0;
+
+        await Promise.all(
+          snap.docs.map(async (d) => {
+            const uid = d.id;
+            const g = await resolveGender(uid);
+            if (g === "Female") girls += 1;
+            else if (g === "Male") boys += 1;
+          })
+        );
+
+        const out = fmtGirlsBoys(girls, boys);
+        attendeeRatioCache.set(eventId, out);
+        el.textContent = out;
+      }catch(_){
+        el.textContent = "—";
+      }
+    }
+
+    async function openWhosGoing(eventId, eventName){
+      if (!currentUser || !eventId) return;
+
+      whoTitle.textContent = "Who’s going";
+      whoCount.textContent = "Loading…";
+      whoEmpty.style.display = "none";
+      whoList.innerHTML = "";
+      setWhoMsg("");
+
+      openModal();
+
+      try{
+        let rows = membersCache.get(eventId);
+
+        if (!rows){
+          const snap = await getDocs(query(collection(db, "events", eventId, "members"), orderBy("createdAt","desc"), limit(250)));
+          rows = await Promise.all(
+            snap.docs.map(async (d) => {
+              const uid = d.id;
+              const data = d.data() || {};
+              const name = await resolveName(uid, data);
+              return { uid, name };
+            })
+          );
+          membersCache.set(eventId, rows);
+        }
+
+        setWhoMsg("");
+        whoCount.textContent = `${rows.length} going`;
+        renderRows(rows);
+        whoSearch.oninput = () => renderRows(rows);
+
+      } catch(err){
+        console.error(err);
+        setWhoMsg("Could not load members (check Firestore rules).", "error");
+        whoCount.textContent = "—";
+        whoEmpty.style.display = "block";
+        whoEmpty.textContent = "Could not load members.";
+      }
+
+      function renderRows(rows){
+        const q = (whoSearch.value || "").trim().toLowerCase();
+        const filtered = !q ? rows : rows.filter(r => (r.name || "").toLowerCase().includes(q));
+
+        whoList.innerHTML = "";
+        whoEmpty.style.display = filtered.length ? "none" : "block";
+        if (!filtered.length){
+          whoEmpty.textContent = q ? "No matches." : "No one yet.";
+          return;
+        }
+
+        const frag = document.createDocumentFragment();
+        filtered.forEach(r => {
+          const row = document.createElement("div");
+          row.className = "personRow";
+          const initial = (r.name || "U").trim().charAt(0).toUpperCase() || "U";
+
+          row.innerHTML = `
+            <div class="pLeft">
+              <div class="avatar">${esc(initial)}</div>
+              <div class="pName">
+                ${esc(r.name || "User")}
+                ${currentUser && r.uid === currentUser.uid ? `<span class="youBadge">you</span>` : ``}
+              </div>
+            </div>
+            <button class="viewBtn" type="button">View profile</button>
+          `;
+
+          row.querySelector(".viewBtn").addEventListener("click", (e) => {
+            e.preventDefault(); e.stopPropagation();
+            window.location.href = `view_profile.html?uid=${encodeURIComponent(r.uid)}`;
+          });
+
+          frag.appendChild(row);
+        });
+
+        whoList.appendChild(frag);
+      }
+    }
+
+    async function loadEvents(){
+      count.textContent = "Loading…";
+      subline.textContent = "Loading motives…";
+      empty.style.display = "none";
+      grid.innerHTML = "";
+
+      try{
+        const snap = await getDocs(query(collection(db, "events"), orderBy("createdAt", "desc")));
+        const list = [];
+        snap.forEach(d => list.push({ id: d.id, ...(d.data() || {}) }));
+
+        allEvents = list;
+        count.textContent = `${allEvents.length} motive${allEvents.length === 1 ? "" : "s"}`;
+
+        await preloadMyStates(allEvents);
+
+        applySearch();
+        subline.textContent = "Browse motives near you";
+
+      } catch(err){
+        console.error(err);
+        count.textContent = "0 motives";
+        subline.textContent = "Could not load motives";
+        empty.style.display = "block";
+        empty.textContent = "Could not load motives (check Firestore rules).";
+      }
+    }
+
+    refreshBtn.addEventListener("click", loadEvents);
+    search.addEventListener("input", applySearch);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user){
+        window.location.href = "index.html";
+        return;
+      }
+      currentUser = user;
+      subline.textContent = `Signed in as ${user.displayName || "User"}`;
+      await loadEvents();
+    });
+  </script>
+</body>
+</html>

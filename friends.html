@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Uzone • Ufriends</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="color-scheme" content="dark light" />
+
+  <style>
+    :root{
+      --accent:#b00b55;
+      --bg:#0b0b10;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.10);
+      --border: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100dvh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(176,11,85,.30), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(176,11,85,.18), transparent 55%),
+        radial-gradient(700px 500px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+    }
+
+    header{
+      width:min(1120px, 92vw);
+      margin:18px auto 0 auto;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px 16px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position:sticky; top:10px; z-index:10;
+      backdrop-filter: blur(10px);
+    }
+    .left{display:flex; align-items:center; gap:12px; min-width:0;}
+    .left img{
+      width:40px;height:40px;object-fit:contain;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));
+    }
+    .title{display:grid; gap:2px; min-width:0;}
+    .title h1{margin:0;font-size:18px;letter-spacing:.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    .title .sub{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+    .right{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+
+    .btn{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.92);
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex; align-items:center; gap:8px;
+      white-space:nowrap;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease, background .12s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 16px var(--accent), 0 16px 40px rgba(176,11,85,.30);
+      filter: brightness(1.06);
+    }
+    .btn:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 10px var(--accent), 0 10px 28px rgba(176,11,85,.20);
+      filter: brightness(1.0);
+    }
+    .btn:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 4px rgba(176,11,85,.26), 0 0 18px var(--accent);
+    }
+    .btn:disabled{opacity:.65; cursor:not-allowed;}
+
+    .btn.primary{
+      border:1px solid rgba(176,11,85,.55);
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.58));
+      color:white;
+      box-shadow: 0 18px 40px rgba(176,11,85,.22);
+    }
+    .btn.primary:hover{
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent), 0 22px 55px rgba(176,11,85,.35);
+      filter: brightness(1.08);
+    }
+
+    .btn.danger{
+      border:1px solid rgba(255,80,120,.28);
+      background: rgba(255,80,120,.10);
+    }
+    .btn.danger:hover{
+      border-color: rgba(255,80,120,.55);
+      box-shadow: 0 0 16px rgba(255,80,120,.55), 0 16px 40px rgba(255,80,120,.20);
+    }
+
+    main{
+      width:min(1120px, 92vw);
+      margin:16px auto 30px auto;
+      display:grid;
+      gap:14px;
+    }
+
+    .card{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .bar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+
+    .searchWrap{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    input{
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+      flex:1;
+      min-width: 260px;
+    }
+    input:focus{
+      border-color: rgba(176,11,85,.60);
+      box-shadow: 0 0 0 4px rgba(176,11,85,.20);
+    }
+
+    .chips{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .chip{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      font-size:13px;
+      color:rgba(255,255,255,.85);
+      white-space:nowrap;
+      max-width: 520px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .msg{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      color:rgba(255,255,255,.85);
+      font-size:13px;
+      white-space:pre-line;
+      margin-top:10px;
+    }
+    .msg.ok{border-color: rgba(80,255,160,.25); background: rgba(80,255,160,.10);}
+    .msg.error{border-color: rgba(255,80,120,.30); background: rgba(255,80,120,.10);}
+
+    .listHead{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .listHead h2{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.25px;
+      color:rgba(255,255,255,.92);
+    }
+    .hint{
+      color:rgba(255,255,255,.60);
+      font-size:12px;
+    }
+
+    .results{
+      display:grid;
+      gap:10px;
+    }
+
+    .rowCard{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      border-radius:14px;
+      padding:12px;
+      display:grid;
+      grid-template-columns: 54px 1fr auto;
+      gap:12px;
+      align-items:center;
+      transition: transform .14s ease, border-color .14s ease, box-shadow .14s ease, background .14s ease;
+    }
+    .rowCard:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 18px 50px rgba(0,0,0,.45);
+      background: rgba(0,0,0,.20);
+    }
+    .avatar{
+      width:54px;height:54px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      object-fit:cover;
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+    }
+
+    .rowMain{min-width:0; display:grid; gap:4px;}
+    .nameLine{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:baseline;
+      min-width:0;
+    }
+    .name{
+      font-weight:950;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 52ch;
+    }
+    .meta{
+      color: rgba(255,255,255,.72);
+      font-size:13px;
+      line-height:1.35;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.86);
+      max-width: 100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .pill.verified{
+      border-color: rgba(80,255,160,.45);
+      background: rgba(80,255,160,.12);
+      color: #8cffc7;
+    }
+
+    .rowActions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .empty{
+      display:none;
+      border:1px dashed rgba(255,255,255,.16);
+      border-radius:14px;
+      padding:14px;
+      background: rgba(0,0,0,.12);
+      color: rgba(255,255,255,.75);
+      font-size:13px;
+      line-height:1.4;
+    }
+
+    @media (max-width: 720px){
+      .rowCard{ grid-template-columns: 50px 1fr; }
+      .rowActions{ grid-column: 1 / -1; justify-content:flex-end; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <img src="logo.png" alt="Uzone" />
+      <div class="title">
+        <h1>Friends</h1>
+        <div class="sub" id="subline">Search friends by name or U#</div>
+      </div>
+    </div>
+    <div class="right">
+      <a class="btn" href="hub.html">Uhub</a>
+      <a class="btn" href="profile.html">Uprofile</a>
+      <a class="btn" href="directory.html">Udirectory</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="bar">
+        <div class="searchWrap">
+          <input id="q" type="search" placeholder="Search friends by name or U#…" autocomplete="off" />
+        </div>
+
+        <div class="chips">
+          <span class="chip" id="countChip">Loading…</span>
+          <button class="btn" id="clearBtn" type="button">Clear</button>
+          <button class="btn primary" id="refreshBtn" type="button">Refresh</button>
+        </div>
+      </div>
+
+      <div class="msg" id="msgBox" aria-live="polite"></div>
+    </section>
+
+    <section class="card">
+      <div class="listHead">
+        <h2>Your Friends</h2>
+        <div class="hint">Tip: Message opens Umessages directly to their chat</div>
+      </div>
+
+      <div class="empty" id="emptyBox">
+        No friends yet. Add people from the Directory.
+      </div>
+
+      <div class="results" id="results"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAnalytics, isSupported as analyticsSupported } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc, getDoc, setDoc, deleteDoc, serverTimestamp,
+      collection, getDocs
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+      authDomain: "uzone-6148d.firebaseapp.com",
+      databaseURL: "https://uzone-6148d-default-rtdb.firebaseio.com",
+      projectId: "uzone-6148d",
+      storageBucket: "uzone-6148d.firebasestorage.app",
+      messagingSenderId: "88783701381",
+      appId: "1:88783701381:web:4f6c4b1ad8b26d6fa6f0ec",
+      measurementId: "G-HKL5246YMC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    try { if (await analyticsSupported()) getAnalytics(app); } catch(_) {}
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const els = {
+      q: document.getElementById("q"),
+      clear: document.getElementById("clearBtn"),
+      refresh: document.getElementById("refreshBtn"),
+      results: document.getElementById("results"),
+      empty: document.getElementById("emptyBox"),
+      count: document.getElementById("countChip"),
+      msg: document.getElementById("msgBox"),
+    };
+
+    function showMsg(text, kind="ok"){
+      els.msg.className = "msg " + (kind === "error" ? "error" : "ok");
+      els.msg.textContent = text;
+      els.msg.style.display = "block";
+    }
+    function hideMsg(){
+      els.msg.style.display = "none";
+      els.msg.textContent = "";
+    }
+
+    function norm(s){ return (s ?? "").toString().trim().toLowerCase(); }
+
+    function escapeHtml(s){
+      return (s ?? "").toString()
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function escapeAttr(s){
+      return escapeHtml(s).replaceAll("\n","").replaceAll("\r","");
+    }
+
+    function getAvatar(u){
+      return u?.photoURL || u?.photoUrl || u?.avatarUrl || u?.avatar || "";
+    }
+    function displayName(u){
+      return (u?.name && u.name.trim()) ? u.name.trim()
+        : (u?.displayName && u.displayName.trim()) ? u.displayName.trim()
+        : "Unnamed";
+    }
+    function getPublicId(u){
+      const v = (u?.publicId ?? u?.publicID ?? "").toString().trim();
+      return v || "U?";
+    }
+    function extractPublicNumber(publicId){
+      const s = (publicId ?? "").toString().trim();
+      const m = s.match(/(\d+)/);
+      return m ? parseInt(m[1], 10) : null;
+    }
+
+    // ✅ same chat id logic used in view_profile
+    function chatIdFor(u1, u2){
+      return [u1, u2].sort().join("_");
+    }
+    async function ensureChat(u1, u2){
+      const chatId = chatIdFor(u1, u2);
+      const chatRef = doc(db, "chats", chatId);
+      const snap = await getDoc(chatRef);
+      if (!snap.exists()){
+        await setDoc(chatRef, {
+          members: [u1, u2].sort(),
+          createdAt: serverTimestamp(),
+          lastMessageAt: serverTimestamp()
+        }, { merge: true });
+      }
+      return chatId;
+    }
+
+    function openProfile(uid){
+      window.location.href = `view_profile.html?uid=${encodeURIComponent(uid)}`;
+    }
+
+    async function openChat(meUid, otherUid){
+      try{
+        const chatId = await ensureChat(meUid, otherUid);
+        window.location.href = `messages.html?chat=${encodeURIComponent(chatId)}&with=${encodeURIComponent(otherUid)}`;
+      } catch(err){
+        console.error(err);
+        showMsg("Could not open chat (check Firestore rules).", "error");
+      }
+    }
+
+    function rowTemplate(meUid, u){
+      const uid = u.__uid || "";
+      const name = displayName(u);
+      const avatar = getAvatar(u);
+      const publicId = getPublicId(u);
+      const verified = (u.verified === true) || (u?.verification?.status === "verified");
+
+      const metaBits = [];
+      if (verified) metaBits.push(`<span class="pill verified">✓ Verified</span>`);
+      metaBits.push(`<span class="pill">🆔 ${escapeHtml(publicId)}</span>`);
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "rowCard";
+      wrapper.innerHTML = `
+        <img class="avatar" alt="Avatar" src="${avatar ? escapeAttr(avatar) : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' rx='60' fill='rgba(255,255,255,.08)'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' fill='rgba(255,255,255,.55)' font-family='system-ui' font-size='34'%3F%3E%3F%3C/text%3E%3C/svg%3E"}" />
+        <div class="rowMain">
+          <div class="nameLine">
+            <div class="name">${escapeHtml(name)}</div>
+          </div>
+          <div class="meta">${metaBits.join("")}</div>
+        </div>
+        <div class="rowActions">
+          <button class="btn" type="button" data-action="view">View Profile</button>
+          <button class="btn primary" type="button" data-action="msg">Message</button>
+          <button class="btn danger" type="button" data-action="rm">Remove</button>
+        </div>
+      `;
+
+      wrapper.querySelector('[data-action="view"]').addEventListener("click", (e) => {
+        e.preventDefault(); e.stopPropagation();
+        openProfile(uid);
+      });
+      wrapper.querySelector('[data-action="msg"]').addEventListener("click", async (e) => {
+        e.preventDefault(); e.stopPropagation();
+        await openChat(meUid, uid);
+      });
+      wrapper.querySelector('[data-action="rm"]').addEventListener("click", async (e) => {
+        e.preventDefault(); e.stopPropagation();
+        await removeFriend(meUid, uid);
+      });
+
+      return wrapper;
+    }
+
+    let meUid = null;
+    let friendsUsers = [];
+
+    function applyFilters(){
+      const q = norm(els.q.value);
+
+      const filtered = friendsUsers.filter(u => {
+        const name = displayName(u).toLowerCase();
+        const publicId = getPublicId(u).toLowerCase();
+        if (!q) return true;
+        return (name.includes(q) || publicId.includes(q));
+      });
+
+      filtered.sort((a,b)=>{
+        const an = extractPublicNumber(getPublicId(a));
+        const bn = extractPublicNumber(getPublicId(b));
+        const aHas = an !== null && !Number.isNaN(an);
+        const bHas = bn !== null && !Number.isNaN(bn);
+        if (aHas && bHas) return an - bn;
+        if (aHas && !bHas) return -1;
+        if (!aHas && bHas) return 1;
+        return displayName(a).localeCompare(displayName(b));
+      });
+
+      render(filtered);
+    }
+
+    function render(list){
+      els.results.innerHTML = "";
+      els.empty.style.display = list.length ? "none" : "block";
+      els.count.textContent = `${list.length} friend${list.length === 1 ? "" : "s"}`;
+
+      const frag = document.createDocumentFragment();
+      for (const u of list){
+        frag.appendChild(rowTemplate(meUid, u));
+      }
+      els.results.appendChild(frag);
+    }
+
+    async function loadFriends(){
+      hideMsg();
+      els.count.textContent = "Loading…";
+      els.results.innerHTML = "";
+      els.empty.style.display = "none";
+
+      try{
+        // friends stored as: users/{me}/friends/{friendUid} with field uid: friendUid
+        const fSnap = await getDocs(collection(db, "users", meUid, "friends"));
+        const friendUids = [];
+        fSnap.forEach(d => {
+          const data = d.data() || {};
+          // Prefer doc id, fallback to uid field
+          friendUids.push(d.id || data.uid);
+        });
+
+        // No friends
+        if (!friendUids.length){
+          friendsUsers = [];
+          applyFilters();
+          return;
+        }
+
+        // Load each friend's user doc
+        const users = [];
+        for (const fid of friendUids){
+          if (!fid) continue;
+          const uSnap = await getDoc(doc(db, "users", fid));
+          if (uSnap.exists()){
+            const data = uSnap.data() || {};
+            data.__uid = fid;
+            users.push(data);
+          }
+        }
+
+        friendsUsers = users;
+        applyFilters();
+      } catch(err){
+        console.error(err);
+        showMsg("Could not load friends (check Firestore rules).", "error");
+        els.count.textContent = "0 friends";
+        friendsUsers = [];
+        applyFilters();
+      }
+    }
+
+    async function removeFriend(me, friendUid){
+      hideMsg();
+      try{
+        await deleteDoc(doc(db, "users", me, "friends", friendUid));
+        // optimistic UI
+        friendsUsers = friendsUsers.filter(u => u.__uid !== friendUid);
+        applyFilters();
+        showMsg("Friend removed.", "ok");
+      } catch(err){
+        console.error(err);
+        showMsg("Could not remove friend (check Firestore rules).", "error");
+      }
+    }
+
+    // Events
+    els.q.addEventListener("input", applyFilters);
+    els.clear.addEventListener("click", () => {
+      els.q.value = "";
+      applyFilters();
+      hideMsg();
+    });
+    els.refresh.addEventListener("click", loadFriends);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user){
+        window.location.href = "index.html";
+        return;
+      }
+      meUid = user.uid;
+      await loadFriends();
+    });
+  </script>
+</body>
+</html>

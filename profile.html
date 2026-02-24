@@ -1,0 +1,954 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Uzone • Profile</title>
+
+  <!-- Tab icon -->
+  <link rel="icon" type="image/png" href="logo.png" />
+
+  <meta name="color-scheme" content="dark light" />
+
+  <style>
+    :root{
+      --accent:#b00b55;
+      --bg:#0b0b10;
+      --panel: rgba(255,255,255,.06);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --border: rgba(255,255,255,.14);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(176,11,85,.30), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(176,11,85,.18), transparent 55%),
+        radial-gradient(700px 500px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+    }
+
+    header{
+      width:min(1100px, 92vw);
+      margin:18px auto 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .left{display:flex; align-items:center; gap:12px; min-width:0;}
+    .left img{width:38px;height:38px;object-fit:contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));}
+    .title{display:grid; gap:2px; min-width:0;}
+    .title h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .title .sub{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .right{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+    .chip{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      font-size:13px;
+      color:rgba(255,255,255,.85);
+    }
+
+    /* Buttons: match the glassy hub theme + accent glow */
+    .btn{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.92);
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease, background .12s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 16px var(--accent), 0 16px 40px rgba(176,11,85,.30);
+      filter: brightness(1.06);
+    }
+    .btn:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 10px var(--accent), 0 10px 28px rgba(176,11,85,.20);
+      filter: brightness(1.0);
+    }
+    .btn:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 4px rgba(176,11,85,.26), 0 0 18px var(--accent);
+    }
+    .btn:disabled{opacity:.65;cursor:not-allowed}
+
+    .btn.primary{
+      border-color: rgba(176,11,85,.45);
+      background: linear-gradient(180deg, rgba(176,11,85,.22), rgba(0,0,0,.18));
+    }
+    .btn.primary:hover{
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent), 0 18px 45px rgba(176,11,85,.34);
+    }
+
+    main{width:min(1100px, 92vw); margin:16px auto 34px auto; display:grid; gap:14px;}
+
+    .card{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .profileTop{
+      display:grid;
+      grid-template-columns: 130px 1fr;
+      gap:16px;
+      align-items:start;
+    }
+    @media (max-width: 720px){ .profileTop{grid-template-columns: 1fr;} }
+
+    .avatarWrap{display:grid; gap:10px; justify-items:start;}
+    .avatar{
+      width:120px;height:120px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.18);
+      object-fit:cover;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    }
+
+    .fields{display:grid; gap:10px;}
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px;}
+    @media (max-width: 720px){ .row{grid-template-columns:1fr;} }
+
+    label{display:grid; gap:6px; font-size:13px; color:rgba(255,255,255,.78);}
+    input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.45);
+      color: #ffffff;
+      outline:none;
+      font-size:14px;
+    }
+    select option { background: #111111; color: #ffffff; }
+
+    textarea{min-height:92px;resize:vertical}
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(176,11,85,.60);
+      box-shadow: 0 0 0 4px rgba(176,11,85,.20);
+    }
+
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;}
+
+    .msg{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      color:rgba(255,255,255,.85);
+      display:none;
+      white-space:pre-line;
+      font-size:13px;
+    }
+    .msg.error{border-color: rgba(255,80,120,.35); background: rgba(255,80,120,.10);}
+    .msg.ok{border-color: rgba(80,255,160,.25); background: rgba(80,255,160,.10);}
+
+    .sectionTitle{margin:0 0 10px 0; font-size:15px; color:rgba(255,255,255,.88); letter-spacing:.2px;}
+
+    .grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;}
+    @media (max-width: 420px){ .grid{grid-template-columns: repeat(2, 1fr);} }
+
+    .tile{
+      position:relative;
+      border-radius: 14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      aspect-ratio: 1 / 1;
+      cursor:pointer;
+    }
+    .tile img{width:100%; height:100%; object-fit:cover; display:block; transform: scale(1.00); transition: transform .18s ease;}
+    .tile:hover img{transform: scale(1.03);}
+    .tile .overlay{
+      position:absolute; inset:auto 0 0 0;
+      padding:8px 10px;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.55));
+      color: rgba(255,255,255,.88);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-end;
+    }
+
+    /* Delete button on a post tile */
+.delBtn{
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.35);
+  color: rgba(255,255,255,.92);
+  border-radius: 10px;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  line-height: 1;
+}
+.delBtn:hover{
+  border-color: var(--accent);
+  box-shadow: 0 0 14px rgba(176,11,85,.55);
+}
+
+    .empty{
+      border:1px dashed rgba(255,255,255,.20);
+      background: rgba(0,0,0,.14);
+      border-radius: var(--radius);
+      padding:14px 16px;
+      color:rgba(255,255,255,.78);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    /* Verification badge */
+    .nameLine{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+.badge.credits{
+  border-color: rgba(120,160,255,.35);
+  background: rgba(120,160,255,.10);
+}
+.badge.credits .dot{
+  background: rgba(120,160,255,.85);
+}
+
+    
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      font-size:12px;
+      color:rgba(255,255,255,.85);
+    }
+    .badge .dot{
+      width:8px;height:8px;border-radius:999px;background: rgba(255,255,255,.45);
+    }
+    .badge.verified{
+      border-color: rgba(80,255,160,.25);
+      background: rgba(80,255,160,.10);
+    }
+    .badge.verified .dot{background: rgba(80,255,160,.75);}
+    .badge.pending{
+      border-color: rgba(255,210,80,.25);
+      background: rgba(255,210,80,.10);
+    }
+    .badge.pending .dot{background: rgba(255,210,80,.80);}
+    .badge.rejected{
+      border-color: rgba(255,80,120,.30);
+      background: rgba(255,80,120,.10);
+    }
+    .badge.rejected .dot{background: rgba(255,80,120,.80);}
+
+    .badge.id{
+      border-color: rgba(176,11,85,.45);
+      background: rgba(176,11,85,.12);
+    }
+    .badge.id .dot{background: rgba(176,11,85,.85);}
+
+    /* Lightbox */
+    .lightbox{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.72);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:999;
+    }
+    .lightboxInner{
+      width:min(920px, 96vw);
+      border-radius: 18px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.35);
+      box-shadow: var(--shadow);
+    }
+    .lightboxInner img{
+      width:100%;
+      height:auto;
+      display:block;
+      max-height: 80vh;
+      object-fit:contain;
+      background: rgba(0,0,0,.45);
+    }
+    .lightboxBar{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      padding:10px 12px;
+    }
+    .lightboxBar span{color:rgba(255,255,255,.78); font-size:13px;}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <img src="logo.png" alt="Uzone logo" />
+      <div class="title">
+        <h1>Profile</h1>
+        <div class="sub" id="subline">Loading…</div>
+      </div>
+    </div>
+
+    <div class="right">
+  <a class="btn" href="hub.html" aria-label="Back to hub">Hub</a>
+  <a class="btn" href="messages.html" aria-label="Chat">Chat</a>
+</div>
+
+  </header>
+
+  <main>
+    <!-- PROFILE -->
+    <section class="card">
+      <div class="profileTop">
+        <div class="avatarWrap">
+          <img id="avatarImg" class="avatar" alt="Profile picture" />
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn" id="changeAvatarBtn" type="button">Change pic</button>
+            <input id="avatarInput" type="file" accept="image/*" style="display:none;" />
+          </div>
+          <div style="color:rgba(255,255,255,.62); font-size:12px; line-height:1.35;">
+            Tip: square photos look best.
+          </div>
+        </div>
+
+        <div class="fields">
+          <div class="nameLine">
+  <span class="badge id" id="idBadge">
+    <span class="dot"></span>
+    <span id="idText">U—</span>
+  </span>
+
+  <span class="badge credits" id="creditsBadge">
+    <span class="dot"></span>
+    <span id="creditsText">0 Credits</span>
+  </span>
+
+  <span class="badge" id="verifyBadge">
+    <span class="dot"></span>
+    <span id="verifyText">Not verified</span>
+  </span>
+
+  <button class="btn" id="openVerifyBtn" type="button">Verify</button>
+</div>
+
+
+          <div class="row">
+            <label>
+              Name
+              <input id="name" placeholder="Your name" />
+            </label>
+            <label>
+              University
+              <input id="university" placeholder="University of Ottawa" />
+            </label>
+          </div>
+
+          <div class="row">
+            <label>
+              Program
+              <input id="program" placeholder="Computer Science" />
+            </label>
+
+            <label>
+              Gender
+              <select id="gender" required>
+                <option value="" disabled selected>Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="row">
+            <label>
+              Age
+              <input id="age" type="number" min="16" max="99" placeholder="18" />
+            </label>
+          </div>
+
+          <label>
+            Bio
+            <textarea id="bio" placeholder="Write a short bio…"></textarea>
+          </label>
+
+          <div class="actions">
+            <button class="btn primary" id="saveBtn" type="button">Save profile</button>
+          </div>
+
+          <div class="msg" id="msgBox" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VERIFICATION -->
+    <section class="card" id="verifyCard" style="display:none;">
+      <h2 class="sectionTitle">Verification</h2>
+      <div class="empty" style="margin-bottom:12px;">
+        Upload a clear photo of your <b>student ID</b> and a <b>selfie</b>. An admin will review it later.
+        <br /><br />
+        <b>Privacy:</b> This should be visible only to admins (we’ll enforce that with rules + admin claims).
+      </div>
+
+      <div class="row">
+        <div>
+          <label>
+            Student ID photo
+            <input id="idInput" type="file" accept="image/*" />
+          </label>
+          <div class="chip" id="idStatus">No ID selected</div>
+        </div>
+
+        <div>
+          <label>
+            Selfie (phone-friendly)
+            <input id="selfieInput" type="file" accept="image/*" capture="user" />
+          </label>
+          <div class="chip" id="selfieStatus">No selfie selected</div>
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:12px;">
+        <button class="btn primary" id="submitVerifyBtn" type="button">Submit for review</button>
+        <button class="btn" id="closeVerifyBtn" type="button">Close</button>
+      </div>
+
+      <div class="msg" id="verifyMsg" aria-live="polite"></div>
+    </section>
+
+    <!-- POSTS -->
+    <section class="card">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <h2 class="sectionTitle" style="margin:0;">Posts</h2>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <span class="chip" id="postCountChip">0 / 6</span>
+          <button class="btn primary" id="postBtn" type="button">Post picture</button>
+          <input id="postInput" type="file" accept="image/*" style="display:none;" />
+        </div>
+      </div>
+
+      <div id="postsEmpty" class="empty" style="margin-top:12px; display:none;">
+        No posts yet. Hit <b>Post picture</b> to upload your first photo.
+      </div>
+
+      <div id="postsGrid" class="grid" style="margin-top:12px;"></div>
+    </section>
+  </main>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Post viewer">
+    <div class="lightboxInner">
+      <img id="lightboxImg" alt="Post" />
+      <div class="lightboxBar">
+        <span id="lightboxMeta">—</span>
+        <button class="btn" id="closeLightbox" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAnalytics, isSupported as analyticsSupported } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      serverTimestamp,
+      collection,
+      query,
+      orderBy,
+      limit,
+      getDocs,
+      addDoc,
+      deleteDoc
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL,
+      deleteObject
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+      authDomain: "uzone-6148d.firebaseapp.com",
+      databaseURL: "https://uzone-6148d-default-rtdb.firebaseio.com",
+      projectId: "uzone-6148d",
+      storageBucket: "uzone-6148d.firebasestorage.app",
+      messagingSenderId: "88783701381",
+      appId: "1:88783701381:web:4f6c4b1ad8b26d6fa6f0ec",
+      measurementId: "G-HKL5246YMC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    try { if (await analyticsSupported()) getAnalytics(app); } catch(_) {}
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // UI refs
+    const subline = document.getElementById("subline");
+
+    const avatarImg = document.getElementById("avatarImg");
+    const changeAvatarBtn = document.getElementById("changeAvatarBtn");
+    const avatarInput = document.getElementById("avatarInput");
+
+    const nameEl = document.getElementById("name");
+    const universityEl = document.getElementById("university");
+    const programEl = document.getElementById("program");
+    const bioEl = document.getElementById("bio");
+    const ageEl = document.getElementById("age");
+    const genderEl = document.getElementById("gender");
+    const saveBtn = document.getElementById("saveBtn");
+
+    const idText = document.getElementById("idText");
+    const verifyBadge = document.getElementById("verifyBadge");
+    const verifyText = document.getElementById("verifyText");
+    const openVerifyBtn = document.getElementById("openVerifyBtn");
+
+    const verifyCard = document.getElementById("verifyCard");
+    const closeVerifyBtn = document.getElementById("closeVerifyBtn");
+    const idInput = document.getElementById("idInput");
+    const selfieInput = document.getElementById("selfieInput");
+    const idStatus = document.getElementById("idStatus");
+    const selfieStatus = document.getElementById("selfieStatus");
+    const submitVerifyBtn = document.getElementById("submitVerifyBtn");
+    const verifyMsg = document.getElementById("verifyMsg");
+
+    const postBtn = document.getElementById("postBtn");
+    const postInput = document.getElementById("postInput");
+    const postsGrid = document.getElementById("postsGrid");
+    const postsEmpty = document.getElementById("postsEmpty");
+    const postCountChip = document.getElementById("postCountChip");
+
+    const msgBox = document.getElementById("msgBox");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+    const lightboxMeta = document.getElementById("lightboxMeta");
+    const closeLightbox = document.getElementById("closeLightbox");
+
+    const creditsText = document.getElementById("creditsText");
+
+    let currentUser = null;
+    let cachedPosts = [];
+    let selectedIdFile = null;
+    let selectedSelfieFile = null;
+
+    function setMsg(el, text, kind="") {
+      el.style.display = text ? "block" : "none";
+      el.textContent = text || "";
+      el.className = "msg" + (kind ? " " + kind : "");
+    }
+
+    function placeholderAvatarFromName(name){
+      const initial = (name?.trim()?.[0] || "U").toUpperCase();
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="240" height="240">
+          <defs>
+            <radialGradient id="g" cx="30%" cy="20%" r="80%">
+              <stop offset="0%" stop-color="#b00b55" stop-opacity="0.35"/>
+              <stop offset="60%" stop-color="#0b0b10" stop-opacity="1"/>
+            </radialGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#g)"/>
+          <text x="50%" y="55%" text-anchor="middle"
+                font-size="120" font-family="Arial" fill="rgba(255,255,255,0.88)"
+                dominant-baseline="middle">${initial}</text>
+        </svg>`;
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    }
+
+    function setVerificationUI(status){
+      verifyBadge.classList.remove("pending","verified","rejected");
+
+      if (status === "verified") {
+        verifyBadge.classList.add("verified");
+        verifyText.textContent = "Verified";
+        openVerifyBtn.style.display = "none";
+      } else if (status === "pending") {
+        verifyBadge.classList.add("pending");
+        verifyText.textContent = "Pending";
+        openVerifyBtn.textContent = "Update";
+        openVerifyBtn.style.display = "inline-flex";
+      } else if (status === "rejected") {
+        verifyBadge.classList.add("rejected");
+        verifyText.textContent = "Rejected";
+        openVerifyBtn.textContent = "Retry";
+        openVerifyBtn.style.display = "inline-flex";
+      } else {
+        verifyText.textContent = "Not verified";
+        openVerifyBtn.textContent = "Verify";
+        openVerifyBtn.style.display = "inline-flex";
+      }
+    }
+
+    async function loadProfile(user) {
+  const snap = await getDoc(doc(db, "users", user.uid));
+
+  // Defaults (so UI always shows something)
+  idText.textContent = "U—";
+  creditsText.textContent = "0 Credits";
+  setVerificationUI("none");
+  avatarImg.src = placeholderAvatarFromName("U");
+  subline.textContent = "Edit your profile";
+
+  if (!snap.exists()) {
+    subline.textContent = "Profile not found (no users doc yet).";
+    return;
+  }
+
+  const data = snap.data();
+
+  // U#
+  idText.textContent = (data.publicId || "U—").toString();
+
+  // ✅ Credits (this is what you were missing)
+  const credits = Number(data.credits || 0);
+  creditsText.textContent = `${credits} Credit${credits === 1 ? "" : "s"}`;
+
+  // Verified badge
+  const status =
+    data?.verification?.status ||
+    (data.verified === true ? "verified" : "none");
+  setVerificationUI(status);
+
+  // Form fields
+  nameEl.value = data.name || "";
+  universityEl.value = data.university || "";
+  programEl.value = data.program || "";
+  bioEl.value = data.bio || "";
+  ageEl.value = data.age || "";
+  genderEl.value = data.gender || "";
+
+  // Avatar
+  const url = data.photoURL || "";
+  avatarImg.src = url ? url : placeholderAvatarFromName(data.name || "U");
+}
+
+
+    async function saveProfile(){
+      if (!currentUser) return;
+      setMsg(msgBox, "");
+
+      saveBtn.disabled = true;
+      try{
+        const payload = {
+          name: nameEl.value.trim(),
+          university: universityEl.value.trim(),
+          program: programEl.value.trim(),
+          bio: bioEl.value.trim(),
+          age: ageEl.value.trim(),
+          gender: genderEl.value,
+          updatedAt: serverTimestamp()
+        };
+
+        await setDoc(doc(db, "users", currentUser.uid), payload, { merge: true });
+
+        if (!avatarImg.src || avatarImg.src.startsWith("data:image/svg+xml")) {
+          avatarImg.src = placeholderAvatarFromName(payload.name);
+        }
+        setMsg(msgBox, "Saved!", "ok");
+      } catch(err){
+        setMsg(msgBox, err?.message || "Failed to save profile.", "error");
+      } finally{
+        saveBtn.disabled = false;
+      }
+    }
+
+    async function uploadAvatar(file){
+      if (!currentUser) return;
+      setMsg(msgBox, "");
+
+      changeAvatarBtn.disabled = true;
+      try{
+        const avatarRef = ref(storage, `avatars/${currentUser.uid}/avatar.jpg`);
+        await uploadBytes(avatarRef, file, { contentType: file.type || "image/jpeg" });
+        const url = await getDownloadURL(avatarRef);
+
+        await setDoc(doc(db, "users", currentUser.uid), {
+          photoURL: url,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+
+        avatarImg.src = url;
+        setMsg(msgBox, "Profile picture updated.", "ok");
+      } catch(err){
+        setMsg(msgBox, err?.message || "Failed to upload avatar.", "error");
+      } finally{
+        changeAvatarBtn.disabled = false;
+      }
+    }
+
+    async function loadPosts(uid){
+      const postsRef = collection(db, "users", uid, "posts");
+      const q = query(postsRef, orderBy("createdAt", "desc"), limit(6));
+      const snaps = await getDocs(q);
+
+      cachedPosts = snaps.docs.map(d => ({ id: d.id, ...d.data() }));
+      postCountChip.textContent = `${cachedPosts.length} / 6`;
+
+      postsGrid.innerHTML = "";
+      postsEmpty.style.display = cachedPosts.length ? "none" : "block";
+
+      cachedPosts.forEach((p) => {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        const img = document.createElement("img");
+        img.src = p.url;
+        img.alt = "Post";
+
+        const overlay = document.createElement("div");
+        overlay.className = "overlay";
+        const left = document.createElement("span");
+        left.textContent = p.caption ? p.caption : " ";
+        const right = document.createElement("button");
+right.className = "delBtn";
+right.type = "button";
+right.textContent = "🗑";
+right.title = "Delete post";
+
+// IMPORTANT: prevent opening the lightbox when clicking delete
+right.addEventListener("click", async (e) => {
+  e.stopPropagation();
+  await deletePost(p);
+});
+
+        overlay.appendChild(left);
+        overlay.appendChild(right);
+
+        tile.appendChild(img);
+        tile.appendChild(overlay);
+
+        tile.addEventListener("click", () => openLightbox(p));
+        postsGrid.appendChild(tile);
+      });
+
+      postBtn.disabled = cachedPosts.length >= 6;
+      postBtn.textContent = postBtn.disabled ? "Max 6 posts" : "Post picture";
+    }
+
+    function openLightbox(post){
+      lightboxImg.src = post.url;
+      const when = post.createdAt?.toDate ? post.createdAt.toDate() : null;
+      lightboxMeta.textContent = when ? `Posted • ${when.toLocaleString()}` : "Posted";
+      lightbox.style.display = "flex";
+    }
+    function closeLb(){
+      lightbox.style.display = "none";
+      lightboxImg.src = "";
+    }
+
+    async function addPost(file){
+      if (!currentUser) return;
+
+      setMsg(msgBox, "");
+      await loadPosts(currentUser.uid);
+      if (cachedPosts.length >= 6) {
+        setMsg(msgBox, "You’ve reached the max of 6 posts.", "error");
+        return;
+      }
+
+      postBtn.disabled = true;
+      try{
+        const postsRef = collection(db, "users", currentUser.uid, "posts");
+        const newDoc = await addDoc(postsRef, { createdAt: serverTimestamp(), url: "", caption: "" });
+
+        const postId = newDoc.id;
+        const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+        const objRef = ref(storage, `posts/${currentUser.uid}/${postId}.${ext || "jpg"}`);
+
+        await uploadBytes(objRef, file, { contentType: file.type || "image/jpeg" });
+        const url = await getDownloadURL(objRef);
+
+        await setDoc(doc(db, "users", currentUser.uid, "posts", postId), {
+          url,
+          storagePath: `posts/${currentUser.uid}/${postId}.${ext || "jpg"}`
+        }, { merge: true });
+
+        setMsg(msgBox, "Posted!", "ok");
+        await loadPosts(currentUser.uid);
+      } catch(err){
+        setMsg(msgBox, err?.message || "Failed to post photo.", "error");
+      } finally{
+        postBtn.disabled = false;
+      }
+    }
+
+    async function deletePost(post){
+  if (!currentUser) return;
+
+  const ok = confirm("Delete this post?");
+  if (!ok) return;
+
+  setMsg(msgBox, "");
+  try{
+    // 1) delete image from Storage (if we know the path)
+    if (post.storagePath) {
+      await deleteObject(ref(storage, post.storagePath));
+    }
+
+    // 2) delete Firestore doc
+    await deleteDoc(doc(db, "users", currentUser.uid, "posts", post.id));
+
+    // refresh UI
+    closeLb(); // in case it was open
+    setMsg(msgBox, "Post deleted.", "ok");
+    await loadPosts(currentUser.uid);
+  } catch(err){
+    setMsg(msgBox, err?.message || "Failed to delete post.", "error");
+  }
+}
+
+    function setVerifyMsg(text, kind=""){ setMsg(verifyMsg, text, kind); }
+
+    async function submitVerification(){
+  if (!currentUser) return;
+  setVerifyMsg("");
+
+  if (!selectedIdFile || !selectedSelfieFile) {
+    setVerifyMsg("Please select BOTH a student ID photo and a selfie.", "error");
+    return;
+  }
+
+  submitVerifyBtn.disabled = true;
+  const originalText = submitVerifyBtn.textContent;
+  submitVerifyBtn.textContent = "Submitting…";
+  setVerifyMsg("Uploading files… please wait.", "");
+
+  try{
+    const idPath = `verification/${currentUser.uid}/id.jpg`;
+    const selfiePath = `verification/${currentUser.uid}/selfie.jpg`;
+
+    await uploadBytes(ref(storage, idPath), selectedIdFile, {
+      contentType: selectedIdFile.type || "image/jpeg"
+    });
+
+    await uploadBytes(ref(storage, selfiePath), selectedSelfieFile, {
+      contentType: selectedSelfieFile.type || "image/jpeg"
+    });
+
+    await setDoc(doc(db, "verification_requests", currentUser.uid), {
+      uid: currentUser.uid,
+      status: "pending",
+      idImagePath: idPath,
+      selfieImagePath: selfiePath,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+
+    await setDoc(doc(db, "users", currentUser.uid), {
+      verification: { status: "pending", updatedAt: serverTimestamp() },
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+
+    setVerificationUI("pending");
+    setVerifyMsg("✅ Submitted! The photos will be permanently deleted once verified.", "ok");
+
+    submitVerifyBtn.textContent = "Submitted";
+  } catch(err){
+    setVerifyMsg(err?.message || "Verification submission failed.", "error");
+    submitVerifyBtn.disabled = false;
+    submitVerifyBtn.textContent = originalText;
+  }
+}
+
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { window.location.href = "index.html"; return; }
+      currentUser = user;
+      subline.textContent = "Loading profile…";
+
+      await loadProfile(user);
+      await loadPosts(user.uid);
+    });
+
+    saveBtn.addEventListener("click", saveProfile);
+
+    changeAvatarBtn.addEventListener("click", () => avatarInput.click());
+    avatarInput.addEventListener("change", async () => {
+      const file = avatarInput.files?.[0];
+      avatarInput.value = "";
+      if (!file) return;
+      await uploadAvatar(file);
+    });
+
+    postBtn.addEventListener("click", () => postInput.click());
+    postInput.addEventListener("change", async () => {
+      const file = postInput.files?.[0];
+      postInput.value = "";
+      if (!file) return;
+      await addPost(file);
+    });
+
+    closeLightbox.addEventListener("click", closeLb);
+    lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLb(); });
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLb(); });
+
+    openVerifyBtn.addEventListener("click", () => {
+      verifyCard.style.display = "block";
+      verifyCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    closeVerifyBtn.addEventListener("click", () => {
+      verifyCard.style.display = "none";
+      setVerifyMsg("");
+    });
+
+    idInput.addEventListener("change", () => {
+      selectedIdFile = idInput.files?.[0] || null;
+      idStatus.textContent = selectedIdFile ? `Selected: ${selectedIdFile.name}` : "No ID selected";
+    });
+
+    selfieInput.addEventListener("change", () => {
+      selectedSelfieFile = selfieInput.files?.[0] || null;
+      selfieStatus.textContent = selectedSelfieFile ? `Selected: ${selectedSelfieFile.name}` : "No selfie selected";
+    });
+
+    submitVerifyBtn.addEventListener("click", submitVerification);
+  </script>
+</body>
+</html>

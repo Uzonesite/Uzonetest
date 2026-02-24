@@ -1,0 +1,1750 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Uzone • Match</title>
+
+  <!-- Tab icon -->
+  <link rel="icon" type="image/png" href="logo.png" />
+
+  <style>
+    :root{
+      --accent:#b00b55;
+      --bg:#0b0b10;
+      --panel: rgba(255,255,255,.06);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --border: rgba(255,255,255,.14);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(176,11,85,.30), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(176,11,85,.18), transparent 55%),
+        radial-gradient(700px 500px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+    }
+
+    header{
+      width:min(1100px, 92vw);
+      margin:18px auto 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .left{display:flex; align-items:center; gap:12px; min-width:0;}
+    .left img{width:38px;height:38px;object-fit:contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));}
+    .title{display:grid; gap:2px; min-width:0;}
+    .title h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .title .sub{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .right{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+    .chip{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      font-size:13px;
+      color:rgba(255,255,255,.85);
+    }
+
+    .btn{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(176,11,85,.45);
+      background: linear-gradient(180deg, rgba(176,11,85,.22), rgba(0,0,0,.18));
+      color:rgba(255,255,255,.92);
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease, background .12s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 16px var(--accent), 0 16px 40px rgba(176,11,85,.30);
+      filter: brightness(1.06);
+    }
+    .btn:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 10px var(--accent), 0 10px 28px rgba(176,11,85,.20);
+      filter: brightness(1.0);
+    }
+    .btn:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 4px rgba(176,11,85,.26), 0 0 18px var(--accent);
+    }
+
+    .btn.secondary{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      box-shadow:none;
+      color:rgba(255,255,255,.92);
+    }
+    .btn.secondary:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 14px var(--accent), 0 14px 34px rgba(176,11,85,.24);
+      filter: brightness(1.05);
+    }
+    .btn.secondary:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 10px var(--accent), 0 10px 28px rgba(176,11,85,.18);
+    }
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+
+    main{
+      width:min(1100px, 92vw);
+      margin:16px auto 30px auto;
+      display:grid;
+      gap:14px;
+    }
+
+    .bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px 14px;
+    }
+
+    .seg{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .seg .label{
+      color:rgba(255,255,255,.78);
+      font-size:13px;
+    }
+    .toggle{
+      display:flex;
+      gap:8px;
+      padding:6px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      width:fit-content;
+    }
+    .pill{
+      border:0;
+      background:transparent;
+      color:rgba(255,255,255,.75);
+      padding:9px 12px;
+      border-radius:999px;
+      font-weight:750;
+      cursor:pointer;
+      letter-spacing:.2px;
+    }
+    .pill.active{
+      color:white;
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.55));
+      box-shadow: 0 14px 34px rgba(176,11,85,.22);
+    }
+
+    .seenBanner{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,210,80,.25);
+      background: rgba(255,210,80,.10);
+      color: rgba(255,255,255,.86);
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .deck{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .deck{grid-template-columns:1fr;}
+    }
+
+    .card{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .media{
+      position:relative;
+      background: rgba(0,0,0,.22);
+      aspect-ratio: 16/12;
+      overflow:hidden;
+    }
+    .media img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transform: scale(1.0);
+    }
+    .navBtn{
+      position:absolute;
+      top:50%;
+      transform: translateY(-50%);
+      width:44px;height:44px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.30);
+      color:white;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      font-size:18px;
+      user-select:none;
+      backdrop-filter: blur(8px);
+    }
+    .navBtn:disabled{opacity:.4;cursor:not-allowed}
+    .navBtn.left{left:10px}
+    .navBtn.right{right:10px}
+
+    .thumbs{
+      display:flex;
+      gap:8px;
+      padding:10px;
+      overflow-x:auto;
+      border-top:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.10);
+    }
+    .thumb{
+      width:54px;height:54px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      overflow:hidden;
+      flex:0 0 auto;
+      cursor:pointer;
+      position:relative;
+      background: rgba(0,0,0,.18);
+    }
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .thumb.active{
+      border-color: rgba(176,11,85,.60);
+      box-shadow: 0 0 0 3px rgba(176,11,85,.20);
+    }
+
+    .info{
+      padding:14px 14px 16px 14px;
+      display:grid;
+      gap:10px;
+    }
+    .topline{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .nameLine{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      min-width:0;
+    }
+    .name{
+      font-size:20px;
+      font-weight:850;
+      letter-spacing:.2px;
+    }
+    .meta{
+      color:rgba(255,255,255,.72);
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      font-size:12px;
+      color:rgba(255,255,255,.85);
+      user-select:none;
+    }
+    .badge .dot{width:8px;height:8px;border-radius:999px;background: rgba(255,255,255,.45);}
+    .badge.verified{border-color: rgba(80,255,160,.25); background: rgba(80,255,160,.10);}
+    .badge.verified .dot{background: rgba(80,255,160,.78);}
+    .badge.pending{border-color: rgba(255,210,80,.25); background: rgba(255,210,80,.10);}
+    .badge.pending .dot{background: rgba(255,210,80,.82);}
+    .badge.rejected{border-color: rgba(255,80,120,.30); background: rgba(255,80,120,.10);}
+    .badge.rejected .dot{background: rgba(255,80,120,.80);}
+
+    .bio{
+      color:rgba(255,255,255,.80);
+      line-height:1.45;
+      font-size:14px;
+      white-space:pre-line;
+    }
+
+    .side{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+      display:grid;
+      gap:12px;
+      position:sticky;
+      top:14px;
+      height:fit-content;
+    }
+    @media (max-width: 980px){
+      .side{position:relative; top:auto;}
+    }
+    .bigActions{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .act{
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.92);
+      font-weight:850;
+      cursor:pointer;
+      padding:12px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+    }
+    .act.like{
+      border-color: rgba(80,255,160,.25);
+      background: rgba(80,255,160,.10);
+    }
+    .act.nope{
+      border-color: rgba(255,80,120,.30);
+      background: rgba(255,80,120,.10);
+    }
+    .act.like:hover{
+      border-color: rgba(80,255,160,.75);
+      box-shadow: 0 0 16px rgba(80,255,160,.95), 0 16px 40px rgba(80,255,160,.22);
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+    }
+    .act.like:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 10px rgba(80,255,160,.85), 0 10px 28px rgba(80,255,160,.16);
+      filter: brightness(1.0);
+    }
+    .act.nope:hover{
+      border-color: rgba(255,80,120,.85);
+      box-shadow: 0 0 16px rgba(255,80,120,.95), 0 16px 40px rgba(255,80,120,.22);
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+    }
+    .act.nope:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 10px rgba(255,80,120,.85), 0 10px 28px rgba(255,80,120,.16);
+      filter: brightness(1.0);
+    }
+    .act:disabled{opacity:.6;cursor:not-allowed}
+
+    .act.super{
+      grid-column: 1 / -1;
+      border-color: rgba(176,11,85,.55);
+      background: linear-gradient(180deg, rgba(176,11,85,.20), rgba(0,0,0,.18));
+    }
+    .act.super:hover{
+      border-color: var(--accent);
+      box-shadow: 0 0 16px var(--accent), 0 16px 40px rgba(176,11,85,.22);
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+    }
+    .act.super:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 10px var(--accent), 0 10px 28px rgba(176,11,85,.16);
+      filter: brightness(1.0);
+    }
+
+    .rowBtns{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex:0 0 auto;
+    }
+    .miniBtn{
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.92);
+      font-weight:850;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+      font-size:12px;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .miniBtn:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent), 0 14px 34px rgba(176,11,85,.20);
+      filter: brightness(1.05);
+    }
+    .miniBtn:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 9px var(--accent), 0 10px 28px rgba(176,11,85,.16);
+      filter: brightness(1.0);
+    }
+    .miniBtn.good{ border-color: rgba(80,255,160,.25); background: rgba(80,255,160,.10); }
+    .miniBtn.good:hover{ border-color: rgba(80,255,160,.70); box-shadow: 0 0 12px rgba(80,255,160,.65), 0 14px 34px rgba(80,255,160,.18); }
+    .miniBtn.bad{ border-color: rgba(255,80,120,.30); background: rgba(255,80,120,.10); }
+    .miniBtn.bad:hover{ border-color: rgba(255,80,120,.80); box-shadow: 0 0 12px rgba(255,80,120,.65), 0 14px 34px rgba(255,80,120,.18); }
+    .miniBtn:disabled{opacity:.6;cursor:not-allowed}
+
+    .tiny{
+      color:rgba(255,255,255,.72);
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .statusLine{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .progress{
+      color:rgba(255,255,255,.85);
+      font-size:13px;
+    }
+
+    .msg{
+      display:none;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      color:rgba(255,255,255,.85);
+      white-space:pre-line;
+      font-size:13px;
+      line-height:1.35;
+    }
+    .msg.ok{border-color: rgba(80,255,160,.25); background: rgba(80,255,160,.10);}
+    .msg.error{border-color: rgba(255,80,120,.30); background: rgba(255,80,120,.10);}
+
+    .matchesBox{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      border-radius: 14px;
+      overflow:hidden;
+    }
+    .matchesHeader{
+      padding:10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .matchesHeader .h{
+      font-weight:850;
+      letter-spacing:.2px;
+      font-size:13px;
+      color:rgba(255,255,255,.88);
+    }
+    .matchesList{
+      max-height: 320px;
+      overflow:auto;
+      display:grid;
+    }
+    .matchRow{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      cursor:pointer;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .matchRow:hover{ background: rgba(255,255,255,.04); }
+    .matchRow:last-child{ border-bottom:0; }
+    .matchAvatar{
+      width:36px;height:36px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      overflow:hidden;
+      background: rgba(0,0,0,.28);
+      flex: 0 0 auto;
+    }
+    .matchAvatar img{width:100%;height:100%;object-fit:cover;display:block}
+    .matchMeta{
+      display:grid;
+      gap:2px;
+      min-width:0;
+      flex:1;
+    }
+    .matchName{
+      font-weight:850;
+      font-size:13px;
+      color:rgba(255,255,255,.90);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .matchSub{
+      font-size:12px;
+      color:rgba(255,255,255,.64);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .matchEmpty{
+      padding:10px 12px;
+      color:rgba(255,255,255,.70);
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:999;
+    }
+
+    .modalCard{
+      width:min(560px, 96vw);
+      border-radius: 18px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.35));
+      box-shadow: var(--shadow);
+      padding:16px;
+    }
+    .modalTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .modalTitle h2{
+      margin:0;
+      font-size:20px;
+      letter-spacing:.2px;
+    }
+    .modalBody{
+      margin-top:10px;
+      display:grid;
+      gap:12px;
+    }
+    .pair{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .bubble{
+      width:86px;height:86px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      overflow:hidden;
+      background: rgba(0,0,0,.52);
+      box-shadow: 0 10px 26px rgba(0,0,0,.45);
+    }
+    .bubble img{width:100%;height:100%;object-fit:cover;display:block}
+    .modalActions{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <img src="logo.png" alt="Uzone logo" />
+      <div class="title">
+        <h1>Match</h1>
+        <div class="sub" id="subline">Loading…</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <span class="chip" id="creditsChip">Credits: —</span>
+      <a class="btn secondary" href="hub.html">Hub</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="bar">
+      <div class="seg">
+        <div class="label">Searching for</div>
+        <div class="toggle" role="tablist" aria-label="Gender filter">
+          <button class="pill active" id="findFemale" role="tab" aria-selected="true">Female</button>
+          <button class="pill" id="findMale" role="tab" aria-selected="false">Male</button>
+        </div>
+      </div>
+
+      <div style="display:grid; gap:8px; justify-items:end; width:min(420px,100%);">
+        <div class="seenBanner" id="seenBanner">You’ve reached the end — recycling profiles you’ve already seen.</div>
+        <div class="statusLine">
+          <span class="progress" id="progressText">—</span>
+          <button class="btn secondary" id="refreshBtn" type="button">Refresh</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="deck">
+      <article class="card" aria-label="Candidate profile">
+        <div class="media">
+          <img id="mainImg" alt="Profile photo" />
+          <button class="navBtn left" id="prevImg" type="button" aria-label="Previous photo">‹</button>
+          <button class="navBtn right" id="nextImg" type="button" aria-label="Next photo">›</button>
+        </div>
+        <div class="thumbs" id="thumbs"></div>
+
+        <div class="info">
+          <div class="topline">
+            <div class="nameLine">
+              <div class="name" id="nameAge">—</div>
+              <div class="badge" id="verifyBadge"><span class="dot"></span><span id="verifyText">Not verified</span></div>
+            </div>
+            <div class="meta" id="genderLine">—</div>
+          </div>
+
+          <div class="meta" id="schoolProgram">—</div>
+          <div class="bio" id="bioText">—</div>
+        </div>
+      </article>
+
+      <aside class="side" aria-label="Actions">
+        <div class="bigActions">
+          <button class="act nope" id="nopeBtn" type="button">✕ Pass</button>
+          <button class="act like" id="likeBtn" type="button">♥ Like</button>
+        </div>
+
+        <button class="act super" id="superLikeBtn" type="button">★ Super Like (1 credit)</button>
+
+        <div class="tiny" id="seenHint">—</div>
+        <div class="msg" id="msgBox" aria-live="polite"></div>
+
+        <div class="matchesBox" aria-label="Matches">
+          <div class="matchesHeader">
+            <div class="h">Matches</div>
+            <button class="btn secondary" id="refreshMatchesBtn" type="button" style="padding:8px 10px; border-radius:12px;">Refresh</button>
+          </div>
+          <div class="matchesList" id="matchesList">
+            <div class="matchEmpty" id="matchesEmpty">No matches yet.</div>
+          </div>
+        </div>
+
+        <div class="matchesBox" aria-label="Liked you">
+          <div class="matchesHeader">
+            <div class="h">Liked you</div>
+            <button class="btn secondary" id="revealLikeBtn" type="button" style="padding:8px 10px; border-radius:12px;">View who liked you (1 credit)</button>
+          </div>
+          <div class="matchesList" id="likedList">
+            <div class="matchEmpty" id="likedEmpty">No likes yet.</div>
+          </div>
+        </div>
+
+      </aside>
+    </section>
+  </main>
+
+  <div class="modal" id="matchModal" role="dialog" aria-modal="true" aria-label="Match dialog">
+    <div class="modalCard">
+      <div class="modalTitle">
+        <h2>It’s a match!</h2>
+        <button class="btn secondary" id="closeMatch" type="button">Close</button>
+      </div>
+
+      <div class="modalBody">
+        <div class="pair">
+          <div class="bubble"><img id="meBubble" alt="You" /></div>
+          <div class="bubble"><img id="themBubble" alt="Match" /></div>
+          <div style="color:rgba(255,255,255,.88); font-size:14px; line-height:1.35;">
+            You and <b id="matchName">—</b> liked each other.
+          </div>
+        </div>
+
+        <div class="modalActions">
+          <a class="btn" id="messageLink" href="messages.html">Message</a>
+          <button class="btn secondary" id="passMatch" type="button">Pass</button>
+          <button class="btn secondary" id="keepSwiping" type="button">Keep swiping</button>
+        </div>
+
+        <div class="tiny">Messaging page can be hooked up to the chat ID in the link.</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAnalytics, isSupported as analyticsSupported } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      collection,
+      doc,
+      getDoc,
+      getDocs,
+      setDoc,
+      deleteDoc,
+      serverTimestamp,
+      query,
+      where,
+      limit,
+      orderBy,
+      runTransaction
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+      authDomain: "uzone-6148d.firebaseapp.com",
+      databaseURL: "https://uzone-6148d-default-rtdb.firebaseio.com",
+      projectId: "uzone-6148d",
+      storageBucket: "uzone-6148d.firebasestorage.app",
+      messagingSenderId: "88783701381",
+      appId: "1:88783701381:web:4f6c4b1ad8b26d6fa6f0ec",
+      measurementId: "G-HKL5246YMC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    try { if (await analyticsSupported()) getAnalytics(app); } catch(_) {}
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // UI refs
+    const subline = document.getElementById("subline");
+
+    const findFemale = document.getElementById("findFemale");
+    const findMale = document.getElementById("findMale");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const seenBanner = document.getElementById("seenBanner");
+
+    const mainImg = document.getElementById("mainImg");
+    const prevImg = document.getElementById("prevImg");
+    const nextImg = document.getElementById("nextImg");
+    const thumbs = document.getElementById("thumbs");
+
+    const nameAge = document.getElementById("nameAge");
+    const genderLine = document.getElementById("genderLine");
+    const schoolProgram = document.getElementById("schoolProgram");
+    const bioText = document.getElementById("bioText");
+
+    const verifyBadge = document.getElementById("verifyBadge");
+    const verifyText = document.getElementById("verifyText");
+
+    const nopeBtn = document.getElementById("nopeBtn");
+    const likeBtn = document.getElementById("likeBtn");
+    const seenHint = document.getElementById("seenHint");
+    const msgBox = document.getElementById("msgBox");
+    const progressText = document.getElementById("progressText");
+
+    const matchModal = document.getElementById("matchModal");
+    const closeMatch = document.getElementById("closeMatch");
+    const keepSwiping = document.getElementById("keepSwiping");
+    const passMatch = document.getElementById("passMatch");
+    const meBubble = document.getElementById("meBubble");
+    const themBubble = document.getElementById("themBubble");
+    const matchName = document.getElementById("matchName");
+    const messageLink = document.getElementById("messageLink");
+
+    const matchesList = document.getElementById("matchesList");
+    const matchesEmpty = document.getElementById("matchesEmpty");
+    const refreshMatchesBtn = document.getElementById("refreshMatchesBtn");
+
+    const creditsChip = document.getElementById("creditsChip");
+
+    const likedList = document.getElementById("likedList");
+    const likedEmpty = document.getElementById("likedEmpty");
+    const revealLikeBtn = document.getElementById("revealLikeBtn");
+    const superLikeBtn = document.getElementById("superLikeBtn");
+
+    let currentUser = null;
+
+    // State
+    let searchGender = "Female";
+    let candidates = [];
+    let idx = 0;
+    let currentPhotos = [];
+    let photoIndex = 0;
+
+    const swipeMap = new Map();
+    const matchMap = new Map();
+    const likedMap = new Map();
+
+    let myCredits = 0;
+
+    function setMsg(text, kind="") {
+      msgBox.style.display = text ? "block" : "none";
+      msgBox.textContent = text || "";
+      msgBox.className = "msg" + (kind ? " " + kind : "");
+    }
+
+    async function refreshCredits(){
+      try{
+        const meSnap = await getDoc(doc(db, "users", currentUser.uid));
+        const me = meSnap.exists() ? (meSnap.data() || {}) : {};
+        const c = Number(me.credits ?? 0);
+        myCredits = Number.isFinite(c) ? c : 0;
+      } catch(_){
+        myCredits = myCredits || 0;
+      }
+      if (creditsChip) creditsChip.textContent = `Credits: ${myCredits}`;
+      if (revealLikeBtn) revealLikeBtn.disabled = myCredits <= 0;
+      if (superLikeBtn) superLikeBtn.disabled = myCredits <= 0;
+    }
+
+    async function spendOneCredit({ reason="spend", targetUid=null } = {}){
+      try{
+        const meRef = doc(db, "users", currentUser.uid);
+        const ok = await runTransaction(db, async (tx) => {
+          const snap = await tx.get(meRef);
+          const me = snap.exists() ? (snap.data() || {}) : {};
+          const c = Number(me.credits ?? 0);
+          const credits = Number.isFinite(c) ? c : 0;
+          if (credits <= 0) return false;
+
+          tx.set(meRef, { credits: credits - 1, creditsUpdatedAt: serverTimestamp() }, { merge:true });
+
+          const logRef = doc(collection(db, "users", currentUser.uid, "credit_logs"));
+          tx.set(logRef, { reason, targetUid: targetUid || null, delta: -1, createdAt: serverTimestamp() }, { merge:true });
+          return true;
+        });
+
+        if (ok) {
+          myCredits = Math.max(0, (myCredits || 0) - 1);
+          if (creditsChip) creditsChip.textContent = `Credits: ${myCredits}`;
+          if (revealLikeBtn) revealLikeBtn.disabled = myCredits <= 0;
+          if (superLikeBtn) superLikeBtn.disabled = myCredits <= 0;
+          return true;
+        }
+        return false;
+      } catch(err){
+        console.error(err);
+        return false;
+      }
+    }
+
+    async function upsertLikedBy(targetUid, type="like"){
+      try{
+        const meUid = currentUser.uid;
+        await setDoc(doc(db, "users", targetUid, "likedBy", meUid), {
+          fromUid: meUid,
+          type: type || "like",
+          revealed: type === "superlike",
+          createdAt: serverTimestamp()
+        }, { merge:true });
+      } catch(err){
+        console.warn("likedBy write failed:", err?.message || err);
+      }
+    }
+
+    async function loadLikedYou(){
+      likedMap.clear();
+      try{
+        const ref = collection(db, "users", currentUser.uid, "likedBy");
+        let snaps;
+        try{
+          const qy = query(ref, orderBy("createdAt", "desc"), limit(60));
+          snaps = await getDocs(qy);
+        } catch(e){
+          snaps = await getDocs(ref);
+        }
+
+        const rows = [];
+        snaps.forEach(d => {
+          const v = d.data() || {};
+          rows.push({
+            uid: d.id,
+            revealed: !!v.revealed,
+            type: (v.type || "like"),
+            createdAt: v.createdAt || null,
+            revealedAt: v.revealedAt || null,
+            hidden: !!v.hidden,
+            hiddenAt: v.hiddenAt || null
+          });
+        });
+
+        rows.sort((a,b)=>{
+          const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+          const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+          return tb - ta;
+        });
+
+        for (const r of rows){
+          let name = "";
+          let photoURL = "";
+          if (r.revealed || r.type === "superlike"){
+            try{
+              const uSnap = await getDoc(doc(db, "users", r.uid));
+              if (uSnap.exists()){
+                const u = uSnap.data() || {};
+                name = (u.name || "Student").toString().trim();
+                photoURL = (u.photoURL || "").toString();
+              }
+            } catch(_) {}
+          }
+          likedMap.set(r.uid, { ...r, name, photoURL });
+        }
+
+        renderLikedYou();
+      } catch(err){
+        console.error(err);
+        likedList.innerHTML = "";
+        const div = document.createElement("div");
+        div.className = "matchEmpty";
+        div.textContent = err?.message
+          ? ("Couldn’t load likes: " + err.message)
+          : "Couldn’t load likes.";
+        likedList.appendChild(div);
+      }
+    }
+
+    function placeholderAvatarFromName(name){
+      const initial = (name?.trim()?.[0] || "U").toUpperCase();
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900">
+          <defs>
+            <radialGradient id="g" cx="30%" cy="20%" r="90%">
+              <stop offset="0%" stop-color="#b00b55" stop-opacity="0.35"/>
+              <stop offset="65%" stop-color="#0b0b10" stop-opacity="1"/>
+            </radialGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#g)"/>
+          <text x="50%" y="52%" text-anchor="middle"
+                font-size="320" font-family="Arial" fill="rgba(255,255,255,0.88)"
+                dominant-baseline="middle">${initial}</text>
+        </svg>`;
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    }
+
+    // ✅ FIXED: isRevealed is computed BEFORE being used (cursor + image)
+    function renderLikedYou(){
+      if (!likedList) return;
+      likedList.innerHTML = "";
+      const items = [...likedMap.values()].filter(x => !x.hidden);
+
+      if (!items.length) {
+        likedList.appendChild(likedEmpty);
+        likedEmpty.style.display = "block";
+        return;
+      }
+      likedEmpty.style.display = "none";
+
+      items.forEach(it => {
+        const isRevealed = it.revealed || it.type === "superlike";
+
+        const row = document.createElement("div");
+        row.className = "matchRow";
+        row.style.cursor = isRevealed ? "pointer" : "default";
+
+        const av = document.createElement("div");
+        av.className = "matchAvatar";
+        const img = document.createElement("img");
+        img.alt = "Like";
+
+        img.src = isRevealed
+          ? (it.photoURL || placeholderAvatarFromName(it.name || "U"))
+          : placeholderAvatarFromName("?");
+
+        av.appendChild(img);
+
+        const meta = document.createElement("div");
+        meta.className = "matchMeta";
+
+        const n = document.createElement("div");
+        n.className = "matchName";
+        n.textContent = isRevealed ? (it.name || "Student") : "Locked";
+
+        const sub = document.createElement("div");
+        sub.className = "matchSub";
+        sub.textContent = isRevealed ? "View / Hide / Match" : "Someone liked you";
+
+        meta.appendChild(n);
+        meta.appendChild(sub);
+
+        row.appendChild(av);
+        row.appendChild(meta);
+
+        if (isRevealed){
+          const btns = document.createElement("div");
+          btns.className = "rowBtns";
+
+          const viewBtn = document.createElement("button");
+          viewBtn.className = "miniBtn";
+          viewBtn.type = "button";
+          viewBtn.textContent = "View";
+          viewBtn.addEventListener("click", (e)=>{
+            e.stopPropagation();
+            window.location.href = `view_profile.html?uid=${encodeURIComponent(it.uid)}`;
+          });
+
+          const hideBtn = document.createElement("button");
+          hideBtn.className = "miniBtn bad";
+          hideBtn.type = "button";
+          hideBtn.textContent = "Hide";
+          hideBtn.addEventListener("click", async (e)=>{
+            e.stopPropagation();
+            await hideLikedUser(it.uid);
+          });
+
+          const matchBtn = document.createElement("button");
+          matchBtn.className = "miniBtn good";
+          matchBtn.type = "button";
+          matchBtn.textContent = "Match";
+          matchBtn.addEventListener("click", async (e)=>{
+            e.stopPropagation();
+            await decideOnRevealedLike(it.uid, "like");
+          });
+
+          btns.appendChild(viewBtn);
+          btns.appendChild(hideBtn);
+          btns.appendChild(matchBtn);
+
+          row.addEventListener("click", ()=> {
+            window.location.href = `view_profile.html?uid=${encodeURIComponent(it.uid)}`;
+          });
+
+          row.appendChild(btns);
+        }
+
+        likedList.appendChild(row);
+      });
+    }
+
+    async function hideLikedUser(targetUid){
+      if (!currentUser || !targetUid) return;
+      try{
+        await setDoc(doc(db, "users", currentUser.uid, "likedBy", targetUid), {
+          hidden: true,
+          hiddenAt: serverTimestamp()
+        }, { merge:true });
+
+        const it = likedMap.get(targetUid);
+        if (it) likedMap.set(targetUid, { ...it, hidden: true, hiddenAt: new Date() });
+        renderLikedYou();
+      } catch(err){
+        console.error(err);
+        setMsg("Couldn’t hide that like.", "error");
+      }
+    }
+
+    async function removeLikedYouEntry(targetUid){
+      if (!currentUser || !targetUid) return;
+      try{
+        await deleteDoc(doc(db, "users", currentUser.uid, "likedBy", targetUid));
+        likedMap.delete(targetUid);
+        renderLikedYou();
+      } catch(err){
+        try{
+          await setDoc(doc(db, "users", currentUser.uid, "likedBy", targetUid), {
+            hidden: true,
+            hiddenAt: serverTimestamp()
+          }, { merge:true });
+          const it = likedMap.get(targetUid);
+          if (it) likedMap.set(targetUid, { ...it, hidden: true, hiddenAt: new Date() });
+          renderLikedYou();
+        } catch(e){
+          console.error(e);
+        }
+      }
+    }
+
+    async function revealNextLike(){
+      const locked = [...likedMap.values()].filter(
+        x => !x.revealed && x.type !== "superlike" && !x.hidden
+      );
+
+      if (!locked.length){
+        setMsg("No locked likes to reveal.", "ok");
+        return;
+      }
+
+      const ok = await spendOneCredit({ reason:"reveal_like", targetUid: locked[0].uid });
+      if (!ok){
+        setMsg("You need a credit to reveal who liked you.", "error");
+        await refreshCredits();
+        return;
+      }
+
+      const target = locked[0].uid;
+      try{
+        await setDoc(doc(db, "users", currentUser.uid, "likedBy", target), {
+          revealed: true,
+          revealedAt: serverTimestamp()
+        }, { merge:true });
+      } catch(err){
+        console.error(err);
+        setMsg("Couldn’t reveal (Firestore rules?).", "error");
+      }
+
+      await loadLikedYou();
+      setMsg("Revealed 1 like.", "ok");
+    }
+
+    function setVerificationUI(status){
+      verifyBadge.classList.remove("pending","verified","rejected");
+      if (status === "verified") {
+        verifyBadge.classList.add("verified");
+        verifyText.textContent = "Verified";
+      } else if (status === "pending") {
+        verifyBadge.classList.add("pending");
+        verifyText.textContent = "Pending";
+      } else if (status === "rejected") {
+        verifyBadge.classList.add("rejected");
+        verifyText.textContent = "Rejected";
+      } else {
+        verifyText.textContent = "Not verified";
+      }
+    }
+
+    function setToggleUI(){
+      const female = searchGender === "Female";
+      findFemale.classList.toggle("active", female);
+      findMale.classList.toggle("active", !female);
+      findFemale.setAttribute("aria-selected", String(female));
+      findMale.setAttribute("aria-selected", String(!female));
+    }
+
+    function setButtonsEnabled(enabled){
+      nopeBtn.disabled = !enabled;
+      likeBtn.disabled = !enabled;
+      prevImg.disabled = !enabled;
+      nextImg.disabled = !enabled;
+      if (superLikeBtn) superLikeBtn.disabled = !enabled || myCredits <= 0;
+    }
+
+    function setProgress(){
+      const total = candidates.length || 0;
+      const shown = total ? Math.min(idx + 1, total) : 0;
+      progressText.textContent = total ? `${shown} / ${total}` : "—";
+    }
+
+    function renderPhotos(urls){
+      currentPhotos = urls && urls.length ? urls : [placeholderAvatarFromName("U")];
+      photoIndex = 0;
+
+      function setMain(){
+        mainImg.src = currentPhotos[photoIndex];
+        prevImg.disabled = photoIndex === 0;
+        nextImg.disabled = photoIndex === currentPhotos.length - 1;
+
+        [...thumbs.children].forEach((el, i) => {
+          el.classList.toggle("active", i === photoIndex);
+        });
+      }
+
+      thumbs.innerHTML = "";
+      currentPhotos.forEach((u, i) => {
+        const t = document.createElement("div");
+        t.className = "thumb" + (i === 0 ? " active" : "");
+        const im = document.createElement("img");
+        im.src = u;
+        im.alt = "Photo";
+        t.appendChild(im);
+        t.addEventListener("click", () => { photoIndex = i; setMain(); });
+        thumbs.appendChild(t);
+      });
+
+      setMain();
+    }
+
+    async function getTopPhotosForUser(uid, profile){
+      const urls = [];
+      const avatar = (profile?.photoURL || "").toString();
+      if (avatar) urls.push(avatar);
+
+      try{
+        const postsRef = collection(db, "users", uid, "posts");
+        const q = query(postsRef, orderBy("createdAt", "desc"), limit(6));
+        const snaps = await getDocs(q);
+        snaps.forEach(d => {
+          const data = d.data() || {};
+          if (data.url) urls.push(String(data.url));
+        });
+      } catch(_) {}
+
+      const uniq = [...new Set(urls.filter(Boolean))];
+      return uniq.length ? uniq : [avatar || placeholderAvatarFromName(profile?.name || "U")];
+    }
+
+    function normalizeGender(g){
+      const s = (g || "").toString().trim().toLowerCase();
+      if (s === "male" || s === "man") return "Male";
+      if (s === "female" || s === "woman") return "Female";
+      return g || "";
+    }
+
+    function displayCandidate(candidate){
+      if (!candidate) {
+        nameAge.textContent = "No profiles found";
+        genderLine.textContent = "";
+        schoolProgram.textContent = "";
+        bioText.textContent = "Try switching the filter or check back later.";
+        setVerificationUI("none");
+        renderPhotos([placeholderAvatarFromName("U")]);
+        setButtonsEnabled(false);
+        seenHint.textContent = "";
+        setProgress();
+        return;
+      }
+
+      setButtonsEnabled(true);
+      setProgress();
+
+      const name = (candidate.name || "Student").toString().trim();
+      const age = (candidate.age || "").toString().trim();
+      const gender = normalizeGender(candidate.gender);
+      const uni = (candidate.university || "").toString().trim();
+      const program = (candidate.program || "").toString().trim();
+      const bio = (candidate.bio || "").toString().trim();
+
+      nameAge.textContent = age ? `${name}, ${age}` : name;
+      genderLine.textContent = gender ? gender : "";
+      schoolProgram.textContent = [uni, program].filter(Boolean).join(" • ") || "—";
+      bioText.textContent = bio || "—";
+
+      const vStatus = candidate?.verification?.status || "none";
+      setVerificationUI(vStatus);
+
+      const sw = swipeMap.get(candidate.uid);
+      if (sw) {
+        seenHint.textContent = `You previously ${sw.direction === "like" ? "liked" : "disliked"} this profile.`;
+      } else {
+        seenHint.textContent = " ";
+      }
+
+      setMsg("");
+      renderPhotos([candidate.photoURL || placeholderAvatarFromName(name)]);
+      getTopPhotosForUser(candidate.uid, candidate).then(urls => {
+        const current = candidates[idx];
+        if (current && current.uid === candidate.uid) renderPhotos(urls);
+      });
+    }
+
+    function recycleIfNeeded(){
+      if (!candidates.length) return;
+      if (idx >= candidates.length) {
+        idx = 0;
+        seenBanner.style.display = "block";
+        setTimeout(() => { seenBanner.style.display = "none"; }, 4500);
+      }
+    }
+
+    function currentCandidate(){
+      if (!candidates.length) return null;
+      recycleIfNeeded();
+      return candidates[idx] || null;
+    }
+
+    function nextCandidate(){
+      idx += 1;
+      recycleIfNeeded();
+      displayCandidate(currentCandidate());
+    }
+
+    async function loadMySwipes(){
+      swipeMap.clear();
+      const swipesRef = collection(db, "users", currentUser.uid, "swipes");
+      const snaps = await getDocs(swipesRef);
+      snaps.forEach(d => {
+        const v = d.data() || {};
+        if (v.direction) swipeMap.set(d.id, { direction: v.direction, updatedAt: v.updatedAt || null });
+      });
+    }
+
+    async function loadCandidates(){
+      setMsg("");
+      setButtonsEnabled(false);
+      subline.textContent = "Finding profiles…";
+      progressText.textContent = "—";
+      seenBanner.style.display = "none";
+
+      candidates = [];
+      idx = 0;
+
+      const target = searchGender;
+      const usersRef = collection(db, "users");
+
+      const q = query(usersRef, where("gender", "==", target), limit(60));
+      const snaps = await getDocs(q);
+
+      snaps.forEach(d => {
+        if (d.id === currentUser.uid) return;
+        const data = d.data() || {};
+        candidates.push({ uid: d.id, ...data });
+      });
+
+      if (!candidates.length) {
+        subline.textContent = "No profiles available";
+        displayCandidate(null);
+        return;
+      }
+
+      for (let i = candidates.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+      }
+
+      subline.textContent = "Swipe and match";
+      displayCandidate(currentCandidate());
+    }
+
+    function chatIdFor(u1, u2){
+      return [u1, u2].sort().join("_");
+    }
+
+    async function ensureChat(u1, u2){
+      const chatId = chatIdFor(u1, u2);
+      const chatRef = doc(db, "chats", chatId);
+      const snap = await getDoc(chatRef);
+      if (!snap.exists()) {
+        await setDoc(chatRef, {
+          members: [u1, u2].sort(),
+          createdAt: serverTimestamp(),
+          lastMessageAt: serverTimestamp()
+        }, { merge: true });
+      }
+      return chatId;
+    }
+
+    async function ensureMatch(u1, u2){
+      const matchId = chatIdFor(u1, u2);
+      const matchRef = doc(db, "matches", matchId);
+      const snap = await getDoc(matchRef);
+      if (!snap.exists()) {
+        await setDoc(matchRef, {
+          members: [u1, u2].sort(),
+          createdAt: serverTimestamp()
+        }, { merge: true });
+      }
+      return matchId;
+    }
+
+    function openChatWith(otherUid){
+      const chatId = chatIdFor(currentUser.uid, otherUid);
+      window.location.href = `messages.html?chat=${encodeURIComponent(chatId)}&with=${encodeURIComponent(otherUid)}`;
+    }
+
+    async function removeMatch(matchId, otherUid){
+      if (!currentUser || !matchId || !otherUid) return;
+      try{
+        await deleteDoc(doc(db, "matches", matchId));
+        await setDoc(doc(db, "users", currentUser.uid, "swipes", otherUid), {
+          direction: "dislike",
+          updatedAt: serverTimestamp()
+        }, { merge:true });
+
+        swipeMap.set(otherUid, { direction: "dislike" });
+        await loadMatches();
+      } catch(err){
+        console.error(err);
+      }
+    }
+
+    function renderMatches(){
+      matchesList.innerHTML = "";
+      const items = [...matchMap.values()];
+
+      if (!items.length) {
+        matchesList.appendChild(matchesEmpty);
+        matchesEmpty.style.display = "block";
+        return;
+      }
+
+      matchesEmpty.style.display = "none";
+
+      items.forEach(m => {
+        const row = document.createElement("div");
+        row.className = "matchRow";
+
+        const av = document.createElement("div");
+        av.className = "matchAvatar";
+        const img = document.createElement("img");
+        img.alt = "Match";
+        img.src = m.photoURL || placeholderAvatarFromName(m.name || "U");
+        av.appendChild(img);
+
+        const meta = document.createElement("div");
+        meta.className = "matchMeta";
+
+        const n = document.createElement("div");
+        n.className = "matchName";
+        n.textContent = m.name || "Student";
+
+        const sub = document.createElement("div");
+        sub.className = "matchSub";
+        sub.textContent = " ";
+
+        meta.appendChild(n);
+        meta.appendChild(sub);
+
+        const btns = document.createElement("div");
+        btns.className = "rowBtns";
+
+        const viewBtn = document.createElement("button");
+        viewBtn.className = "miniBtn";
+        viewBtn.type = "button";
+        viewBtn.textContent = "View";
+        viewBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          window.location.href = `view_profile.html?uid=${encodeURIComponent(m.otherUid)}`;
+        });
+
+        const msgBtn = document.createElement("button");
+        msgBtn.className = "miniBtn";
+        msgBtn.type = "button";
+        msgBtn.textContent = "Message";
+        msgBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openChatWith(m.otherUid);
+        });
+
+        const passBtn = document.createElement("button");
+        passBtn.className = "miniBtn bad";
+        passBtn.type = "button";
+        passBtn.textContent = "Pass";
+        passBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          await removeMatch(m.matchId, m.otherUid);
+        });
+
+        btns.appendChild(viewBtn);
+        btns.appendChild(msgBtn);
+        btns.appendChild(passBtn);
+
+        row.addEventListener("click", () => openChatWith(m.otherUid));
+
+        row.appendChild(av);
+        row.appendChild(meta);
+        row.appendChild(btns);
+
+        matchesList.appendChild(row);
+      });
+    }
+
+    async function loadMatches(){
+      matchMap.clear();
+
+      try{
+        const matchesRef = collection(db, "matches");
+        const q = query(matchesRef, where("members", "array-contains", currentUser.uid), limit(50));
+        const snaps = await getDocs(q);
+
+        const others = [];
+        snaps.forEach(d => {
+          const data = d.data() || {};
+          const members = (data.members || []).slice().sort();
+          if (!members.includes(currentUser.uid)) return;
+          const otherUid = members.find(x => x !== currentUser.uid);
+          if (!otherUid) return;
+          others.push({ matchId: d.id, otherUid, createdAt: data.createdAt || null });
+        });
+
+        for (const m of others){
+          let name = "Student";
+          let photoURL = "";
+          try{
+            const uSnap = await getDoc(doc(db, "users", m.otherUid));
+            if (uSnap.exists()){
+              const u = uSnap.data() || {};
+              name = (u.name || "Student").toString().trim();
+              photoURL = (u.photoURL || "").toString();
+            }
+          } catch(_) {}
+
+          matchMap.set(m.matchId, {
+            matchId: m.matchId,
+            otherUid: m.otherUid,
+            chatId: chatIdFor(currentUser.uid, m.otherUid),
+            name,
+            photoURL,
+            createdAt: m.createdAt || null
+          });
+        }
+
+        const sorted = [...matchMap.entries()].sort((a, b) => {
+          const ta = a[1].createdAt?.toMillis ? a[1].createdAt.toMillis() : 0;
+          const tb = b[1].createdAt?.toMillis ? b[1].createdAt.toMillis() : 0;
+          return tb - ta;
+        });
+
+        matchMap.clear();
+        sorted.forEach(([k, v]) => matchMap.set(k, v));
+
+        renderMatches();
+      } catch(err){
+        matchesList.innerHTML = "";
+        const div = document.createElement("div");
+        div.className = "matchEmpty";
+        div.textContent = err?.message
+          ? ("Couldn’t load matches: " + err.message)
+          : "Couldn’t load matches.";
+        matchesList.appendChild(div);
+      }
+    }
+
+    async function decideOnRevealedLike(otherUid, direction){
+      try{
+        await setDoc(doc(db, "users", currentUser.uid, "swipes", otherUid), {
+          direction,
+          updatedAt: serverTimestamp()
+        }, { merge:true });
+
+        swipeMap.set(otherUid, { direction });
+
+        if (direction === "like"){
+          const themSnap = await getDoc(doc(db, "users", otherUid));
+          const them = themSnap.exists() ? (themSnap.data() || {}) : {};
+          const meSnap = await getDoc(doc(db, "users", currentUser.uid));
+          const me = meSnap.exists() ? (meSnap.data() || {}) : {};
+
+          const mePhoto = (me?.photoURL || "") || placeholderAvatarFromName(me?.name || "U");
+          const themPhoto = (them?.photoURL || "") || placeholderAvatarFromName(them?.name || "U");
+
+          const chatId = await ensureChat(currentUser.uid, otherUid);
+          await ensureMatch(currentUser.uid, otherUid);
+
+          // ✅ FIXED: removed duplicate call
+          await removeLikedYouEntry(otherUid);
+
+          meBubble.src = mePhoto;
+          themBubble.src = themPhoto;
+          matchName.textContent = (them?.name || "Student").toString().trim();
+          messageLink.href = `messages.html?chat=${encodeURIComponent(chatId)}&with=${encodeURIComponent(otherUid)}`;
+
+          matchModal.style.display = "flex";
+          await loadMatches();
+        }
+
+        await setDoc(doc(db, "users", currentUser.uid, "likedBy", otherUid), {
+          handled: true,
+          handledAt: serverTimestamp(),
+          handledDirection: direction
+        }, { merge:true });
+
+        await loadLikedYou();
+      } catch(err){
+        console.error(err);
+        setMsg(err?.message || "Couldn’t apply decision.", "error");
+      }
+    }
+
+    async function swipe(direction){
+      const cand = currentCandidate();
+      if (!cand) return;
+
+      setButtonsEnabled(false);
+      setMsg("");
+
+      const otherUid = cand.uid;
+      const myUid = currentUser.uid;
+
+      try{
+        await setDoc(doc(db, "users", myUid, "swipes", otherUid), {
+          direction,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+
+        swipeMap.set(otherUid, { direction });
+
+        if (direction === "like") {
+          await upsertLikedBy(otherUid, "like");
+
+          const theirSwipeRef = doc(db, "users", otherUid, "swipes", myUid);
+          const theirSnap = await getDoc(theirSwipeRef);
+          const theirDir = theirSnap.exists() ? (theirSnap.data()?.direction || "") : "";
+
+          if (theirDir === "like") {
+            const meSnap = await getDoc(doc(db, "users", myUid));
+            const meProfile = meSnap.exists() ? meSnap.data() : {};
+            const mePhoto = (meProfile?.photoURL || "") || placeholderAvatarFromName(meProfile?.name || "U");
+            const themPhoto = (cand.photoURL || "") || placeholderAvatarFromName(cand.name || "U");
+
+            const chatId = await ensureChat(myUid, otherUid);
+            await ensureMatch(myUid, otherUid);
+
+            await removeLikedYouEntry(otherUid);
+
+            meBubble.src = mePhoto;
+            themBubble.src = themPhoto;
+            matchName.textContent = (cand.name || "Student").toString().trim();
+
+            messageLink.href = `messages.html?chat=${encodeURIComponent(chatId)}&with=${encodeURIComponent(otherUid)}`;
+            matchModal.style.display = "flex";
+            await loadMatches();
+          }
+        }
+      } catch(err){
+        setMsg(err?.message || "Swipe failed.", "error");
+      } finally{
+        setButtonsEnabled(true);
+        nextCandidate();
+      }
+    }
+
+    // Controls
+    prevImg.addEventListener("click", () => {
+      if (photoIndex > 0) photoIndex -= 1;
+      mainImg.src = currentPhotos[photoIndex];
+      prevImg.disabled = photoIndex === 0;
+      nextImg.disabled = photoIndex === currentPhotos.length - 1;
+      [...thumbs.children].forEach((el, i) => el.classList.toggle("active", i === photoIndex));
+    });
+    nextImg.addEventListener("click", () => {
+      if (photoIndex < currentPhotos.length - 1) photoIndex += 1;
+      mainImg.src = currentPhotos[photoIndex];
+      prevImg.disabled = photoIndex === 0;
+      nextImg.disabled = photoIndex === currentPhotos.length - 1;
+      [...thumbs.children].forEach((el, i) => el.classList.toggle("active", i === photoIndex));
+    });
+
+    findFemale.addEventListener("click", async () => {
+      searchGender = "Female";
+      setToggleUI();
+      await loadCandidates();
+    });
+    findMale.addEventListener("click", async () => {
+      searchGender = "Male";
+      setToggleUI();
+      await loadCandidates();
+    });
+
+    refreshBtn.addEventListener("click", async () => {
+      await loadCandidates();
+    });
+
+    nopeBtn.addEventListener("click", () => swipe("dislike"));
+    likeBtn.addEventListener("click", () => swipe("like"));
+
+    revealLikeBtn.addEventListener("click", revealNextLike);
+
+    superLikeBtn.addEventListener("click", async () => {
+      const cand = currentCandidate();
+      if (!cand) return;
+
+      setButtonsEnabled(false);
+      setMsg("");
+
+      const otherUid = cand.uid;
+
+      const ok = await spendOneCredit({ reason:"super_like", targetUid: otherUid });
+      if (!ok){
+        setMsg("You need a credit to Super Like.", "error");
+        setButtonsEnabled(true);
+        await refreshCredits();
+        return;
+      }
+
+      try{
+        await setDoc(doc(db, "users", currentUser.uid, "swipes", otherUid), {
+          direction: "like",
+          updatedAt: serverTimestamp(),
+          superlike: true
+        }, { merge:true });
+
+        swipeMap.set(otherUid, { direction: "like" });
+
+        await upsertLikedBy(otherUid, "superlike");
+
+        const theirSnap = await getDoc(doc(db, "users", otherUid, "swipes", currentUser.uid));
+        const theirDir = theirSnap.exists() ? (theirSnap.data()?.direction || "") : "";
+
+        if (theirDir === "like") {
+          const meSnap = await getDoc(doc(db, "users", currentUser.uid));
+          const meProfile = meSnap.exists() ? meSnap.data() : {};
+          const mePhoto = (meProfile?.photoURL || "") || placeholderAvatarFromName(meProfile?.name || "U");
+          const themPhoto = (cand.photoURL || "") || placeholderAvatarFromName(cand.name || "U");
+
+          const chatId = await ensureChat(currentUser.uid, otherUid);
+          await ensureMatch(currentUser.uid, otherUid);
+
+          // ✅ FIXED: removed duplicate call
+          await removeLikedYouEntry(otherUid);
+
+          meBubble.src = mePhoto;
+          themBubble.src = themPhoto;
+          matchName.textContent = (cand.name || "Student").toString().trim();
+          messageLink.href = `messages.html?chat=${encodeURIComponent(chatId)}&with=${encodeURIComponent(otherUid)}`;
+
+          matchModal.style.display = "flex";
+          await loadMatches();
+        }
+
+        setMsg("Super Like sent.", "ok");
+      } catch(err){
+        console.error(err);
+        setMsg(err?.message || "Super Like failed.", "error");
+      } finally{
+        setButtonsEnabled(true);
+        nextCandidate();
+      }
+    });
+
+    closeMatch.addEventListener("click", () => { matchModal.style.display = "none"; });
+    keepSwiping.addEventListener("click", () => { matchModal.style.display = "none"; });
+    passMatch.addEventListener("click", () => { matchModal.style.display = "none"; });
+
+    matchModal.addEventListener("click", (e) => {
+      if (e.target === matchModal) matchModal.style.display = "none";
+    });
+
+    refreshMatchesBtn.addEventListener("click", loadMatches);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { window.location.href = "index.html"; return; }
+      currentUser = user;
+
+      subline.textContent = "Loading…";
+      setToggleUI();
+
+      await refreshCredits();
+      await loadMySwipes();
+      await loadMatches();
+      await loadLikedYou();
+      await loadCandidates();
+    });
+  </script>
+</body>
+</html>

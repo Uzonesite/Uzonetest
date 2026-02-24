@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Uzone • Login</title>
+
+  <!-- Tab icon (favicon) -->
+  <link rel="icon" type="image/png" href="logo.png" />
+
+  <meta name="color-scheme" content="dark light" />
+
+  <style>
+    :root{
+      --accent:#b00b55;
+      --bg:#0b0b10;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --border: rgba(255,255,255,.14);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(176,11,85,.30), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(176,11,85,.18), transparent 55%),
+        radial-gradient(700px 500px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+    }
+    .wrap{
+      width:min(980px, 92vw);
+      display:grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap:18px;
+      align-items:stretch;
+    }
+    @media (max-width: 860px){
+      .wrap{grid-template-columns:1fr}
+    }
+    .brand, .card{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .brand{
+      padding:26px;
+      position:relative;
+    }
+    .logoRow{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .logoRow img{
+      width:44px;height:44px;
+      object-fit:contain;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));
+    }
+    .brand h1{
+      margin:0;
+      font-size:28px;
+      letter-spacing:.2px;
+    }
+    .brand p{
+      margin:14px 0 0 0;
+      color:var(--muted);
+      line-height:1.45;
+    }
+    .pillRow{
+      margin-top:18px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .pill{
+      font-size:13px;
+      color:rgba(255,255,255,.85);
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(176,11,85,.10);
+    }
+
+    .card{ padding:22px; }
+    .tabs{
+      display:flex;
+      gap:10px;
+      padding:6px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      width:fit-content;
+    }
+    .tab{
+      appearance:none;
+      border:0;
+      background:transparent;
+      color:rgba(255,255,255,.75);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:650;
+      letter-spacing:.2px;
+    }
+    .tab.active{
+      color:white;
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.55));
+      box-shadow: 0 12px 30px rgba(176,11,85,.25);
+    }
+    .form{ margin-top:16px; display:grid; gap:12px; }
+    label{ display:grid; gap:6px; font-size:13px; color:rgba(255,255,255,.78); }
+    input{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      outline:none;
+    }
+    input:focus{
+      border-color: rgba(176,11,85,.60);
+      box-shadow: 0 0 0 4px rgba(176,11,85,.20);
+    }
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    @media (max-width: 520px){ .row{grid-template-columns:1fr} }
+
+    .btn{
+      margin-top:6px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(176,11,85,.55);
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.58));
+      color:white;
+      font-weight:750;
+      letter-spacing:.2px;
+      cursor:pointer;
+      box-shadow: 0 18px 40px rgba(176,11,85,.22);
+    }
+    .btn:disabled{ opacity:.65; cursor:not-allowed; }
+
+    .meta{ margin-top:10px; color:rgba(255,255,255,.65); font-size:13px; line-height:1.4; }
+    .msg{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      color:rgba(255,255,255,.85);
+      display:none;
+      white-space:pre-line;
+    }
+    .msg.error{ border-color: rgba(255,80,120,.35); background: rgba(255,80,120,.10); }
+    .msg.ok{ border-color: rgba(80,255,160,.25); background: rgba(80,255,160,.10); }
+    a{color: rgba(255,255,255,.90)}
+    .smallLink{
+      display:inline-block;
+      margin-top:6px;
+      font-size:13px;
+      color:rgba(255,255,255,.72);
+      cursor:pointer;
+      text-decoration: underline;
+      text-decoration-color: rgba(176,11,85,.55);
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="brand">
+      <div class="logoRow">
+        <img src="logo.png" alt="Uzone logo" />
+        <h1>Uzone</h1>
+      </div>
+
+      <p>
+        A student social space for uni life — meet people, message, and find your next motive.
+        <br /><br />
+        Sign in to access the Uhub.
+        <br /><br />
+        Independent platform — not affiliated with any university.
+      </p>
+
+      <div class="pillRow">
+        <span class="pill">Events</span>
+        <span class="pill">Dating</span>
+        <span class="pill">Messaging</span>
+        <span class="pill">Profiles</span>
+      </div>
+
+      <p class="meta">
+        Tip: Use a <b>school email</b> to get verified faster.
+      </p>
+    </section>
+
+    <section class="card" aria-label="Login card">
+      <div class="tabs" role="tablist" aria-label="Login or sign up">
+        <button class="tab active" id="tabLogin" role="tab" aria-selected="true" type="button">Login</button>
+        <button class="tab" id="tabSignup" role="tab" aria-selected="false" type="button">Sign up</button>
+      </div>
+
+      <form class="form" id="authForm" novalidate>
+        <div class="row" id="nameRow" style="display:none;">
+          <label>
+            First name
+            <!-- NOTE: NOT hard-required here; we toggle required in JS so login isn't blocked -->
+            <input id="firstName" autocomplete="given-name" placeholder="Billy" />
+          </label>
+          <label>
+            Last name (optional)
+            <input id="lastName" autocomplete="family-name" placeholder="Smith" />
+          </label>
+        </div>
+
+        <label>
+          Email
+          <input id="email" type="email" autocomplete="email" placeholder="you@uottawa.ca" required />
+        </label>
+
+        <label>
+          Password
+          <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" required />
+        </label>
+
+        <label id="confirmLabel" style="display:none;">
+          Confirm password
+          <input id="confirmPassword" type="password" autocomplete="new-password" placeholder="••••••••" />
+        </label>
+
+        <button class="btn" id="submitBtn" type="submit">Login</button>
+
+        <div class="msg" id="msgBox" aria-live="polite"></div>
+
+        <span class="smallLink" id="forgotPw">Forgot password?</span>
+      </form>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAnalytics, isSupported as analyticsSupported } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      runTransaction,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+      authDomain: "uzone-6148d.firebaseapp.com",
+      databaseURL: "https://uzone-6148d-default-rtdb.firebaseio.com",
+      projectId: "uzone-6148d",
+      storageBucket: "uzone-6148d.firebasestorage.app",
+      messagingSenderId: "88783701381",
+      appId: "1:88783701381:web:4f6c4b1ad8b26d6fa6f0ec",
+      measurementId: "G-HKL5246YMC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+
+    try {
+      if (await analyticsSupported()) getAnalytics(app);
+    } catch (_) {}
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // --- UI helpers ---
+    const tabLogin = document.getElementById("tabLogin");
+    const tabSignup = document.getElementById("tabSignup");
+    const nameRow = document.getElementById("nameRow");
+    const confirmLabel = document.getElementById("confirmLabel");
+    const submitBtn = document.getElementById("submitBtn");
+    const msgBox = document.getElementById("msgBox");
+    const form = document.getElementById("authForm");
+
+    const emailEl = document.getElementById("email");
+    const pwEl = document.getElementById("password");
+    const cpwEl = document.getElementById("confirmPassword");
+    const firstNameEl = document.getElementById("firstName");
+    const lastNameEl = document.getElementById("lastName");
+    const forgotPw = document.getElementById("forgotPw");
+
+    let mode = "login"; // "login" | "signup"
+    let isSubmitting = false; // prevents auto-redirect from interrupting signup
+
+    function setMsg(text, kind="") {
+      msgBox.style.display = text ? "block" : "none";
+      msgBox.textContent = text || "";
+      msgBox.className = "msg" + (kind ? " " + kind : "");
+    }
+
+    function setMode(nextMode){
+      mode = nextMode;
+      const isLogin = mode === "login";
+
+      tabLogin.classList.toggle("active", isLogin);
+      tabSignup.classList.toggle("active", !isLogin);
+      tabLogin.setAttribute("aria-selected", String(isLogin));
+      tabSignup.setAttribute("aria-selected", String(!isLogin));
+
+      nameRow.style.display = isLogin ? "none" : "grid";
+      confirmLabel.style.display = isLogin ? "none" : "grid";
+      submitBtn.textContent = isLogin ? "Login" : "Create account";
+      pwEl.autocomplete = isLogin ? "current-password" : "new-password";
+
+      // ✅ First name required ONLY on signup (and disabled during login so it can't block)
+      firstNameEl.required = !isLogin;
+      firstNameEl.disabled = isLogin;
+      lastNameEl.disabled = isLogin;
+      cpwEl.required = !isLogin;
+
+      setMsg("");
+    }
+
+    tabLogin.addEventListener("click", () => setMode("login"));
+    tabSignup.addEventListener("click", () => setMode("signup"));
+
+    // Initialize mode state on load
+    setMode("login");
+
+    function friendlyAuthError(err){
+      const code = (err?.code || "").toString();
+      if (code.includes("auth/invalid-credential")) return "Invalid email or password.";
+      if (code.includes("auth/email-already-in-use")) return "That email is already in use. Try logging in instead.";
+      if (code.includes("auth/weak-password")) return "Password is too weak. Use at least 6 characters.";
+      if (code.includes("auth/invalid-email")) return "That email address doesn’t look valid.";
+      if (code.includes("auth/network-request-failed")) return "Network error. Check your connection and try again.";
+      return err?.message || "Something went wrong. Please try again.";
+    }
+
+    // ✅ Updated: still allocates publicId the same way, but now also ensures default fields exist
+    async function ensurePublicId(user, displayName="") {
+      const userRef = doc(db, "users", user.uid);
+
+      const publicId = await runTransaction(db, async (transaction) => {
+        const snap = await transaction.get(userRef);
+        const existing = snap.exists() ? (snap.data() || {}) : {};
+
+        let pid = (existing.publicId || "").toString().trim();
+
+        // allocate a new publicId only if missing
+        if (!pid) {
+          const counterRef = doc(db, "meta", "counters");
+          const counterSnap = await transaction.get(counterRef);
+
+          let current = 0;
+          if (counterSnap.exists()) {
+            current = Number(counterSnap.data()?.userCounter || 0);
+          }
+          const next = current + 1;
+
+          transaction.set(counterRef, { userCounter: next }, { merge: true });
+          pid = "U" + next;
+        }
+
+        // build defaults (merge-safe)
+        const hasVerificationMap = existing.verification && typeof existing.verification === "object";
+        const isVerified = !!existing.verified;
+
+        const payload = {
+          publicId: pid,
+          name: (displayName || existing.name || "").toString(),
+          email: (user.email || existing.email || "").toString(),
+
+          age: (existing.age ?? "").toString(),
+          bio: (existing.bio ?? "").toString(),
+          program: (existing.program ?? "").toString(),
+          university: (existing.university ?? "").toString(),
+          gender: (existing.gender ?? "").toString(),
+
+          credits: Number.isFinite(Number(existing.credits)) ? Number(existing.credits) : 0,
+          creditsUpdatedAt: existing.creditsUpdatedAt || serverTimestamp(),
+
+          verified: isVerified,
+          verification: hasVerificationMap
+            ? existing.verification
+            : { status: (isVerified ? "verified" : "none"), updatedAt: serverTimestamp() },
+
+          createdAt: existing.createdAt || serverTimestamp(),
+          updatedAt: serverTimestamp()
+        };
+
+        transaction.set(userRef, payload, { merge: true });
+        return pid;
+      });
+
+      return publicId;
+    }
+
+    // Auto-redirect if already logged in (but NOT while submitting)
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
+      if (isSubmitting) return;
+
+      try {
+        await ensurePublicId(user, user.displayName || "");
+      } catch (_) {}
+
+      window.location.href = "hub.html";
+    });
+
+    // Forgot password
+    forgotPw.addEventListener("click", async () => {
+      const email = emailEl.value.trim();
+      if (!email) {
+        setMsg("Enter your email above first, then click “Forgot password?” again.", "error");
+        return;
+      }
+      try {
+        await sendPasswordResetEmail(auth, email);
+        setMsg("Password reset email sent. Check your inbox.", "ok");
+      } catch (err) {
+        setMsg(friendlyAuthError(err), "error");
+      }
+    });
+
+    // Submit login/signup
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setMsg("");
+
+      // Let the browser validate visible required fields
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const email = emailEl.value.trim();
+      const password = pwEl.value;
+
+      submitBtn.disabled = true;
+      isSubmitting = true;
+
+      try {
+        if (mode === "signup") {
+          const fn = firstNameEl.value.trim();
+          if (!fn) {
+            setMsg("First name is required.", "error");
+            return;
+          }
+
+          const confirm = cpwEl.value;
+          if (password !== confirm) {
+            setMsg("Passwords do not match.", "error");
+            return;
+          }
+
+          const cred = await createUserWithEmailAndPassword(auth, email, password);
+          const user = cred.user;
+
+          const ln = lastNameEl.value.trim();
+          const displayName = [fn, ln].filter(Boolean).join(" ");
+
+          await updateProfile(user, { displayName });
+          await ensurePublicId(user, displayName);
+
+          setMsg("Account created! Redirecting…", "ok");
+          window.location.href = "hub.html";
+        } else {
+          await signInWithEmailAndPassword(auth, email, password);
+
+          if (auth.currentUser) {
+            await ensurePublicId(auth.currentUser, auth.currentUser.displayName || "");
+          }
+
+          setMsg("Logged in! Redirecting…", "ok");
+          window.location.href = "hub.html";
+        }
+      } catch (err) {
+        setMsg(friendlyAuthError(err), "error");
+      } finally {
+        isSubmitting = false;
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

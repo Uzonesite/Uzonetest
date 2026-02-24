@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Uzone • Umessages</title>
+
+<!-- Tab icon -->
+<link rel="icon" type="image/png" href="logo.png" />
+
+<style>
+:root{
+  --accent:#b00b55;
+  --bg:#0b0b10;
+  --border: rgba(255,255,255,.14);
+  --text:white;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  font-family: system-ui, sans-serif;
+  color:var(--text);
+
+  /* Use a JS-updated variable instead of 100dvh */
+  height: var(--appH, 100dvh);
+
+  display:flex;
+  overflow:hidden;
+  overscroll-behavior: none; /* reduces weird bounce scrolling */
+}
+
+
+/* Sidebar */
+.sidebar{
+  width:260px;
+  border-right:1px solid var(--border);
+  overflow-y:auto;
+  padding:12px;
+  transition:.25s;
+  background:var(--bg);
+  z-index:20;
+}
+.matchItem{
+  padding:12px;
+  border-radius:12px;
+  cursor:pointer;
+}
+.matchItem:hover{
+  background:rgba(255,255,255,.05);
+}
+
+@media (max-width:768px){
+  .sidebar{
+    position:fixed;
+    left:-280px;
+    top:0;
+    height:100%;
+    width:260px;
+    padding:12px;
+    background:var(--bg);
+    border-right:1px solid var(--border);
+    z-index:30;
+  }
+  .sidebar.open{
+    left:0;
+  }
+
+  /* optional: make chat take full width cleanly */
+  .chat{
+    width:100%;
+  }
+}
+
+
+/* Chat */
+.chat{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+
+.chatHeader{
+  position:sticky;
+  top:0;
+  background:var(--bg);
+  padding:14px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  z-index:10;
+  min-height:56px;
+}
+
+#chatName{
+  flex:1;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-weight:600;
+}
+
+/* ✅ Header buttons now match hub theme */
+.headerBtn{
+  appearance:none;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.92);
+  cursor:pointer;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.2px;
+  padding:9px 12px;
+  border-radius:12px;
+  user-select:none;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+}
+.headerBtn:hover{
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  box-shadow: 0 0 14px var(--accent), 0 14px 34px rgba(176,11,85,.24);
+  filter: brightness(1.06);
+}
+.headerBtn:active{
+  transform: translateY(0px) scale(.99);
+  box-shadow: 0 0 10px var(--accent), 0 10px 28px rgba(176,11,85,.18);
+  filter: brightness(1.0);
+}
+.headerBtn:focus-visible{
+  outline:none;
+  box-shadow: 0 0 0 4px rgba(176,11,85,.26), 0 0 18px var(--accent);
+}
+
+/* Messages */
+.messages{
+  flex:1;
+  overflow-y:auto;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.bubble{
+  max-width:70%;
+  padding:12px 14px;
+  border-radius:18px;
+  font-size:14px;
+  display:flex;
+  flex-direction:column;
+  transition:.15s;
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+  word-break:break-word;
+}
+.bubble:active{
+  transform:scale(.98);
+}
+.me{
+  align-self:flex-end;
+  background:var(--accent);
+}
+.them{
+  align-self:flex-start;
+  background:rgba(255,255,255,.1);
+}
+
+.replyPreview{
+  font-size:12px;
+  opacity:.7;
+  margin-bottom:6px;
+  border-left:2px solid white;
+  padding-left:6px;
+}
+
+.timestamp{
+  font-size:11px;
+  opacity:.7;
+  margin-top:6px;
+  display:none;
+}
+
+.actions{
+  display:none;
+  gap:8px;
+  margin-top:6px;
+}
+.actions button{
+  font-size:11px;
+  background:none;
+  border:none;
+  color:white;
+  cursor:pointer;
+  opacity:.8;
+}
+
+/* Input */
+.inputArea{
+  position:sticky;
+  bottom:0;
+  background:var(--bg);
+  border-top:1px solid var(--border);
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+}
+
+.replyingTo{
+  font-size:12px;
+  opacity:.8;
+  margin-bottom:6px;
+  display:none;
+}
+
+.replyingTo button{
+  background:none;
+  border:none;
+  color:white;
+  cursor:pointer;
+}
+
+.inputRow{
+  display:flex;
+}
+
+.inputRow input{
+  flex:1;
+  padding:12px;
+  border-radius:20px;
+  border:none;
+  outline:none;
+}
+
+/* ✅ Send button more interactive */
+.inputRow button{
+  margin-left:10px;
+  padding:12px 18px;
+  border-radius:20px;
+  border:none;
+  background:var(--accent);
+  color:white;
+  cursor:pointer;
+  font-weight:900;
+  letter-spacing:.2px;
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.inputRow button:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.07);
+  box-shadow: 0 0 16px var(--accent), 0 16px 40px rgba(176,11,85,.30);
+}
+.inputRow button:active{
+  transform: translateY(0px) scale(.99);
+  filter: brightness(1.0);
+  box-shadow: 0 0 10px var(--accent), 0 10px 28px rgba(176,11,85,.18);
+}
+.inputRow button:focus-visible{
+  outline:none;
+  box-shadow: 0 0 0 4px rgba(176,11,85,.26), 0 0 18px var(--accent);
+}
+
+.editInput{
+  background:transparent;
+  border:none;
+  color:white;
+  font-size:14px;
+  outline:none;
+  width:100%;
+}
+
+.sidebarTop{
+  position: sticky;
+  top: 0;
+  padding-bottom: 10px;
+  background: var(--bg);
+  z-index: 5;
+}
+
+.sidebarSearch{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  outline: none;
+}
+
+.sidebarSearch:focus{
+  border-color: rgba(176,11,85,.60);
+  box-shadow: 0 0 0 4px rgba(176,11,85,.20);
+}
+
+.sidebarSearch::placeholder{
+  color: rgba(255,255,255,.55);
+}
+
+@media (max-width:768px){
+  body.kb .messages{ padding: 12px; }
+  body.kb .chatHeader{ padding: 10px 12px; min-height: 48px; }
+  body.kb .inputArea{ padding: 8px; }
+}
+  
+</style>
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebarTop">
+    <input id="chatSearch" class="sidebarSearch" type="search" placeholder="Search chats…" />
+  </div>
+  <div id="chatList"></div>
+</div>
+
+<div class="chat">
+  <div class="chatHeader">
+    <button class="headerBtn" onclick="window.location.href='hub.html'">Uhub</button>
+    <button class="headerBtn" id="openSidebar">Chats</button>
+    <div id="chatName">Select a chat</div>
+  </div>
+
+  <div class="messages" id="messages"></div>
+
+  <div class="inputArea">
+    <div class="replyingTo" id="replyingTo">
+      Replying... <button id="cancelReply">✕</button>
+    </div>
+    <div class="inputRow">
+      <input id="messageInput" placeholder="Type a message"/>
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import {
+  getFirestore, collection, doc, addDoc,
+  getDoc, getDocs, updateDoc, deleteDoc,
+  onSnapshot, query, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+  authDomain: "uzone-6148d.firebaseapp.com",
+  projectId: "uzone-6148d",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const sidebar = document.getElementById("sidebar");
+const chatList = document.getElementById("chatList");
+const chatSearch = document.getElementById("chatSearch");
+
+let allChats = []; // { chatId, name }
+
+const openSidebarBtn = document.getElementById("openSidebar");
+const messagesDiv = document.getElementById("messages");
+const chatName = document.getElementById("chatName");
+const messageInput = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
+const replyingToDiv = document.getElementById("replyingTo");
+const cancelReply = document.getElementById("cancelReply");
+
+let currentUser=null;
+let currentChatId=null;
+let replyToMessage=null;
+
+openSidebarBtn.onclick=()=>sidebar.classList.toggle("open");
+
+onAuthStateChanged(auth, async user=>{
+  if(!user){window.location.href="index.html";return;}
+  currentUser=user;
+  loadMatches();
+});
+
+function setAppHeight(){
+  // visualViewport is best on mobile browsers (esp iOS)
+  const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  document.documentElement.style.setProperty("--appH", `${h}px`);
+}
+
+setAppHeight();
+window.addEventListener("resize", setAppHeight);
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", setAppHeight);
+}
+
+function getUrlChatTarget(){
+  const p = new URLSearchParams(window.location.search);
+  return {
+    chatId: p.get("chat") || null,
+    withUid: p.get("with") || null
+  };
+}
+
+
+async function loadMatches(){
+  chatList.innerHTML = "";
+  allChats = [];
+
+  const snap = await getDocs(collection(db,"chats"));
+
+  for (const docSnap of snap.docs){
+    const data = docSnap.data();
+    if(!data?.members?.includes(currentUser.uid)) continue;
+
+    const other = data.members.find(m => m !== currentUser.uid);
+    const userSnap = await getDoc(doc(db,"users",other));
+    const name = userSnap.exists() ? (userSnap.data().name || other) : other;
+
+    allChats.push({ chatId: docSnap.id, name, otherUid: other });
+  }
+
+  allChats.sort((a,b) => a.name.localeCompare(b.name));
+  renderChatList("");
+
+  const target = getUrlChatTarget();
+
+  // ✅ If a chat ID is directly provided → open it
+  if (target.chatId) {
+    const found = allChats.find(c => c.chatId === target.chatId);
+    const name = found ? found.name : "Chat";
+    openChat(target.chatId, name);
+    sidebar.classList.remove("open");
+    return;
+  }
+
+  // ✅ If coming from profile with ?with=UID but no chat param
+  if (target.withUid) {
+    const found = allChats.find(c => c.otherUid === target.withUid);
+    if (found) {
+      openChat(found.chatId, found.name);
+      sidebar.classList.remove("open");
+    }
+    return;
+  }
+
+  // Default behavior (opened from Hub)
+  sidebar.classList.add("open");
+}
+
+
+function renderChatList(filterText){
+  const q = (filterText || "").trim().toLowerCase();
+  chatList.innerHTML = "";
+
+  const filtered = !q
+    ? allChats
+    : allChats.filter(c => (c.name || "").toLowerCase().includes(q));
+
+  if (!filtered.length){
+    const empty = document.createElement("div");
+    empty.style.opacity = ".7";
+    empty.style.fontSize = "13px";
+    empty.style.padding = "10px 6px";
+    empty.textContent = "No chats found.";
+    chatList.appendChild(empty);
+    return;
+  }
+
+  filtered.forEach(({ chatId, name }) => {
+    const div = document.createElement("div");
+    div.className = "matchItem";
+    div.textContent = name;
+    div.onclick = () => {
+      openChat(chatId, name);
+      sidebar.classList.remove("open");
+    };
+    chatList.appendChild(div);
+  });
+}
+
+
+function openChat(chatId,name){
+  currentChatId=chatId;
+  history.replaceState(null, "", `messages.html?chat=${encodeURIComponent(chatId)}`);
+  chatName.textContent=name;
+  messagesDiv.innerHTML="";
+
+  const q=query(collection(db,"chats",chatId,"messages"),orderBy("createdAt"));
+
+  onSnapshot(q,snap=>{
+    messagesDiv.innerHTML="";
+    snap.forEach(docSnap=>{
+      const msg=docSnap.data();
+      const bubble=document.createElement("div");
+      bubble.className="bubble "+(msg.senderId===currentUser.uid?"me":"them");
+
+      if(msg.replyText){
+        const reply=document.createElement("div");
+        reply.className="replyPreview";
+        reply.textContent=msg.replyText;
+        bubble.appendChild(reply);
+      }
+
+      const text=document.createElement("div");
+      text.textContent=msg.text;
+      bubble.appendChild(text);
+
+      const time=document.createElement("div");
+      time.className="timestamp";
+      time.textContent=msg.createdAt?.toDate().toLocaleString()||"";
+      bubble.appendChild(time);
+
+      const actions=document.createElement("div");
+      actions.className="actions";
+
+      const replyBtn=document.createElement("button");
+      replyBtn.textContent="Reply";
+      replyBtn.onclick = e => {
+  e.stopPropagation();
+
+  replyToMessage = msg;
+  replyingToDiv.style.display = "block";
+
+  // Focus input immediately
+  messageInput.focus();
+
+  // Move cursor to end (safe for empty or existing text)
+  const len = messageInput.value.length;
+  messageInput.setSelectionRange(len, len);
+
+  // On mobile, ensure chat scrolls correctly
+  if (window.innerWidth <= 768) {
+    requestAnimationFrame(() => {
+      scrollMessagesToBottom();
+    });
+  }
+};
+
+      actions.appendChild(replyBtn);
+
+      if(msg.senderId===currentUser.uid){
+        const editBtn=document.createElement("button");
+        editBtn.textContent="Edit";
+        editBtn.onclick=e=>{
+          e.stopPropagation();
+          const input=document.createElement("input");
+          input.value=msg.text;
+          input.className="editInput";
+          bubble.replaceChild(input,text);
+          input.focus();
+
+          input.addEventListener("keydown",async e=>{
+            if(e.key==="Enter"){
+              e.preventDefault();
+              input.blur();
+            }
+          });
+
+          input.onblur=async()=>{
+            await updateDoc(doc(db,"chats",chatId,"messages",docSnap.id),{text:input.value});
+          };
+        };
+        actions.appendChild(editBtn);
+
+        const deleteBtn=document.createElement("button");
+        deleteBtn.textContent="Delete";
+        deleteBtn.onclick=async e=>{
+          e.stopPropagation();
+          await deleteDoc(doc(db,"chats",chatId,"messages",docSnap.id));
+        };
+        actions.appendChild(deleteBtn);
+      }
+
+      bubble.appendChild(actions);
+
+      bubble.onclick=()=>{
+        time.style.display=time.style.display==="block"?"none":"block";
+        actions.style.display=actions.style.display==="flex"?"none":"flex";
+      };
+
+      messagesDiv.appendChild(bubble);
+    });
+
+    messagesDiv.scrollTop=messagesDiv.scrollHeight;
+  });
+}
+
+sendBtn.onclick=async()=>{
+  const text=messageInput.value.trim();
+  if(!text||!currentChatId)return;
+
+  await addDoc(collection(db,"chats",currentChatId,"messages"),{
+    text,
+    senderId:currentUser.uid,
+    createdAt:serverTimestamp(),
+    replyText:replyToMessage?replyToMessage.text:null
+  });
+
+  messageInput.value="";
+  replyToMessage=null;
+  replyingToDiv.style.display="none";
+};
+
+function scrollMessagesToBottom(){
+  // use requestAnimationFrame to wait for layout after keyboard changes
+  requestAnimationFrame(() => {
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });
+}
+
+messageInput.addEventListener("focus", () => {
+  if (window.innerWidth <= 768) scrollMessagesToBottom();
+});
+
+messageInput.addEventListener("click", () => {
+  if (window.innerWidth <= 768) scrollMessagesToBottom();
+});
+
+// also when viewport changes (keyboard open/close)
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", () => {
+    if (window.innerWidth <= 768) {
+      setAppHeight();
+      settleKeyboardFocus();
+    } else {
+      setAppHeight();
+    }
+  });
+}
+
+messageInput.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&!e.shiftKey){
+    e.preventDefault();
+    sendBtn.click();
+  }
+});
+
+function lockWindowToTop(){
+  // Some mobile browsers scroll the PAGE when focusing an input.
+  // Your layout is an app (overflow hidden), so keep the window at 0.
+  window.scrollTo(0, 0);
+}
+
+function settleKeyboardFocus(){
+  // Run a few times because iOS can fire focus/resize in a weird order
+  // and does another scroll after the first one.
+  let n = 0;
+  const tick = () => {
+    lockWindowToTop();
+    scrollMessagesToBottom();
+    if (++n < 6) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+messageInput.addEventListener("focus", () => {
+  if (window.innerWidth <= 768) {
+    document.body.classList.add("kb");
+    settleKeyboardFocus();
+  }
+});
+
+messageInput.addEventListener("blur",  () => document.body.classList.remove("kb"));
+
+chatSearch.addEventListener("input", () => {
+  renderChatList(chatSearch.value);
+});
+
+document.addEventListener("click", (e) => {
+  if (window.innerWidth > 768) return;
+  if (!sidebar.classList.contains("open")) return;
+
+  const clickedInsideSidebar = sidebar.contains(e.target);
+  const clickedChatsButton = openSidebarBtn.contains(e.target);
+
+  if (!clickedInsideSidebar && !clickedChatsButton) {
+    sidebar.classList.remove("open");
+  }
+});
+  
+</script>
+</body>
+</html>

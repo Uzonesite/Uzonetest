@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Uzone • Hub</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+
+  <style>
+    :root{
+      --accent:#b00b55;
+      --bg:#0b0b10;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --border: rgba(255,255,255,.14);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100dvh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(176,11,85,.30), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(176,11,85,.18), transparent 55%),
+        radial-gradient(700px 500px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+    }
+
+    header{
+      width:min(1100px, 92vw);
+      margin:18px auto 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position:sticky;
+      top:10px;
+      z-index:10;
+      backdrop-filter: blur(10px);
+    }
+    .left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+    .left img{
+      width:40px;height:40px;object-fit:contain;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));
+    }
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:0;
+    }
+    .brandRow{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .brandRow h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+      line-height:1.1;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .heroActions{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+}
+
+.btn.small{
+  padding:10px 12px;
+  border-radius:12px;
+  font-weight:850;
+}
+
+.toast{
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.28);
+  backdrop-filter: blur(10px);
+  color: rgba(255,255,255,.92);
+  box-shadow: var(--shadow);
+  display:none;
+  max-width: min(92vw, 680px);
+  text-align:center;
+}
+.toast.show{ display:block; }
+
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.88);
+      white-space:nowrap;
+    }
+    .badge .dot{
+      width:8px;height:8px;border-radius:999px;background: rgba(255,255,255,.45);
+    }
+    .badge.verified .dot{ background: rgba(80,255,160,.78); }
+    .badge.unverified .dot{ background: rgba(255,210,80,.85); }
+
+    .right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    /* Buttons: more interactive */
+    .btn{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(176,11,85,.55);
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.58));
+      color:white;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow: 0 18px 40px rgba(176,11,85,.22);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease, border-color .12s ease;
+      user-select:none;
+    }
+    .btn:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow: 0 0 18px #b00b55, 0 22px 55px rgba(176,11,85,.35);
+  border-color: #b00b55;
+}
+
+    }
+    .btn:active{
+      transform: translateY(0px) scale(.99);
+      filter: brightness(1.0);
+      box-shadow: 0 14px 34px rgba(176,11,85,.20);
+    }
+    .btn:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 4px rgba(176,11,85,.26), 0 18px 40px rgba(176,11,85,.22);
+    }
+
+    main{
+      width:min(1100px, 92vw);
+      margin:16px auto 30px auto;
+      display:grid;
+      gap:14px;
+    }
+
+    .hero{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px 18px;
+      overflow:hidden;
+      position:relative;
+    }
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:-45% -45% auto auto;
+      width:520px;height:520px;
+      background: radial-gradient(circle, rgba(176,11,85,.22), transparent 60%);
+      transform: rotate(18deg);
+      pointer-events:none;
+    }
+    .heroTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:1;
+    }
+    .hero h2{
+      margin:0;
+      font-size:20px;
+      letter-spacing:.2px;
+    }
+    .hero p{
+      margin:8px 0 0 0;
+      color:var(--muted);
+      line-height:1.45;
+      max-width: 75ch;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .card{
+      grid-column: span 6;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+      position:relative;
+      overflow:hidden;
+      min-height: 170px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      transition: transform .14s ease, border-color .14s ease, box-shadow .14s ease;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,.20);
+      box-shadow: 0 26px 70px rgba(0,0,0,.50);
+    }
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:-40% -40% auto auto;
+      width:320px;height:320px;
+      background: radial-gradient(circle, rgba(176,11,85,.18), transparent 60%);
+      transform: rotate(18deg);
+      pointer-events:none;
+    }
+    .card h3{
+      margin:0 0 6px 0;
+      font-size:18px;
+      position:relative;
+      z-index:1;
+    }
+    .card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.45;
+      position:relative;
+      z-index:1;
+    }
+
+    .actions{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:1;
+      align-items:center;
+    }
+
+    .linkBtn{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.92);
+      text-decoration:none;
+      font-weight:800;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      transition: transform .12s ease, filter .12s ease, border-color .12s ease, box-shadow .12s ease, background .12s ease;
+      user-select:none;
+    }
+    .linkBtn:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  border-color: #b00b55;
+  box-shadow: 0 0 16px #b00b55, 0 16px 40px rgba(176,11,85,.30);
+}
+
+    }
+    .linkBtn:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 10px 28px rgba(0,0,0,.25);
+    }
+    .linkBtn:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 4px rgba(255,255,255,.14), 0 16px 40px rgba(0,0,0,.35);
+    }
+
+    .linkBtn.primary{
+      border:1px solid rgba(176,11,85,.55);
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.58));
+      box-shadow: 0 18px 40px rgba(176,11,85,.18);
+    }
+    .linkBtn.primary:hover{
+  border-color: #b00b55;
+  box-shadow: 0 0 20px #b00b55, 0 22px 55px rgba(176,11,85,.35);
+}
+
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+      color:rgba(255,255,255,.85);
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      margin-top:10px;
+      position:relative;
+      z-index:1;
+      width: fit-content;
+    }
+    .pill .dot{
+      width:8px;height:8px;border-radius:999px;background: rgba(255,255,255,.45);
+    }
+    .pill.live .dot{ background: rgba(80,255,160,.75); }
+
+    @media (max-width: 860px){
+      .card{grid-column: span 12;}
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <img src="logo.png" alt="Uzone logo" />
+      <div class="title">
+        <div class="brandRow">
+          <h1>Uzone</h1>
+          <span class="badge unverified" id="verifyBadge" style="display:none;">
+            <span class="dot"></span><span id="verifyText">Unverified</span>
+          </span>
+        </div>
+        <div class="sub" id="welcome">Loading…</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <!-- Removed email chip -->
+      <button class="btn" id="signOutBtn" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-label="Hub info">
+      <div class="heroTop">
+  <div>
+    <h2 id="heroTitle">Welcome to Uzone's hub</h2>
+    <p id="heroDesc">By students, for students.</p>
+    <div class="pill live" style="margin-top:12px;"><span class="dot"></span>Invite a friend — when they verify, you both get a free credit!</div>
+  </div>
+
+  <div class="heroActions">
+    <button class="btn small" id="referBtn" type="button" disabled>Refer</button>
+  </div>
+</div>
+
+    </section>
+
+    <section class="grid" aria-label="Hub navigation">
+      <article class="card">
+        <div>
+          <h3>Profile</h3>
+          <p>Edit your profile, add photos, and get verified.</p>
+        </div>
+        <div class="actions">
+          <a class="linkBtn primary" href="profile.html">Open Profile</a>
+          <a class="linkBtn" href="messages.html">Open Chats</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div>
+          <h3>Umotives</h3>
+          <p>Discover events, parties, and rate vibes.</p>
+        </div>
+        <div class="actions">
+          <a class="linkBtn primary" href="events.html">Open Umotives</a>
+          <a class="linkBtn" href="map.html">Open Map</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div>
+          <h3>Match</h3>
+          <p>Like and pass on other students, match, and start conversations.</p>
+        </div>
+        <div class="actions">
+          <a class="linkBtn primary" href="dating.html">Open Match</a>
+        </div>
+      </article>
+      
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAnalytics, isSupported as analyticsSupported } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+      authDomain: "uzone-6148d.firebaseapp.com",
+      databaseURL: "https://uzone-6148d-default-rtdb.firebaseio.com",
+      projectId: "uzone-6148d",
+      storageBucket: "uzone-6148d.firebasestorage.app",
+      messagingSenderId: "88783701381",
+      appId: "1:88783701381:web:4f6c4b1ad8b26d6fa6f0ec",
+      measurementId: "G-HKL5246YMC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    try { if (await analyticsSupported()) getAnalytics(app); } catch(_) {}
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const welcome = document.getElementById("welcome");
+    const signOutBtn = document.getElementById("signOutBtn");
+
+    const verifyBadge = document.getElementById("verifyBadge");
+    const verifyText = document.getElementById("verifyText");
+
+    const referBtn = document.getElementById("referBtn");
+    const toastEl = document.getElementById("toast");
+
+    function toast(text){
+  if (!toastEl) return;
+  toastEl.textContent = text;
+  toastEl.classList.add("show");
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2200);
+}
+
+    function setVerified(isVerified){
+      verifyBadge.style.display = "inline-flex";
+      if (isVerified){
+        verifyBadge.classList.remove("unverified");
+        verifyBadge.classList.add("verified");
+        verifyText.textContent = "Verified";
+      } else {
+        verifyBadge.classList.remove("verified");
+        verifyBadge.classList.add("unverified");
+        verifyText.textContent = "Unverified";
+      }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      // Prefer Firestore profile name (matches your profile page)
+      let displayName = user.displayName?.trim() || "";
+      let verified = false;
+
+      try{
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()){
+          const data = snap.data() || {};
+          if (typeof data.name === "string" && data.name.trim()) displayName = data.name.trim();
+          verified = !!data.verified;
+        }
+      } catch(_) {}
+
+      welcome.textContent = displayName ? `Welcome, ${displayName}` : "Welcome back";
+      setVerified(verified);
+
+      referBtn.disabled = false;
+
+referBtn.onclick = async () => {
+  const url = new URL("referral_signup.html", window.location.href);
+  url.searchParams.set("ref", user.uid); // referral_signup.html?ref=UID
+
+  const link = url.toString();
+
+  try{
+    await navigator.clipboard.writeText(link);
+    toast("Referral link copied!");
+  } catch(_){
+    // fallback
+    prompt("Copy your referral link:", link);
+  }
+};
+
+    });
+
+    signOutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "index.html";
+    });
+  </script>
+
+<div class="toast" id="toast"></div>
+  
+</body>
+</html>

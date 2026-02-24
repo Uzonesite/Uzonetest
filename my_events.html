@@ -1,0 +1,1206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Uzone • My Motives</title>
+
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="color-scheme" content="dark light" />
+
+  <style>
+    :root{
+      --accent:#b00b55;
+      --bg:#0b0b10;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.10);
+      --border: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100dvh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(176,11,85,.30), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(176,11,85,.18), transparent 55%),
+        radial-gradient(700px 500px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+    }
+
+    header{
+      width:min(1120px, 92vw);
+      margin:18px auto 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+    .left{display:flex; align-items:center; gap:12px; min-width:0;}
+    .left img{
+      width:38px;height:38px;object-fit:contain;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));
+    }
+    .title{display:grid; gap:2px; min-width:0;}
+    .title h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .title .sub{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .right{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+
+    .btn{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.92);
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease, background .12s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 16px var(--accent), 0 16px 40px rgba(176,11,85,.30);
+      filter: brightness(1.06);
+    }
+    .btn:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 10px var(--accent), 0 10px 28px rgba(176,11,85,.20);
+      filter: brightness(1.0);
+    }
+    .btn:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 4px rgba(176,11,85,.26), 0 0 18px var(--accent);
+    }
+    .btn:disabled{opacity:.65;cursor:not-allowed}
+
+    .btn.primary{
+      border:1px solid rgba(176,11,85,.55);
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.58));
+      color:white;
+      box-shadow: 0 18px 40px rgba(176,11,85,.22);
+    }
+    .btn.primary:hover{
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent), 0 22px 55px rgba(176,11,85,.35);
+      filter: brightness(1.08);
+    }
+    .btn.primary:active{
+      box-shadow: 0 0 14px var(--accent), 0 14px 34px rgba(176,11,85,.20);
+    }
+
+    main{
+      width:min(1120px, 92vw);
+      margin:14px auto 60px auto;
+      display:grid;
+      gap:14px;
+    }
+
+    .card{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+    }
+
+    .toolbar{
+      padding:14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+
+    .searchWrap{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex:1;
+      min-width: 240px;
+    }
+    input[type="search"]{
+      width:100%;
+      max-width:520px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      outline: none;
+      transition: box-shadow .12s ease, border-color .12s ease;
+    }
+    input[type="search"]:focus{
+      border-color: rgba(176,11,85,.65);
+      box-shadow: 0 0 0 4px rgba(176,11,85,.12);
+    }
+
+    .chips{display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.90);
+      font-size:12px;
+      font-weight:900;
+      user-select:none;
+    }
+    .dot{width:8px;height:8px;border-radius:50%; background: rgba(176,11,85,.9); box-shadow: 0 0 0 4px rgba(176,11,85,.12);}
+
+    .sectionHead{
+      padding:14px 14px 0 14px;
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .sectionHead h2{
+      margin:0;
+      font-size:15px;
+      letter-spacing:.2px;
+    }
+    .sectionHead .muted{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .grid{
+      padding:14px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:12px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 620px){
+      .grid{ grid-template-columns: 1fr; }
+      header{ position: static; }
+    }
+
+    .event{
+      padding:14px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+      display:grid;
+      gap:10px;
+    }
+    .event:hover{
+      transform: translateY(-1px);
+      border-color: rgba(176,11,85,.55);
+      box-shadow: 0 0 0 4px rgba(176,11,85,.10), 0 18px 50px rgba(0,0,0,.35);
+      filter: brightness(1.04);
+    }
+    .eventTop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+    .eventTitle{margin:0; font-size:15px; font-weight:950; letter-spacing:.2px;}
+    .badge{
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      font-size:11px;
+      font-weight:950;
+      white-space:nowrap;
+    }
+    .badge.invite{
+      border-color: rgba(176,11,85,.55);
+      background: rgba(176,11,85,.12);
+    }
+    .meta{
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.35;
+      display:grid;
+      gap:4px;
+    }
+    .meta b{color: rgba(255,255,255,.88); font-weight:900;}
+    .desc{
+      font-size:12.5px;
+      color: rgba(255,255,255,.84);
+      line-height: 1.35;
+      opacity: .95;
+      display:-webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow:hidden;
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:4px;
+    }
+    .actions .leftA{display:flex; gap:10px; flex-wrap:wrap;}
+    .mini{
+      padding:9px 11px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      color: rgba(255,255,255,.92);
+      font-weight:900;
+      cursor:pointer;
+      text-decoration:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+      font-size:12px;
+    }
+    .mini:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 14px rgba(176,11,85,.55), 0 0 0 4px rgba(176,11,85,.10);
+      filter: brightness(1.06);
+    }
+    .mini:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 10px rgba(176,11,85,.45), 0 0 0 4px rgba(176,11,85,.08);
+      filter: brightness(1.0);
+    }
+    .mini:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 4px rgba(176,11,85,.22), 0 0 14px rgba(176,11,85,.55);
+    }
+
+    .list{
+      padding:14px;
+      display:grid;
+      gap:10px;
+    }
+    .req{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      border-radius: 16px;
+      padding:12px;
+      display:grid;
+      gap:10px;
+    }
+    .reqTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .reqTitle{
+      margin:0;
+      font-size:13px;
+      font-weight:950;
+    }
+    .reqMeta{
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+    .reqBtns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+    .mini.ok{
+      border-color: rgba(90, 255, 170, .35);
+      background: rgba(90, 255, 170, .10);
+    }
+    .mini.ok:hover{
+      box-shadow: 0 0 0 4px rgba(90, 255, 170, .10);
+      border-color: rgba(90, 255, 170, .55);
+    }
+    .mini.no{
+      border-color: rgba(255, 90, 120, .35);
+      background: rgba(255, 90, 120, .10);
+    }
+    .mini.no:hover{
+      box-shadow: 0 0 0 4px rgba(255, 90, 120, .10);
+      border-color: rgba(255, 90, 120, .55);
+    }
+
+    .empty{
+      padding:16px;
+      color: var(--muted);
+      display:none;
+    }
+    .msg{
+      margin: 0 14px 14px 14px;
+      display:none;
+      padding:12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      color: rgba(255,255,255,.88);
+      font-size:13px;
+    }
+    .msg.bad{
+      border-color: rgba(255, 90, 120, .40);
+      background: rgba(255, 90, 120, .10);
+    }
+    .msg.good{
+      border-color: rgba(90, 255, 170, .35);
+      background: rgba(90, 255, 170, .10);
+    }
+
+    /* Modal (edit motive) */
+    .modalOverlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.62);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modalOverlay.show{display:flex}
+    .modal{
+      width:min(720px, 100%);
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(15,15,22,.82);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modalHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:16px 18px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(135deg, rgba(176,11,85,.18), rgba(255,255,255,.02));
+    }
+    .modalHead h3{margin:0;font-size:16px;letter-spacing:.2px}
+    .modalBody{padding:16px 18px}
+    .formGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+    }
+    .field label{
+      font-size:12px;
+      color: rgba(255,255,255,.78);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .field input, .field textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.92);
+      outline:none;
+      font: inherit;
+      transition: box-shadow .12s ease, border-color .12s ease, transform .12s ease;
+    }
+    .field input:focus, .field textarea:focus{
+      border-color: rgba(176,11,85,.65);
+      box-shadow: 0 0 0 4px rgba(176,11,85,.18), 0 0 14px rgba(176,11,85,.55);
+    }
+    .field textarea{min-height:92px;resize:vertical}
+    .span2{grid-column:1 / -1}
+    .toggleRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+    }
+    .toggleRow .tTitle{font-weight:900}
+    .pillBtn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      color: rgba(255,255,255,.92);
+      cursor:pointer;
+      font-weight:900;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+      user-select:none;
+    }
+    .pillBtn:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 16px rgba(176,11,85,.55);
+      filter: brightness(1.06);
+    }
+    .pillBtn.on{
+      border-color: rgba(176,11,85,.65);
+      background: linear-gradient(135deg, rgba(176,11,85,.90), rgba(176,11,85,.45));
+      box-shadow: 0 0 18px rgba(176,11,85,.55);
+    }
+    .modalFoot{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:14px 18px 18px;
+      border-top:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+    }
+    .danger{
+      border-color: rgba(255,90,90,.45) !important;
+    }
+    .danger:hover{
+      border-color: rgba(255,90,90,.85) !important;
+      box-shadow: 0 0 18px rgba(255,90,90,.45) !important;
+    }
+    @media (max-width: 720px){
+      .formGrid{grid-template-columns:1fr}
+      .span2{grid-column:auto}
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <img src="logo.png" alt="Uzone" />
+      <div class="title">
+        <h1>My Motives</h1>
+        <div class="sub" id="subline">Loading…</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <a class="btn" href="hub.html">Hub</a>
+      <a class="btn" href="map.html">Map</a>
+      <a class="btn" href="events.html">Umotives</a>
+      <a class="btn primary" href="post_event.html">Post Motive</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="toolbar">
+        <div class="searchWrap">
+          <input id="search" type="search" placeholder="Search your motives (name, tags, location, description)…" />
+          <button class="btn" id="refreshBtn" type="button">Refresh</button>
+        </div>
+        <div class="chips">
+          <span class="chip" id="countChip"><span class="dot"></span><span id="countText">0</span> motives</span>
+          <span class="chip" id="reqChip" style="display:none;"><span class="dot"></span><span id="reqText">0</span> invite requests</span>
+        </div>
+      </div>
+
+      <div class="sectionHead">
+        <div>
+          <h2>Your motives</h2>
+        </div>
+        <div class="muted" id="hintText"></div>
+      </div>
+
+      <div class="msg" id="msg"></div>
+      <div class="empty" id="emptyMine">No motives found.</div>
+      <div class="grid" id="mineGrid"></div>
+    </section>
+
+    <section class="card" id="reqCard" style="display:none;">
+      <div class="sectionHead">
+        <div>
+          <h2>Invite requests</h2>
+          <div class="muted">Pending applications for your invite-only motives.</div>
+        </div>
+        <div class="muted" id="reqSub">—</div>
+      </div>
+
+      <div class="msg" id="reqMsg"></div>
+      <div class="empty" id="emptyReq">No pending requests.</div>
+      <div class="list" id="reqList"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection, doc,
+      getDocs, getDoc,
+      query, where,
+      setDoc, updateDoc, deleteDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+      authDomain: "uzone-6148d.firebaseapp.com",
+      projectId: "uzone-6148d",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const subline = document.getElementById("subline");
+    const msg = document.getElementById("msg");
+    const mineGrid = document.getElementById("mineGrid");
+    const emptyMine = document.getElementById("emptyMine");
+    const searchEl = document.getElementById("search");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const countText = document.getElementById("countText");
+    const hintText = document.getElementById("hintText");
+
+    const reqCard = document.getElementById("reqCard");
+    const reqList = document.getElementById("reqList");
+    const reqChip = document.getElementById("reqChip");
+    const reqText = document.getElementById("reqText");
+    const reqSub = document.getElementById("reqSub");
+    const reqMsg = document.getElementById("reqMsg");
+    const emptyReq = document.getElementById("emptyReq");
+
+    // --- Edit modal refs ---
+    const editOverlay = document.getElementById("editOverlay");
+    const closeEditBtn = document.getElementById("closeEditBtn");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+    const saveEditBtn = document.getElementById("saveEditBtn");
+    const deleteFromModalBtn = document.getElementById("deleteFromModalBtn");
+    const editMsg = document.getElementById("editMsg");
+
+    const eName = document.getElementById("eName");
+    const eLocation = document.getElementById("eLocation");
+    const eStartDate = document.getElementById("eStartDate");
+    const eStartTime = document.getElementById("eStartTime");
+    const eEndDate = document.getElementById("eEndDate");
+    const eEndTime = document.getElementById("eEndTime");
+    const eTags = document.getElementById("eTags");
+    const eDesc = document.getElementById("eDesc");
+    const eInviteBtn = document.getElementById("eInviteBtn");
+    const eVenueSize = document.getElementById("eVenueSize");
+    const eSpots = document.getElementById("eSpots");
+    const eEst = document.getElementById("eEst");
+
+    let currentUser = null;
+    let allMine = [];
+    let allRequests = [];
+
+    // modal state
+    let editingEventId = null;
+    let editingInviteOnly = false;
+
+    // cache names
+    const userNameCache = new Map(); // uid -> string
+
+    function showMsg(el, text, kind=""){
+      el.className = "msg" + (kind ? " " + kind : "");
+      el.style.display = text ? "block" : "none";
+      el.textContent = text || "";
+    }
+    function setTopMsg(text, kind=""){ showMsg(msg, text, kind); }
+    function setReqMsg(text, kind=""){ showMsg(reqMsg, text, kind); }
+
+    function safeStr(v){ return (v == null) ? "" : String(v); }
+    function lower(v){ return safeStr(v).toLowerCase(); }
+
+    function pickDescription(d){
+      return safeStr(d.description || d.desc || d.bio || d.about || "");
+    }
+
+    function pickCreatedAtMs(d){
+      const t = d.createdAt || d.updatedAt || d.timeCreated || null;
+      if (!t) return 0;
+      if (typeof t === "number") return t;
+      if (typeof t === "string"){
+        const ms = Date.parse(t);
+        return Number.isFinite(ms) ? ms : 0;
+      }
+      if (t?.toDate) return t.toDate().getTime();
+      if (typeof t?.seconds === "number") return (t.seconds * 1000);
+      return 0;
+    }
+
+    function fmtWhen(d){
+      const sd = safeStr(d.startDate);
+      const st = safeStr(d.startTime);
+      const ed = safeStr(d.endDate);
+      const et = safeStr(d.endTime);
+      const start = [sd, st].filter(Boolean).join(" ");
+      const end = [ed, et].filter(Boolean).join(" ");
+      if (start && end) return `${start} → ${end}`;
+      return start || end || "—";
+    }
+
+    function esc(s){
+      return safeStr(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    async function getUserDisplayName(uid){
+      if (!uid) return "User";
+      if (userNameCache.has(uid)) return userNameCache.get(uid);
+
+      try{
+        const snap = await getDoc(doc(db, "users", uid));
+        const data = snap.exists() ? (snap.data() || {}) : {};
+        const name = safeStr(data.name || data.displayName || data.username || data.handle || "");
+        const finalName = name.trim() ? name.trim() : "User";
+        userNameCache.set(uid, finalName);
+        return finalName;
+      }catch{
+        userNameCache.set(uid, "User");
+        return "User";
+      }
+    }
+
+    // --- Modal helpers ---
+    function setEditMsg(text, kind=""){
+      editMsg.className = "msg" + (kind ? " " + kind : "");
+      editMsg.style.display = text ? "block" : "none";
+      editMsg.textContent = text || "";
+    }
+
+    function setInviteUI(on){
+      editingInviteOnly = !!on;
+      eInviteBtn.classList.toggle("on", editingInviteOnly);
+      eInviteBtn.setAttribute("aria-pressed", editingInviteOnly ? "true" : "false");
+      eInviteBtn.textContent = editingInviteOnly ? "Invite-only" : "Public";
+    }
+
+    function openEdit(ev){
+      if (!currentUser) return;
+
+      editingEventId = ev.id;
+      setEditMsg("");
+
+      eName.value = safeStr(ev.name || "Untitled");
+      eLocation.value = safeStr(ev.location || "");
+
+      eStartDate.value = safeStr(ev.startDate || "");
+      eStartTime.value = safeStr(ev.startTime || "");
+      eEndDate.value = safeStr(ev.endDate || "");
+      eEndTime.value = safeStr(ev.endTime || "");
+
+      eTags.value = Array.isArray(ev.tags) ? ev.tags.join(", ") : safeStr(ev.tags || "");
+      eDesc.value = pickDescription(ev);
+
+      eVenueSize.value = (ev.venueSize ?? "");
+      eSpots.value = (ev.spots ?? ev.spotsAvailable ?? "");
+      eEst.value = (ev.estimatedAttendance ?? ev.est ?? "");
+
+      setInviteUI(!!ev.inviteOnly);
+
+      editOverlay.classList.add("show");
+      editOverlay.setAttribute("aria-hidden", "false");
+    }
+
+    function closeEdit(){
+      editOverlay.classList.remove("show");
+      editOverlay.setAttribute("aria-hidden", "true");
+      setEditMsg("");
+      editingEventId = null;
+      editingInviteOnly = false;
+    }
+
+    eInviteBtn.addEventListener("click", () => setInviteUI(!editingInviteOnly));
+    closeEditBtn.addEventListener("click", closeEdit);
+    cancelEditBtn.addEventListener("click", closeEdit);
+
+    editOverlay.addEventListener("click", (e) => {
+      if (e.target === editOverlay) closeEdit();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && editOverlay.classList.contains("show")) closeEdit();
+    });
+
+    async function deleteEventNoConfirm(ev){
+      if (!currentUser) return;
+
+      try{
+        await deleteDoc(doc(db, "events", ev.id));
+
+        allMine = allMine.filter(x => x.id !== ev.id);
+        renderMine();
+        await loadInviteRequests(currentUser.uid).catch(() => {});
+
+        setTopMsg("Deleted.", "good");
+        setTimeout(() => setTopMsg(""), 1200);
+      }catch(err){
+        console.error(err);
+        setTopMsg(err?.message || "Could not delete (rules?).", "bad");
+      }
+    }
+
+    deleteFromModalBtn.addEventListener("click", async () => {
+      const ev = allMine.find(x => x.id === editingEventId);
+      if (!ev) return;
+      await deleteEventNoConfirm(ev);
+      closeEdit();
+    });
+
+    saveEditBtn.addEventListener("click", async () => {
+      if (!currentUser || !editingEventId) return;
+      setEditMsg("");
+      saveEditBtn.disabled = true;
+
+      try{
+        const tags = (eTags.value || "")
+          .split(",")
+          .map(s => s.trim())
+          .filter(Boolean);
+
+        const toNumOrNull = (v) => {
+          const raw = (v ?? "").toString().trim();
+          if (!raw) return null;
+          const n = Number(raw);
+          return Number.isFinite(n) ? n : null;
+        };
+
+        const patch = {
+          name: eName.value.trim(),
+          location: eLocation.value.trim(),
+          startDate: eStartDate.value || "",
+          startTime: eStartTime.value || "",
+          endDate: eEndDate.value || "",
+          endTime: eEndTime.value || "",
+          tags,
+          description: eDesc.value.trim(),
+          inviteOnly: editingInviteOnly,
+          updatedAt: serverTimestamp(),
+        };
+
+        const venueSize = toNumOrNull(eVenueSize.value);
+        const spots = toNumOrNull(eSpots.value);
+        const est = toNumOrNull(eEst.value);
+
+        if (venueSize !== null) patch.venueSize = venueSize;
+        if (spots !== null) patch.spots = spots;
+        if (est !== null) patch.estimatedAttendance = est;
+
+        await updateDoc(doc(db, "events", editingEventId), patch);
+
+        const local = allMine.find(x => x.id === editingEventId);
+        if (local) Object.assign(local, patch);
+
+        renderMine();
+        await loadInviteRequests(currentUser.uid).catch(() => {});
+
+        setEditMsg("Saved.", "good");
+        setTimeout(() => closeEdit(), 500);
+      }catch(err){
+        console.error(err);
+        setEditMsg(err?.message || "Could not save (rules?).", "bad");
+      }finally{
+        saveEditBtn.disabled = false;
+      }
+    });
+
+    function renderMine(){
+      const q = lower(searchEl.value.trim());
+      let filtered = allMine;
+
+      if (q){
+        filtered = allMine.filter(e => {
+          const hay = [
+            e.name, e.location, (e.tags || []).join(" "),
+            pickDescription(e),
+            e.hostName, e.hostUid, e.ownerUid
+          ].map(lower).join(" | ");
+          return hay.includes(q);
+        });
+      }
+
+      countText.textContent = String(filtered.length);
+      mineGrid.innerHTML = "";
+      emptyMine.style.display = (filtered.length === 0) ? "block" : "none";
+
+      for (const e of filtered){
+        const isInvite = !!e.inviteOnly;
+        const desc = pickDescription(e);
+        const tags = Array.isArray(e.tags) ? e.tags : [];
+        const tagLine = tags.length ? tags.slice(0,3).join(", ") : "—";
+        const when = fmtWhen(e);
+
+        const el = document.createElement("div");
+        el.className = "event";
+        el.innerHTML = `
+          <div class="eventTop">
+            <h3 class="eventTitle">${esc(e.name || "Untitled")}</h3>
+            <span class="badge ${isInvite ? "invite" : ""}">${isInvite ? "Invite-only" : "Public"}</span>
+          </div>
+
+          <div class="meta">
+            <div><b>When:</b> ${esc(when)}</div>
+            <div><b>Where:</b> ${esc(e.location || "—")}</div>
+            <div><b>Tags:</b> ${esc(tagLine)}</div>
+          </div>
+
+          ${desc ? `<div class="desc">${esc(desc)}</div>` : ""}
+
+          <div class="actions">
+            <div class="leftA">
+              <a class="mini" href="event.html?id=${encodeURIComponent(e.id)}">Open</a>
+              <button class="mini" type="button" data-copy="${esc(e.id)}">Copy link</button>
+              <button class="mini" type="button" data-edit="${esc(e.id)}">Edit</button>
+              <button class="mini danger" type="button" data-del="${esc(e.id)}">Delete</button>
+            </div>
+          </div>
+        `;
+        mineGrid.appendChild(el);
+      }
+
+      mineGrid.querySelectorAll('button[data-copy]').forEach(btn => {
+        btn.addEventListener("click", async () => {
+          try{
+            const id = btn.getAttribute("data-copy");
+            const url = `${location.origin}${location.pathname.replace(/[^/]*$/, "")}event.html?id=${encodeURIComponent(id)}`;
+            await navigator.clipboard.writeText(url);
+            setTopMsg("Copied event link.", "good");
+            setTimeout(() => setTopMsg(""), 1200);
+          }catch{
+            setTopMsg("Couldn’t copy (browser blocked clipboard).", "bad");
+          }
+        });
+      });
+
+      mineGrid.querySelectorAll('button[data-edit]').forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-edit");
+          const ev = allMine.find(x => x.id === id);
+          if (ev) openEdit(ev);
+        });
+      });
+
+      mineGrid.querySelectorAll('button[data-del]').forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.getAttribute("data-del");
+          const ev = allMine.find(x => x.id === id);
+          if (!ev) return;
+          await deleteEventNoConfirm(ev); // no popup
+        });
+      });
+    }
+
+    async function loadMine(uid){
+      const fields = ["hostUid","ownerUid","createdBy","creatorUid","uid"];
+      const seen = new Map();
+
+      for (const f of fields){
+        try{
+          const qy = query(collection(db, "events"), where(f, "==", uid));
+          const snap = await getDocs(qy);
+          snap.forEach(docSnap => {
+            if (!seen.has(docSnap.id)){
+              seen.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
+            }
+          });
+        }catch(err){
+          console.warn("Query failed for field:", f, err);
+        }
+      }
+
+      const arr = Array.from(seen.values());
+      arr.sort((a,b) => pickCreatedAtMs(b) - pickCreatedAtMs(a));
+
+      allMine = arr;
+      renderMine();
+
+      hintText.textContent = allMine.length
+        ? `Showing your newest motives first.`
+        : `No events matched your user yet.`;
+
+      return allMine;
+    }
+
+    async function loadInviteRequests(uid){
+      allRequests = [];
+      reqList.innerHTML = "";
+      emptyReq.style.display = "none";
+      reqChip.style.display = "none";
+      reqCard.style.display = "none";
+      setReqMsg("");
+
+      const inviteMine = allMine.filter(e => !!e.inviteOnly);
+      if (!inviteMine.length){
+        reqSub.textContent = "No invite-only motives.";
+        return;
+      }
+
+      const scan = inviteMine.slice(0, 40);
+      let total = 0;
+
+      for (const ev of scan){
+        try{
+          const appsQ = query(
+            collection(db, "events", ev.id, "applications"),
+            where("status", "==", "pending")
+          );
+          const snap = await getDocs(appsQ);
+
+          for (const d of snap.docs){
+            total++;
+            const data = d.data() || {};
+            const applicantUid = d.id;
+
+            // prefer stored name in application; otherwise fetch from users/{uid}
+            const storedName = safeStr(data.applicantName || data.name || data.displayName || data.username || "");
+            const applicantName = storedName.trim() ? storedName.trim() : await getUserDisplayName(applicantUid);
+
+            allRequests.push({
+              eventId: ev.id,
+              eventName: ev.name || "Untitled",
+              eventWhen: fmtWhen(ev),
+              eventLocation: ev.location || "—",
+              applicantUid,
+              applicantName,
+              ...data
+            });
+          }
+        }catch(err){
+          console.warn("Failed reading applications for", ev.id, err);
+        }
+      }
+
+      reqText.textContent = String(total);
+
+      if (total > 0){
+        reqChip.style.display = "inline-flex";
+        reqCard.style.display = "block";
+        reqSub.textContent = `Pending across ${scan.length} invite-only motives (scanned).`;
+      }else{
+        reqCard.style.display = "block";
+        emptyReq.style.display = "block";
+        reqSub.textContent = `No pending requests found (scanned ${scan.length}).`;
+        return;
+      }
+
+      reqList.innerHTML = "";
+      allRequests.sort((a,b) => (pickCreatedAtMs(b) - pickCreatedAtMs(a)));
+
+      for (const r of allRequests){
+        const el = document.createElement("div");
+        el.className = "req";
+
+        const note = safeStr(r.message || r.note || r.reason || "");
+        const created =
+          r.createdAt?.toDate ? r.createdAt.toDate().toLocaleString() :
+          (typeof r.createdAt?.seconds === "number" ? new Date(r.createdAt.seconds*1000).toLocaleString() : "");
+
+        el.innerHTML = `
+          <div class="reqTop">
+            <div>
+              <h3 class="reqTitle">${esc(r.eventName)}</h3>
+              <div class="reqMeta">
+                <div><b>Applicant:</b> ${esc(r.applicantName || "User")}</div>
+                <div><b>When:</b> ${esc(r.eventWhen)}</div>
+                <div><b>Requested:</b> ${esc(created || "—")}</div>
+                ${note ? `<div><b>Note:</b> ${esc(note)}</div>` : ""}
+              </div>
+            </div>
+            <div class="reqBtns">
+              <button class="mini ok" type="button" data-accept="1">Accept</button>
+              <button class="mini no" type="button" data-deny="1">Deny</button>
+              <a class="mini" href="view_profile.html?uid=${encodeURIComponent(r.applicantUid)}">View profile</a>
+            </div>
+          </div>
+        `;
+
+        const acceptBtn = el.querySelector("button[data-accept]");
+        const denyBtn = el.querySelector("button[data-deny]");
+
+        acceptBtn.addEventListener("click", () => handleDecision(r, "accepted", acceptBtn, denyBtn));
+        denyBtn.addEventListener("click", () => handleDecision(r, "denied", acceptBtn, denyBtn));
+
+        reqList.appendChild(el);
+      }
+    }
+
+    async function handleDecision(r, decision, acceptBtn, denyBtn){
+      if (!currentUser) return;
+      acceptBtn.disabled = true;
+      denyBtn.disabled = true;
+
+      try{
+        const appRef = doc(db, "events", r.eventId, "applications", r.applicantUid);
+
+        if (decision === "accepted"){
+          const memRef = doc(db, "events", r.eventId, "members", r.applicantUid);
+          await setDoc(memRef, {
+            uid: r.applicantUid,
+            status: "accepted",
+            decidedBy: currentUser.uid,
+            decidedAt: serverTimestamp(),
+            createdAt: serverTimestamp()
+          }, { merge: true });
+        }
+
+        await updateDoc(appRef, {
+          status: decision,
+          decidedBy: currentUser.uid,
+          decidedAt: serverTimestamp()
+        });
+
+        setReqMsg(decision === "accepted" ? "Accepted request." : "Denied request.", "good");
+        setTimeout(() => setReqMsg(""), 1200);
+
+        await refreshAll();
+      }catch(err){
+        console.error(err);
+        setReqMsg(err?.message || "Could not update request (rules/index issue).", "bad");
+        acceptBtn.disabled = false;
+        denyBtn.disabled = false;
+      }
+    }
+
+    async function refreshAll(){
+      if (!currentUser) return;
+      setTopMsg("Loading…");
+      await loadMine(currentUser.uid);
+      await loadInviteRequests(currentUser.uid);
+      setTopMsg("");
+    }
+
+    refreshBtn.addEventListener("click", refreshAll);
+    searchEl.addEventListener("input", renderMine);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user){
+        window.location.href = "login.html";
+        return;
+      }
+      currentUser = user;
+      subline.textContent = `Signed in as ${user.displayName || "User"}`;
+
+      try{
+        await refreshAll();
+      }catch(err){
+        console.error(err);
+        setTopMsg(err?.message || "Failed to load your motives.", "bad");
+      }
+    });
+  </script>
+
+  <!-- Edit Motive Modal -->
+  <div class="modalOverlay" id="editOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+      <div class="modalHead">
+        <h3 id="editTitle">Edit your motive</h3>
+        <button class="btn" type="button" id="closeEditBtn">Close</button>
+      </div>
+
+      <div class="modalBody">
+        <div class="msg" id="editMsg" style="margin:0 0 10px; display:none;"></div>
+
+        <div class="formGrid">
+          <div class="field">
+            <label for="eName">Title</label>
+            <input id="eName" type="text" placeholder="Motive name" />
+          </div>
+
+          <div class="field">
+            <label for="eLocation">Location</label>
+            <input id="eLocation" type="text" placeholder="e.g., ByWard Market" />
+          </div>
+
+          <div class="field">
+            <label for="eStartDate">Start date</label>
+            <input id="eStartDate" type="date" />
+          </div>
+
+          <div class="field">
+            <label for="eStartTime">Start time</label>
+            <input id="eStartTime" type="time" />
+          </div>
+
+          <div class="field">
+            <label for="eEndDate">End date (optional)</label>
+            <input id="eEndDate" type="date" />
+          </div>
+
+          <div class="field">
+            <label for="eEndTime">End time (optional)</label>
+            <input id="eEndTime" type="time" />
+          </div>
+
+          <div class="field span2">
+            <label for="eTags">Tags (comma separated)</label>
+            <input id="eTags" type="text" placeholder="party, chill, study..." />
+          </div>
+
+          <div class="field span2">
+            <label for="eDesc">Description</label>
+            <textarea id="eDesc" placeholder="What’s the vibe?"></textarea>
+          </div>
+
+          <div class="field span2">
+            <div class="toggleRow">
+              <div>
+                <div class="tTitle">Invite-only</div>
+                <div class="muted" style="font-size:12px;">Only approved requests can see / join</div>
+              </div>
+              <button class="pillBtn" id="eInviteBtn" type="button" aria-pressed="false">Public</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="eVenueSize">Venue size (optional)</label>
+            <input id="eVenueSize" type="number" min="0" inputmode="numeric" placeholder="e.g., 120" />
+          </div>
+
+          <div class="field">
+            <label for="eSpots">Spots available (optional)</label>
+            <input id="eSpots" type="number" min="0" inputmode="numeric" placeholder="e.g., 40" />
+          </div>
+
+          <div class="field span2">
+            <label for="eEst">Estimated attendance (optional)</label>
+            <input id="eEst" type="number" min="0" inputmode="numeric" placeholder="e.g., 80" />
+          </div>
+        </div>
+      </div>
+
+      <div class="modalFoot">
+        <button class="btn" type="button" id="cancelEditBtn">Cancel</button>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn danger" type="button" id="deleteFromModalBtn">Delete</button>
+          <button class="btn primary" type="button" id="saveEditBtn">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

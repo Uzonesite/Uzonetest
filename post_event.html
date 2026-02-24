@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Uzone • Post Motive</title>
+
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="color-scheme" content="dark light" />
+
+  <style>
+    :root{
+      --accent:#b00b55;
+      --bg:#0b0b10;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --border: rgba(255,255,255,.14);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100dvh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(176,11,85,.30), transparent 60%),
+        radial-gradient(900px 600px at 80% 30%, rgba(176,11,85,.18), transparent 55%),
+        radial-gradient(700px 500px at 50% 90%, rgba(255,255,255,.06), transparent 60%),
+        var(--bg);
+    }
+
+    header{
+      width:min(1120px, 92vw);
+      margin:18px auto 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+    .left{display:flex; align-items:center; gap:12px; min-width:0;}
+    .left img{
+      width:38px;height:38px;object-fit:contain;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));
+    }
+    .title{display:grid; gap:2px; min-width:0;}
+    .title h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .title .sub{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .right{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;}
+
+    .btn{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.92);
+      font-weight:900;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, filter .12s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 16px var(--accent), 0 16px 40px rgba(176,11,85,.30);
+      filter: brightness(1.06);
+    }
+    .btn:active{
+      transform: translateY(0px) scale(.99);
+      box-shadow: 0 0 10px var(--accent), 0 10px 28px rgba(176,11,85,.20);
+      filter: brightness(1.0);
+    }
+    .btn.primary{
+      border:1px solid rgba(176,11,85,.55);
+      background: linear-gradient(135deg, rgba(176,11,85,.95), rgba(176,11,85,.58));
+      color:white;
+      box-shadow: 0 18px 40px rgba(176,11,85,.22);
+    }
+    .btn.primary:hover{
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent), 0 22px 55px rgba(176,11,85,.35);
+      filter: brightness(1.08);
+    }
+    .btn:disabled{opacity:.65;cursor:not-allowed}
+
+    main{
+      width:min(1120px, 92vw);
+      margin:16px auto 30px auto;
+      display:grid;
+      gap:14px;
+    }
+
+    .panel{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+      backdrop-filter: blur(10px);
+    }
+
+    .sectionHead{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin:0 0 12px 0;
+    }
+    .sectionHead .h{
+      margin:0;
+      font-size:15px;
+      letter-spacing:.2px;
+      font-weight:950;
+    }
+    .sectionHead .p{
+      margin:2px 0 0 0;
+      color: rgba(255,255,255,.72);
+      font-size:13px;
+      line-height:1.3;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .col4{grid-column: span 4;}
+    .col6{grid-column: span 6;}
+    .col12{grid-column: span 12;}
+    @media (max-width: 920px){
+      .col4,.col6,.col12{grid-column: span 12;}
+    }
+
+    label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px 2px;}
+    input, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+      line-height: 1.2;
+    }
+    input:focus, textarea:focus{
+      border-color: rgba(176,11,85,.60);
+      box-shadow: 0 0 0 4px rgba(176,11,85,.20);
+    }
+    textarea{min-height:120px; resize:vertical;}
+
+    .hint{font-size:13px; color:rgba(255,255,255,.75); line-height:1.35;}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+
+    .subCard{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      border-radius: 16px;
+      padding:12px;
+    }
+
+    /* Cover image */
+    .imgRow{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .imgPreview{
+      width:100%;
+      max-width: 420px;
+      aspect-ratio: 16/9;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      overflow:hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      display:none;
+    }
+    .imgPreview img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    /* Invite-only: make the whole bubble clickable */
+    .toggleBtn{
+      width:100%;
+      border:none;
+      text-align:left;
+      cursor:pointer;
+      padding:0;
+      background: transparent;
+      color: inherit;
+    }
+    .toggleRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease, filter .12s ease;
+    }
+    .toggleBtn:hover .toggleRow{
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 16px rgba(176,11,85,.35), 0 16px 40px rgba(176,11,85,.18);
+      filter: brightness(1.04);
+    }
+    .toggleBtn:active .toggleRow{
+      transform: translateY(0px) scale(.995);
+      box-shadow: 0 0 10px rgba(176,11,85,.25), 0 10px 28px rgba(176,11,85,.14);
+      filter: brightness(1.0);
+    }
+    .toggleBtn:focus-visible{ outline:none; }
+    .toggleBtn:focus-visible .toggleRow{
+      box-shadow: 0 0 0 4px rgba(176,11,85,.26), 0 0 18px var(--accent);
+      border-color: rgba(176,11,85,.65);
+    }
+
+    .toggleText{
+      display:grid;
+      gap:4px;
+      min-width:0;
+    }
+    .toggleText b{
+      font-weight:950;
+      letter-spacing:.2px;
+    }
+    .toggleText span{
+      color: rgba(255,255,255,.72);
+      font-size:13px;
+      line-height:1.25;
+    }
+
+    .switch{
+      position:relative;
+      width:56px;
+      height:32px;
+      flex: 0 0 auto;
+      pointer-events:none; /* let the whole bubble handle clicks */
+    }
+    .switch input{ display:none; }
+    .track{
+      position:absolute; inset:0;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.25);
+      transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .thumb{
+      position:absolute;
+      top:50%;
+      left:4px;
+      width:24px;
+      height:24px;
+      border-radius:999px;
+      background: rgba(255,255,255,.92);
+      transform: translateY(-50%);
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+      transition: left .18s ease, transform .18s ease;
+    }
+    .switch input:checked + .track{
+      background: rgba(176,11,85,.32);
+      border-color: rgba(176,11,85,.55);
+      box-shadow: 0 0 0 4px rgba(176,11,85,.18), inset 0 0 0 1px rgba(0,0,0,.25);
+    }
+    .switch input:checked + .track .thumb{ left:28px; }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.86);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: rgba(80,255,160,.75);
+      box-shadow: 0 0 0 4px rgba(80,255,160,.12);
+    }
+    .dot.lock{
+      background: rgba(255,210,80,.85);
+      box-shadow: 0 0 0 4px rgba(255,210,80,.12);
+    }
+
+    /* Location search: make it match inputs */
+    .placeWrap{ width:100%; display:block; }
+    gmp-place-autocomplete{ width:100%; display:block; }
+    gmp-place-autocomplete::part(input){
+      width:100%;
+      height:44px;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      outline:none;
+      font-size:14px;
+      line-height: 1.2;
+    }
+    gmp-place-autocomplete::part(input)::placeholder{ color: rgba(255,255,255,.55); }
+    gmp-place-autocomplete::part(input):focus{
+      border-color: rgba(176,11,85,.60);
+      box-shadow: 0 0 0 4px rgba(176,11,85,.20);
+    }
+
+    /* Map */
+    .mapShell{
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 18px;
+      overflow:hidden;
+      background: rgba(0,0,0,.20);
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+    #map{ height: 360px; width: 100%; }
+    @media (max-width: 920px){ #map{height: 320px;} }
+
+    .status{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,80,120,.35);
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.86);
+      font-size:13px;
+      line-height:1.35;
+      max-width: 100%;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .status.ok{border-color: rgba(80,255,160,.28);}
+
+    /* Glow marker HTML for AdvancedMarker */
+    .pinWrap{ position:relative; width:1px; height:1px; overflow:visible; }
+    .glow-pin{
+      position:absolute;
+      left:0; top:0;
+      width: 16px; height: 16px; border-radius: 999px;
+      background: var(--accent);
+      box-shadow:
+        0 0 10px var(--accent),
+        0 0 22px rgba(176,11,85,.75),
+        0 0 46px rgba(176,11,85,.45);
+      transform: translate(-50%, -50%);
+    }
+    .glow-pulse{
+      position:absolute;
+      left:0; top:0;
+      width: 46px; height: 46px;
+      border-radius: 999px;
+      border: 2px solid rgba(176,11,85,.35);
+      transform: translate(-50%, -50%);
+      animation: pulse 1.6s ease-out infinite;
+      pointer-events:none;
+    }
+    @keyframes pulse{
+      0%{opacity:.85; transform: translate(-50%,-50%) scale(.35);}
+      100%{opacity:0; transform: translate(-50%,-50%) scale(1.15);}
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <img src="logo.png" alt="Uzone logo" />
+      <div class="title">
+        <h1>Post Motive</h1>
+        <div class="sub">Fill the details, then pick a location</div>
+      </div>
+    </div>
+    <div class="right">
+      <a class="btn" href="hub.html">Hub</a>
+      <a class="btn" href="map.html">Map</a>
+      <a class="btn" href="events.html">Umotives</a>
+      <a class="btn" href="my_events.html">My Motives</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- DETAILS -->
+    <section class="panel">
+      <div class="sectionHead">
+        <div>
+          <h2 class="h">Details</h2>
+          <div class="p">Name it, tag it, and write a clean description.</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col6">
+          <label for="name">Motive name</label>
+          <input id="name" placeholder="e.g., Rooftop pregame" />
+        </div>
+
+        <div class="col6">
+          <label for="tags">Tags (comma separated)</label>
+          <input id="tags" placeholder="e.g., party, uottawa, music" />
+        </div>
+
+        <!-- ✅ COVER IMAGE (added back) -->
+        <div class="col12">
+          <label>Cover image (optional)</label>
+          <div class="imgRow">
+            <button class="btn" id="pickImgBtn" type="button">Add cover photo</button>
+            <button class="btn" id="clearImgBtn" type="button" style="display:none;">Remove photo</button>
+            <span class="hint" id="imgHint">JPG/PNG/WebP works best.</span>
+            <input id="eventImgInput" type="file" accept="image/*" style="display:none;" />
+          </div>
+          <div class="imgPreview" id="imgPreview">
+            <img id="imgPreviewEl" alt="Event cover preview" />
+          </div>
+        </div>
+
+        <div class="col12">
+          <label for="description">Description</label>
+          <textarea id="description" placeholder="What’s the vibe? What should people know?"></textarea>
+          <div class="hint" style="margin-top:8px;">Tip: include entry info, what to bring, and any rules.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DATE & TIME -->
+    <section class="panel">
+      <div class="sectionHead">
+        <div>
+          <h2 class="h">Date & Time</h2>
+          <div class="p">Start is required. End is optional.</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col6 subCard">
+          <div class="grid">
+            <div class="col6">
+              <label for="startDate">Start date</label>
+              <input id="startDate" type="date" />
+            </div>
+            <div class="col6">
+              <label for="startTime">Start time</label>
+              <input id="startTime" type="time" />
+            </div>
+          </div>
+        </div>
+
+        <div class="col6 subCard">
+          <div class="grid">
+            <div class="col6">
+              <label for="endDate">End date (optional)</label>
+              <input id="endDate" type="date" />
+            </div>
+            <div class="col6">
+              <label for="endTime">End time (optional)</label>
+              <input id="endTime" type="time" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CROWD -->
+    <section class="panel">
+      <div class="sectionHead">
+        <div>
+          <h2 class="h">Crowd</h2>
+          <div class="p">Helps people decide fast (and helps the vibe).</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col4">
+          <label for="spotsAvailable">Spots available</label>
+          <input id="spotsAvailable" type="number" min="0" inputmode="numeric" placeholder="e.g., 50" />
+        </div>
+
+        <div class="col4">
+          <label for="venueSize">Venue size</label>
+          <input id="venueSize" placeholder="e.g., Small house, Club, Rooftop" />
+        </div>
+
+        <div class="col4">
+          <label for="sizeEstimate">Estimated attendance size</label>
+          <input id="sizeEstimate" placeholder="e.g., 30–40 people" />
+        </div>
+
+        <div class="col12">
+          <label for="ratio">Ratio (optional)</label>
+          <input id="ratio" placeholder="e.g., 60% girls / 40% guys" />
+        </div>
+      </div>
+    </section>
+
+    <!-- VISIBILITY -->
+    <section class="panel">
+      <div class="sectionHead">
+        <div>
+          <h2 class="h">Visibility</h2>
+          <div class="p">Invite-only hides exact location + schedule unless accepted.</div>
+        </div>
+        <div class="chip" id="inviteChip" title="Current visibility">
+          <span class="dot" id="inviteDot"></span>
+          <span id="inviteLabel">Open</span>
+        </div>
+      </div>
+
+      <button class="toggleBtn" id="inviteToggleBtn" type="button" aria-pressed="false">
+        <div class="toggleRow">
+          <div class="toggleText">
+            <b>Invite-only</b>
+            <span>People apply before seeing the exact details.</span>
+          </div>
+
+          <div class="switch" aria-hidden="true">
+            <input id="inviteOnly" type="checkbox" />
+            <span class="track"><span class="thumb"></span></span>
+          </div>
+        </div>
+      </button>
+      <div class="hint" style="margin-top:10px;">
+        You can still post with a hidden location (invite-only). Accepted users will see everything on the event page.
+      </div>
+    </section>
+
+    <!-- LOCATION -->
+    <section class="panel">
+      <div class="sectionHead">
+        <div>
+          <h2 class="h">Location</h2>
+          <div class="p">Search an address or drop a pin on the map.</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col12">
+          <label>Search address</label>
+          <div class="placeWrap">
+            <gmp-place-autocomplete id="locationInput"></gmp-place-autocomplete>
+          </div>
+          <div class="hint" style="margin-top:8px;">You can also click the map to drop a pin anywhere.</div>
+        </div>
+
+        <div class="col12 mapShell">
+          <div id="map"></div>
+        </div>
+
+        <div class="col12">
+          <div class="row" style="justify-content:space-between;">
+            <div class="row">
+              <button class="btn" id="useMyLocBtn" type="button">Use my location</button>
+              <button class="btn" id="clearPinBtn" type="button">Clear pin</button>
+            </div>
+            <div id="pinStatus" class="status">No pin selected. Search an address or click the map.</div>
+          </div>
+        </div>
+
+        <div class="col12">
+          <div class="row" style="justify-content:flex-end;">
+            <button class="btn primary" id="postBtn" type="button">Post Motive</button>
+          </div>
+          <div id="msg" class="hint" style="margin-top:10px;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ONE Google Maps script tag only -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCt8UPeNwhR4mPoQgWUoYxUE2UrlKYL6UE&libraries=places,marker&v=weekly" async defer></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      doc,
+      updateDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+    import {
+      getStorage,
+      ref as sref,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_k18vbiBsLhQB7PzgEVT9PEI_30Mu0kg",
+      authDomain: "uzone-6148d.firebaseapp.com",
+      databaseURL: "https://uzone-6148d-default-rtdb.firebaseio.com",
+      projectId: "uzone-6148d",
+      storageBucket: "uzone-6148d.firebasestorage.app",
+      messagingSenderId: "88783701381",
+      appId: "1:88783701381:web:4f6c4b1ad8b26d6fa6f0ec",
+      measurementId: "G-HKL5246YMC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const $ = (id) => document.getElementById(id);
+
+    const nameEl = $("name");
+    const tagsEl = $("tags");
+    const startDateEl = $("startDate");
+    const startTimeEl = $("startTime");
+    const endDateEl = $("endDate");
+    const endTimeEl = $("endTime");
+    const descEl = $("description");
+
+    const spotsEl = $("spotsAvailable");
+    const venueEl = $("venueSize");
+    const sizeEl = $("sizeEstimate");
+    const ratioEl = $("ratio");
+
+    const inviteOnlyEl = $("inviteOnly");
+    const inviteToggleBtn = $("inviteToggleBtn");
+    const inviteChip = $("inviteChip");
+    const inviteDot = $("inviteDot");
+    const inviteLabel = $("inviteLabel");
+
+    const placeEl = $("locationInput");
+    const mapEl = $("map");
+    const pinStatus = $("pinStatus");
+    const postBtn = $("postBtn");
+    const useMyLocBtn = $("useMyLocBtn");
+    const clearPinBtn = $("clearPinBtn");
+    const msg = $("msg");
+
+    // ✅ image UI
+    const pickImgBtn = $("pickImgBtn");
+    const clearImgBtn = $("clearImgBtn");
+    const eventImgInput = $("eventImgInput");
+    const imgPreview = $("imgPreview");
+    const imgPreviewEl = $("imgPreviewEl");
+
+    let selectedImageFile = null;
+    let gmap, marker;
+    let picked = { lat:null, lng:null, label:null };
+
+    function setMsg(text, good){
+      msg.textContent = text || "";
+      msg.style.color = good ? "rgba(80,255,160,.9)" : "rgba(255,120,160,.95)";
+    }
+
+    function setStatus(text, ok){
+      pinStatus.textContent = text;
+      pinStatus.classList.toggle("ok", !!ok);
+    }
+
+    function setInviteUI(){
+      const on = !!inviteOnlyEl.checked;
+
+      inviteLabel.textContent = on ? "Invite-only" : "Open";
+      inviteDot.classList.toggle("lock", on);
+
+      inviteChip.style.borderColor = on ? "rgba(255,210,80,.30)" : "rgba(255,255,255,.14)";
+      inviteChip.style.background = on ? "rgba(255,210,80,.10)" : "rgba(0,0,0,.18)";
+
+      inviteToggleBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+
+    function toggleInviteOnly(){
+      inviteOnlyEl.checked = !inviteOnlyEl.checked;
+      setInviteUI();
+    }
+
+    function whenGoogleReady(timeoutMs = 12000){
+      return new Promise((resolve, reject) => {
+        const start = Date.now();
+        const tick = () => {
+          if (window.google?.maps?.Map && window.google?.maps?.marker?.AdvancedMarkerElement) return resolve();
+          if (Date.now() - start > timeoutMs) return reject(new Error("Google Maps failed to load. Check API key + referrers + enabled APIs."));
+          setTimeout(tick, 50);
+        };
+        tick();
+      });
+    }
+
+    function buildPinEl(){
+      const wrap = document.createElement("div");
+      wrap.className = "pinWrap";
+      const pulse = document.createElement("div");
+      pulse.className = "glow-pulse";
+      const dot = document.createElement("div");
+      dot.className = "glow-pin";
+      wrap.appendChild(pulse);
+      wrap.appendChild(dot);
+      return wrap;
+    }
+
+    function setPicked(lat, lng, label){
+      picked.lat = lat;
+      picked.lng = lng;
+      picked.label = label || null;
+
+      const pos = { lat, lng };
+
+      if (!marker){
+        marker = new google.maps.marker.AdvancedMarkerElement({
+          map: gmap,
+          position: pos,
+          content: buildPinEl(),
+        });
+      } else {
+        marker.position = pos;
+        marker.content = buildPinEl();
+      }
+
+      gmap.panTo(pos);
+      setStatus(
+        label ? `Pinned: ${label} (${lat.toFixed(5)}, ${lng.toFixed(5)})`
+              : `Pinned: ${lat.toFixed(5)}, ${lng.toFixed(5)}`,
+        true
+      );
+    }
+
+    function clearPicked(){
+      picked = { lat:null, lng:null, label:null };
+      if (marker) marker.map = null;
+      marker = null;
+      setStatus("No pin selected. Search an address or click the map.", false);
+    }
+
+    function parseTags(str){
+      return (str || "")
+        .split(",")
+        .map(s => s.trim())
+        .filter(Boolean)
+        .slice(0, 20);
+    }
+
+    async function geocodeFallback(address){
+      return new Promise((resolve) => {
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ address }, (results, status) => {
+          if (status !== "OK" || !results?.length) return resolve(null);
+          const loc = results[0].geometry.location;
+          resolve({ lat: loc.lat(), lng: loc.lng() });
+        });
+      });
+    }
+
+    // ✅ reverse-geocode coords → closest formatted address
+    async function reverseGeocode(lat, lng){
+      return new Promise((resolve) => {
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+          if (status !== "OK" || !results?.length) return resolve(null);
+          resolve(results[0].formatted_address || null);
+        });
+      });
+    }
+
+    // ✅ image helpers
+    function setImageFile(file){
+      selectedImageFile = file || null;
+
+      if (!selectedImageFile){
+        imgPreview.style.display = "none";
+        imgPreviewEl.src = "";
+        clearImgBtn.style.display = "none";
+        return;
+      }
+
+      const url = URL.createObjectURL(selectedImageFile);
+      imgPreviewEl.src = url;
+      imgPreview.style.display = "block";
+      clearImgBtn.style.display = "inline-flex";
+    }
+
+    async function initMap(){
+      await whenGoogleReady();
+
+      const defaultCenter = { lat: 45.4215, lng: -75.6972 };
+      gmap = new google.maps.Map(mapEl, {
+        center: defaultCenter,
+        zoom: 12,
+        mapId: "f4ab270f6c4fc6deeed4fa00",
+        clickableIcons: false,
+        gestureHandling: "greedy",
+      });
+
+      gmap.addListener("click", (e) => {
+        if (!e?.latLng) return;
+        setPicked(e.latLng.lat(), e.latLng.lng(), null);
+      });
+
+      placeEl.addEventListener("gmp-select", async (e) => {
+        try{
+          const place = e.placePrediction?.toPlace?.() ?? e.place;
+          if (!place) return;
+
+          await place.fetchFields({ fields: ["displayName","formattedAddress","location"] });
+
+          const label = place.formattedAddress || place.displayName || null;
+
+          if (place.location){
+            const lat = place.location.lat();
+            const lng = place.location.lng();
+            setPicked(lat, lng, label);
+            gmap.setZoom(15);
+            return;
+          }
+
+          if (label){
+            const ll = await geocodeFallback(label);
+            if (ll){
+              setPicked(ll.lat, ll.lng, label);
+              gmap.setZoom(15);
+              return;
+            }
+          }
+
+          setMsg("Couldn’t get a map location from that result. Try a more specific address.", false);
+        } catch (err){
+          console.error(err);
+          setMsg("Address select failed (check console).", false);
+        }
+      });
+
+      // ✅ Use my location → pin + closest address
+      useMyLocBtn.addEventListener("click", () => {
+        if (!navigator.geolocation) return alert("Geolocation not supported.");
+        navigator.geolocation.getCurrentPosition(
+          async (pos) => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+
+            // try to label it with the closest address
+            let label = await reverseGeocode(lat, lng);
+            if (!label) {
+  const hostName = auth.currentUser?.displayName || "Host";
+  label = `${hostName}'s location`;
+}
+
+            setPicked(lat, lng, label);
+            gmap.setZoom(15);
+          },
+          () => alert("Couldn’t get your location."),
+          { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+        );
+      });
+
+      clearPinBtn.addEventListener("click", clearPicked);
+      setStatus("No pin selected. Search an address or click the map.", false);
+    }
+
+    async function uploadEventImage(eventId, file){
+      const safeName = (file.name || "cover").replace(/[^\w.\-]+/g, "_");
+      const path = `events/${eventId}/${Date.now()}_${safeName}`;
+      const r = sref(storage, path);
+      await uploadBytes(r, file);
+      return await getDownloadURL(r);
+    }
+
+    async function postEvent(user){
+      const name = nameEl.value.trim();
+      const tags = parseTags(tagsEl.value);
+      const startDate = startDateEl.value || "";
+      const startTime = startTimeEl.value || "";
+      const endDate = endDateEl.value || null;
+      const endTime = endTimeEl.value || null;
+      const description = descEl.value.trim() || null;
+      const inviteOnly = !!inviteOnlyEl.checked;
+
+      const spotsAvailable = (spotsEl?.value ?? "").toString().trim() === "" ? null : Number(spotsEl.value);
+      const venueSize = venueEl.value.trim() || null;
+      const sizeEstimate = sizeEl.value.trim() || null;
+      const ratio = ratioEl.value.trim() || null;
+
+      if (!name) return setMsg("Please enter a motive name.", false);
+      if (!startDate || !startTime) return setMsg("Please choose a start date and time.", false);
+      if (!picked.lat || !picked.lng) return setMsg("Please search an address or click the map to drop a pin.", false);
+
+      if (spotsAvailable !== null && !Number.isFinite(spotsAvailable)) {
+        return setMsg("Spots available must be a number.", false);
+      }
+
+      postBtn.disabled = true;
+      pickImgBtn.disabled = true;
+      clearImgBtn.disabled = true;
+      setMsg("Posting…", true);
+
+      try{
+        // 1) create event doc first
+        const payload = {
+          name,
+          tags,
+          startDate,
+          startTime,
+          endDate,
+          endTime,
+          description,
+          location: picked.label,
+          lat: picked.lat,
+          lng: picked.lng,
+          inviteOnly,
+
+          spotsAvailable,
+          venueSize,
+          sizeEstimate,
+          ratio,
+
+          imageUrl: null, // ✅ will be filled if user chose an image
+
+          hostUid: user.uid,
+          hostName: user.displayName || "",
+          ownerUid: user.uid,
+
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        };
+
+        const newRef = await addDoc(collection(db, "events"), payload);
+
+        // 2) upload image (optional), then update doc with imageUrl
+        if (selectedImageFile){
+          setMsg("Uploading cover photo…", true);
+          const url = await uploadEventImage(newRef.id, selectedImageFile);
+          await updateDoc(doc(db, "events", newRef.id), {
+            imageUrl: url,
+            updatedAt: serverTimestamp()
+          });
+        }
+
+        setMsg("Posted! Opening…", true);
+        window.location.href = `event.html?id=${encodeURIComponent(newRef.id)}`;
+      } catch (err){
+        console.error(err);
+        setMsg(err?.message || "Failed to post.", false);
+        postBtn.disabled = false;
+        pickImgBtn.disabled = false;
+        clearImgBtn.disabled = false;
+      }
+    }
+
+    // ✅ image UI events
+    pickImgBtn.addEventListener("click", () => eventImgInput.click());
+    eventImgInput.addEventListener("change", () => {
+      const f = eventImgInput.files && eventImgInput.files[0] ? eventImgInput.files[0] : null;
+      setImageFile(f);
+    });
+    clearImgBtn.addEventListener("click", () => {
+      eventImgInput.value = "";
+      setImageFile(null);
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user){
+        window.location.href = "login.html";
+        return;
+      }
+
+      setInviteUI();
+      inviteToggleBtn.addEventListener("click", toggleInviteOnly);
+      inviteOnlyEl.addEventListener("change", setInviteUI);
+
+      initMap().catch(err => {
+        console.error(err);
+        setMsg(err.message || "Map init failed.", false);
+      });
+
+      postBtn.addEventListener("click", () => postEvent(user));
+    });
+  </script>
+</body>
+</html>
