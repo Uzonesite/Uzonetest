@@ -417,7 +417,10 @@
           <p>Like and pass on other students, match, and start conversations.</p>
         </div>
         <div class="actions">
-          <a class="linkBtn primary" href="dating.html">Open Match</a>
+          <a class="linkBtn primary" href="#" id="openMatchBtn">Open Match</a>
+          <p id="matchLockText" style="display:none; color:rgba(255,255,255,.75); margin-top:8px; font-size:14px;">
+            You must verify your profile before accessing Match.
+          </p>
         </div>
       </article>
       
@@ -454,6 +457,10 @@
     const verifyText = document.getElementById("verifyText");
 
     const referBtn = document.getElementById("referBtn");
+    const openMatchBtn = document.getElementById("openMatchBtn");
+    const matchLockText = document.getElementById("matchLockText");
+
+    let currentVerifiedStatus = false;
     const toastEl = document.getElementById("toast");
 
     function toast(text){
@@ -493,6 +500,7 @@
           const data = snap.data() || {};
           if (typeof data.name === "string" && data.name.trim()) displayName = data.name.trim();
           verified = !!data.verified;
+          currentVerifiedStatus = verified;
         }
       } catch(_) {}
 
@@ -515,6 +523,20 @@ referBtn.onclick = async () => {
     prompt("Copy your referral link:", link);
   }
 };
+
+      // Gate Match (dating.html) behind verification
+      if (openMatchBtn) {
+        openMatchBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (currentVerifiedStatus) {
+            window.location.href = "dating.html";
+          } else {
+            if (matchLockText) matchLockText.style.display = "block";
+            toast("Verification required to access Match.");
+          }
+        });
+      }
+
 
     });
 
